@@ -198,6 +198,61 @@ export interface TemplateContent {
   abstract: string
 }
 
+// 模拟审查类型
+export interface SimulationReview {
+  id: string
+  patentFile: FileInfo
+  patentInfo: PatentFileInfo
+  examinationOpinion: ExaminationOpinion
+  status: SimulationStatus
+  createTime: string
+  userId: string
+}
+
+export interface PatentFileInfo {
+  title: string
+  applicationNumber?: string
+  applicant: string
+  inventor: string[]
+  technicalField: string
+  abstract: string
+  claims: string[]
+  description: string
+}
+
+export interface ExaminationOpinion {
+  id: string
+  reviewNumber: string
+  content: string
+  rejectionReasons: RejectionReason[]
+  examinerComments: string
+  legalBasis: string[]
+  deadline: string
+  severity: 'high' | 'medium' | 'low'
+}
+
+export interface RejectionReason {
+  type: 'novelty' | 'creativity' | 'practicality' | 'clarity' | 'support' | 'other'
+  description: string
+  citedPriors: CitedPrior[]
+  legalBasis: string[]
+  claimsAffected: number[]
+}
+
+export interface CitedPrior {
+  publicationNumber: string
+  title: string
+  publicationDate: string
+  relevantSections: string[]
+}
+
+export enum SimulationStatus {
+  UPLOADING = 'uploading',
+  ANALYZING = 'analyzing',
+  COMPLETED = 'completed',
+  FAILED = 'failed'
+}
+
 // 答辩支持类型
 export interface DefenseCase {
   id: string
@@ -210,21 +265,6 @@ export interface DefenseCase {
   createTime: string
   updateTime: string
   userId: string
-}
-
-export interface ExaminationOpinion {
-  id: string
-  content: string
-  rejectionReasons: RejectionReason[]
-  examinerComments: string
-  deadline: string
-}
-
-export interface RejectionReason {
-  type: 'novelty' | 'creativity' | 'practicality' | 'clarity' | 'support'
-  description: string
-  citedPriors: Patent[]
-  legalBasis: string[]
 }
 
 export interface DefenseStrategy {

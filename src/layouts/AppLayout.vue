@@ -112,24 +112,7 @@ const menuItems = ref([
     id: 'defense-support',
     title: '答辩支持',
     icon: 'ChatDotSquare',
-    path: '/app/defense-support',
-    children: [
-      {
-        id: 'defense-support-cases',
-        title: '案例管理',
-        path: '/app/defense-support/cases'
-      },
-      {
-        id: 'defense-support-simulation',
-        title: '模拟审查',
-        path: '/app/defense-support/simulation'
-      },
-      {
-        id: 'defense-support-strategy',
-        title: '答辩策略',
-        path: '/app/defense-support/strategy'
-      }
-    ]
+    path: '/app/defense-support/simulation'
   },
   {
     id: 'profile',

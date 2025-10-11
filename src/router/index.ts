@@ -203,15 +203,7 @@ const routes: RouteRecordRaw[] = [
         children: [
           {
             path: '',
-            redirect: '/app/defense-support/cases'
-          },
-          {
-            path: 'cases',
-            name: 'DefenseSupportCases',
-            component: () => import('@/views/defense-support/DefenseCasesView.vue'),
-            meta: {
-              title: '案例管理'
-            }
+            redirect: '/app/defense-support/simulation'
           },
           {
             path: 'simulation',
@@ -219,14 +211,6 @@ const routes: RouteRecordRaw[] = [
             component: () => import('@/views/defense-support/DefenseSimulationView.vue'),
             meta: {
               title: '模拟审查'
-            }
-          },
-          {
-            path: 'strategy',
-            name: 'DefenseSupportStrategy',
-            component: () => import('@/views/defense-support/DefenseStrategyView.vue'),
-            meta: {
-              title: '答辩策略'
             }
           }
         ]
