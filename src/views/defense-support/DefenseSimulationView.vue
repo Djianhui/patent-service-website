@@ -3,7 +3,7 @@
     <!-- 页面头部 -->
     <div class="page-header">
       <h1 class="page-title">模拟审查</h1>
-      <p class="page-subtitle">上传专利文件，AI智能生成审查意见通知书</p>
+      <p class="page-subtitle">上传专利文件，生成审查意见通知书</p>
     </div>
 
     <!-- 上传区域 -->

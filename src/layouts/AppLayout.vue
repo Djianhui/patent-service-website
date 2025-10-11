@@ -55,6 +55,24 @@ const menuItems = ref([
     ]
   },
   {
+    id: 'patent-draft',
+    title: '专利撰写',
+    icon: 'Edit',
+    path: '/app/patent-draft',
+    children: [
+      {
+        id: 'patent-draft-new',
+        title: '新建草稿',
+        path: '/app/patent-draft/new'
+      },
+      {
+        id: 'patent-draft-manage',
+        title: '草稿管理',
+        path: '/app/patent-draft/manage'
+      }
+    ]
+  },
+  {
     id: 'patent-search',
     title: '专利检索',
     icon: 'Search',
@@ -90,24 +108,7 @@ const menuItems = ref([
       }
     ]
   },
-  {
-    id: 'patent-draft',
-    title: '专利撰写',
-    icon: 'Edit',
-    path: '/app/patent-draft',
-    children: [
-      {
-        id: 'patent-draft-new',
-        title: '新建草稿',
-        path: '/app/patent-draft/new'
-      },
-      {
-        id: 'patent-draft-manage',
-        title: '草稿管理',
-        path: '/app/patent-draft/manage'
-      }
-    ]
-  },
+
   {
     id: 'defense-support',
     title: '答辩支持',

@@ -274,7 +274,7 @@ export const threeAnalysisService = {
       noveltyAnalysis: {
         hasNovelty: Math.random() > 0.3,
         priorArt: [],
-        analysis: '经过AI分析，该技术方案具有一定的新颖性...',
+        analysis: '经过分析，该技术方案具有一定的新颖性...',
         conclusion: '本申请具备新颖性。'
       },
       creativityAnalysis: {

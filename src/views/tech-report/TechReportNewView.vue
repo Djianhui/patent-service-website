@@ -3,7 +3,7 @@
     <!-- 页面头部 -->
     <div class="page-header">
       <h1 class="page-title">新建技术方案报告</h1>
-      <p class="page-subtitle">上输入技术领域，AI将为您生成专业的技术方案分析报告</p>
+      <p class="page-subtitle">上输入技术领域，系统将为您生成专业的技术方案分析报告</p>
     </div>
 
     <!-- 主要内容 -->
@@ -18,11 +18,9 @@
         <!-- 基本信息 -->
         <el-form ref="formRef" :model="formData" :rules="formRules" label-width="120px">
           <el-form-item label="技术领域" prop="technicalField" required>
-            <el-select v-model="formData.technicalField" placeholder="请选择技术领域" style="width: 100%" filterable
-              allow-create>
-              <el-option v-for="field in technicalFields" :key="field.value" :label="field.label"
-                :value="field.value" />
-            </el-select>
+            <el-input v-model="formData.technicalField" type="textarea" :rows="6"
+              placeholder="请描述本技术方案所属的技术领域，例如：人工智能、机器学习、物联网、区块链、生物技术、新材料、新能源、医疗设备、通信技术、软件技术、农业装备、防务技术等" maxlength="500"
+              show-word-limit resize="vertical" />
           </el-form-item>
 
           <!-- 操作按钮 -->
@@ -105,22 +103,6 @@ const formData = reactive({
   technicalField: ''
 })
 
-// 技术领域选项
-const technicalFields = ref([
-  { label: '人工智能', value: 'ai' },
-  { label: '机器学习', value: 'ml' },
-  { label: '物联网', value: 'iot' },
-  { label: '区块链', value: 'blockchain' },
-  { label: '生物技术', value: 'biotech' },
-  { label: '新材料', value: 'materials' },
-  { label: '新能源', value: 'energy' },
-  { label: '医疗设备', value: 'medical' },
-  { label: '通信技术', value: 'communication' },
-  { label: '软件技术', value: 'software' },
-  { label: '农业装备', value: 'agricultural' },
-  { label: '防务技术', value: 'defense' }
-])
-
 // 生成步骤
 const generateSteps = ref([
   '分析技术内容',
@@ -160,7 +142,8 @@ const uploadHeaders = computed(() => ({
 // 表单验证规则
 const formRules: FormRules = {
   technicalField: [
-    { required: true, message: '请选择技术领域', trigger: 'blur' }
+    { required: true, message: '请输入技术领域', trigger: 'blur' },
+    { min: 5, message: '技术领域描述至少5个字符', trigger: 'blur' }
   ]
 }
 
@@ -218,7 +201,7 @@ const generateReport = async () => {
 
 const saveAsDraft = async () => {
   if (!formData.technicalField.trim()) {
-    ElMessage.warning('请至少选择技术领域')
+    ElMessage.warning('请输入技术领域描述')
     return
   }
 

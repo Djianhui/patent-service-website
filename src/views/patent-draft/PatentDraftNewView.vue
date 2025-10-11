@@ -3,187 +3,53 @@
     <!-- 页面头部 -->
     <div class="page-header">
       <h1 class="page-title">新建专利草稿</h1>
-      <p class="page-subtitle">使用AI助手撰写专业的专利申请文件</p>
+      <p class="page-subtitle">只需填写技术交底，自动生成完整专利草稿</p>
     </div>
 
-    <!-- 撰写向导 -->
-    <el-card class="wizard-card">
+    <!-- 技术交底表单 -->
+    <el-card class="form-card">
       <template #header>
-        <span>撰写向导</span>
+        <div class="card-header">
+          <span>发明专利 - 草稿</span>
+          <el-tag type="success" size="small">专业版</el-tag>
+        </div>
       </template>
 
-      <el-steps :active="currentStep" finish-status="success">
-        <el-step title="选择模板" />
-        <el-step title="技术交底" />
-        <el-step title="权利要求" />
-        <el-step title="说明书" />
-        <el-step title="摘要" />
-      </el-steps>
-
-      <!-- 步骤1: 选择模板 -->
-      <div v-if="currentStep === 0" class="step-content">
-        <h3>选择专利模板</h3>
-        <div class="template-grid">
-          <div
-            v-for="template in templates"
-            :key="template.id"
-            class="template-item"
-            :class="{ selected: selectedTemplate?.id === template.id }"
-            @click="selectTemplate(template)"
-          >
-            <div class="template-header">
-              <h4>{{ template.name }}</h4>
-              <el-tag :type="template.type === 'invention' ? 'primary' : 'success'">
-                {{ getTemplateTypeText(template.type) }}
-              </el-tag>
-            </div>
-            <p class="template-desc">{{ template.description }}</p>
-            <div class="template-fields">
-              <span v-for="field in template.fields" :key="field" class="field-tag">
-                {{ field }}
-              </span>
-            </div>
-          </div>
-        </div>
+      <div class="form-tips">
+        <el-alert title="填写说明" description="请按要求填写技术领域和技术方案，我们将自动生成摘要、权利要求书和说明书等完整专利文档" type="info" show-icon
+          :closable="false" />
       </div>
 
-      <!-- 步骤2: 技术交底 -->
-      <div v-if="currentStep === 1" class="step-content">
-        <h3>技术交底书</h3>
-        <el-form :model="draftData" label-width="120px">
-          <el-form-item label="发明名称" required>
-            <el-input v-model="draftData.title" placeholder="请输入发明名称" />
-          </el-form-item>
+      <el-form ref="formRef" :model="draftData" label-width="120px" :rules="formRules">
+        <el-form-item label="发明名称" prop="title">
+          <el-input v-model="draftData.title" placeholder="请输入发明名称（例如：组装式食用菌种植棚）" size="large" maxlength="50"
+            show-word-limit />
+        </el-form-item>
 
-          <el-form-item label="技术领域">
-            <el-input
-              v-model="draftData.technicalField"
-              type="textarea"
-              :rows="3"
-              placeholder="请描述本发明所属的技术领域"
-            />
-          </el-form-item>
+        <el-form-item label="技术领域" prop="technicalField">
+          <el-input v-model="draftData.technicalField" type="textarea" :rows="6"
+            placeholder="请描述本发明所属的技术领域。例如：本实用新型涉及农业设施技术领域，具体涉及一种用于食用菌种植的组装式种植棚结构。" maxlength="500" show-word-limit
+            resize="vertical" />
+        </el-form-item>
 
-          <el-form-item label="背景技术">
-            <el-input
-              v-model="draftData.backgroundTechnology"
-              type="textarea"
-              :rows="5"
-              placeholder="请描述现有技术的状况及存在的问题"
-            />
-          </el-form-item>
+        <el-form-item label="技术方案" prop="technicalSolution">
+          <el-input v-model="draftData.technicalSolution" type="textarea" :rows="8"
+            placeholder="请详细描述本发明的技术方案，包括结构组成、工作原理、技术特点等。建议300-1000字，内容越详细，生成的专利质量越高。" maxlength="2000" show-word-limit
+            resize="vertical" />
+        </el-form-item>
 
-          <el-form-item label="技术问题">
-            <el-input
-              v-model="draftData.technicalProblem"
-              type="textarea"
-              :rows="3"
-              placeholder="请描述本发明要解决的技术问题"
-            />
-          </el-form-item>
-
-          <el-form-item label="技术方案">
-            <el-input
-              v-model="draftData.technicalSolution"
-              type="textarea"
-              :rows="8"
-              placeholder="请详细描述本发明的技术方案"
-            />
-          </el-form-item>
-        </el-form>
-      </div>
-
-      <!-- 步骤3: 权利要求 -->
-      <div v-if="currentStep === 2" class="step-content">
-        <h3>权利要求书</h3>
-        <div class="claims-section">
-          <div class="claims-header">
-            <span>权利要求</span>
-            <el-button size="small" @click="addClaim">
-              <el-icon><Plus /></el-icon>
-              添加权利要求
+        <el-form-item>
+          <div class="form-actions">
+            <el-button @click="resetForm" size="large">清空重填</el-button>
+            <el-button type="primary" @click="generateDraft" :loading="generating" size="large">
+              <el-icon class="mr-1">
+                <Star />
+              </el-icon>
+              {{ generating ? '生成中...' : '生成专利草稿' }}
             </el-button>
           </div>
-
-          <div class="claims-list">
-            <div
-              v-for="(claim, index) in draftData.claims"
-              :key="claim.id"
-              class="claim-item"
-            >
-              <div class="claim-header">
-                <span>权利要求 {{ index + 1 }}</span>
-                <div class="claim-actions">
-                  <el-select v-model="claim.type" size="small" style="width: 100px">
-                    <el-option label="独立" value="independent" />
-                    <el-option label="从属" value="dependent" />
-                  </el-select>
-                  <el-button size="small" text @click="removeClaim(index)">
-                    <el-icon><Delete /></el-icon>
-                  </el-button>
-                </div>
-              </div>
-              
-              <el-input
-                v-model="claim.content"
-                type="textarea"
-                :rows="4"
-                :placeholder="`请输入权利要求${index + 1}的内容`"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 步骤4: 说明书 -->
-      <div v-if="currentStep === 3" class="step-content">
-        <h3>说明书</h3>
-        <el-form :model="draftData" label-width="120px">
-          <el-form-item label="具体实施方式">
-            <el-input
-              v-model="draftData.description"
-              type="textarea"
-              :rows="10"
-              placeholder="请详细描述发明的具体实施方式"
-            />
-          </el-form-item>
-
-          <el-form-item label="有益效果">
-            <el-input
-              v-model="draftData.beneficialEffects"
-              type="textarea"
-              :rows="4"
-              placeholder="请描述本发明的有益效果"
-            />
-          </el-form-item>
-        </el-form>
-      </div>
-
-      <!-- 步骤5: 摘要 -->
-      <div v-if="currentStep === 4" class="step-content">
-        <h3>摘要</h3>
-        <el-form :model="draftData" label-width="120px">
-          <el-form-item label="摘要">
-            <el-input
-              v-model="draftData.abstract"
-              type="textarea"
-              :rows="6"
-              placeholder="请撰写发明摘要（不超过300字）"
-              maxlength="300"
-              show-word-limit
-            />
-          </el-form-item>
-        </el-form>
-      </div>
-
-      <!-- 导航按钮 -->
-      <div class="step-actions">
-        <el-button v-if="currentStep > 0" @click="previousStep">上一步</el-button>
-        <el-button v-if="currentStep < 4" type="primary" @click="nextStep">下一步</el-button>
-        <el-button v-if="currentStep === 4" type="primary" @click="generateDraft" :loading="generating">
-          {{ generating ? '生成中...' : '生成草稿' }}
-        </el-button>
-      </div>
+        </el-form-item>
+      </el-form>
     </el-card>
 
     <!-- 预览区域 -->
@@ -221,13 +87,13 @@
           <div class="description-preview">
             <h5>技术领域</h5>
             <p>{{ draftData.technicalField }}</p>
-            
+
             <h5>背景技术</h5>
             <p>{{ draftData.backgroundTechnology }}</p>
-            
+
             <h5>发明内容</h5>
             <p>{{ draftData.technicalSolution }}</p>
-            
+
             <h5>具体实施方式</h5>
             <p>{{ draftData.description }}</p>
           </div>
@@ -239,120 +105,113 @@
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
+import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { Plus, Delete } from '@element-plus/icons-vue'
-import { generateRandomString } from '@/utils'
+import { Star } from '@element-plus/icons-vue'
+import { patentDraftService } from '@/services/patentDraft'
+import type { PatentDraft } from '@/types'
+import { DraftStatus } from '@/types'
+
+// Composables
+const router = useRouter()
 
 // 响应式数据
-const currentStep = ref(0)
-const selectedTemplate = ref(null)
+const formRef = ref()
 const generating = ref(false)
 const saving = ref(false)
 const showPreview = ref(false)
 
-// 专利模板
-const templates = ref([
-  {
-    id: '1',
-    name: '发明专利模板',
-    type: 'invention',
-    description: '适用于各种技术发明的标准模板',
-    fields: ['技术领域', '背景技术', '发明内容', '具体实施方式']
-  },
-  {
-    id: '2',
-    name: '实用新型模板',
-    type: 'utility',
-    description: '适用于产品结构改进的实用新型专利',
-    fields: ['技术领域', '背景技术', '实用新型内容']
-  },
-  {
-    id: '3',
-    name: '软件专利模板',
-    type: 'software',
-    description: '专门用于软件算法和系统的专利申请',
-    fields: ['技术领域', '背景技术', '算法实现', '系统架构']
-  }
-])
+// 表单验证规则
+const formRules = {
+  title: [
+    { required: true, message: '请输入发明名称', trigger: 'blur' },
+    { min: 3, max: 50, message: '发明名称长度应为3-50个字符', trigger: 'blur' }
+  ],
+  technicalField: [
+    { required: true, message: '请填写技术领域', trigger: 'blur' },
+    { min: 20, message: '技术领域描述至少20个字符', trigger: 'blur' }
+  ],
+  technicalSolution: [
+    { required: true, message: '请填写技术方案', trigger: 'blur' },
+    { min: 50, message: '技术方案描述至少50个字符', trigger: 'blur' }
+  ]
+}
 
 // 草稿数据
 const draftData = reactive({
   title: '',
   technicalField: '',
+  technicalSolution: '',
   backgroundTechnology: '',
   technicalProblem: '',
-  technicalSolution: '',
-  claims: [] as Array<{
-    id: string
-    type: 'independent' | 'dependent'
-    content: string
-    order: number
-  }>,
+  claims: [] as any[],
   description: '',
-  beneficialEffects: '',
   abstract: ''
 })
 
 // 方法
-const selectTemplate = (template: any) => {
-  selectedTemplate.value = template
-}
-
-const getTemplateTypeText = (type: string) => {
-  const texts: Record<string, string> = {
-    invention: '发明专利',
-    utility: '实用新型',
-    software: '软件专利'
+const resetForm = () => {
+  if (formRef.value) {
+    formRef.value.resetFields()
   }
-  return texts[type] || '未知'
-}
-
-const nextStep = () => {
-  if (currentStep.value === 0 && !selectedTemplate.value) {
-    ElMessage.warning('请选择专利模板')
-    return
-  }
-  
-  if (currentStep.value < 4) {
-    currentStep.value++
-  }
-}
-
-const previousStep = () => {
-  if (currentStep.value > 0) {
-    currentStep.value--
-  }
-}
-
-const addClaim = () => {
-  draftData.claims.push({
-    id: generateRandomString(),
-    type: 'independent',
-    content: '',
-    order: draftData.claims.length + 1
+  Object.assign(draftData, {
+    title: '',
+    technicalField: '',
+    technicalSolution: '',
+    backgroundTechnology: '',
+    technicalProblem: '',
+    claims: [],
+    description: '',
+    abstract: ''
   })
-}
-
-const removeClaim = (index: number) => {
-  draftData.claims.splice(index, 1)
+  showPreview.value = false
+  ElMessage.success('表单已重置')
 }
 
 const generateDraft = async () => {
-  if (!draftData.title.trim()) {
-    ElMessage.warning('请填写发明名称')
+  // 表单验证
+  if (!formRef.value) return
+
+  const valid = await formRef.value.validate().catch(() => false)
+  if (!valid) {
+    ElMessage.warning('请正确填写所有必填项')
     return
   }
 
   generating.value = true
-  
+
   try {
-    // 模拟生成过程
+    ElMessage.info('AI正在分析您的技术方案...')
+
+    // 模拟AI分析和生成过程
     await new Promise(resolve => setTimeout(resolve, 2000))
-    
+
+    // 模拟AI生成的内容
+    const generatedDraft = {
+      title: draftData.title,
+      technicalField: draftData.technicalField,
+      backgroundTechnology: generateBackgroundTechnology(draftData.technicalField),
+      technicalProblem: generateTechnicalProblem(draftData.technicalSolution),
+      technicalSolution: draftData.technicalSolution,
+      claims: generateClaims(draftData.title, draftData.technicalSolution),
+      description: generateDescription(draftData.technicalSolution),
+      abstract: generateAbstract(draftData.title, draftData.technicalSolution)
+    }
+
     showPreview.value = true
-    ElMessage.success('草稿生成完成！')
+    Object.assign(draftData, generatedDraft)
+
+    ElMessage.success('AI生成专利草稿完成！请查看预览内容')
+
+    // 滚动到预览区域
+    setTimeout(() => {
+      const previewEl = document.querySelector('.preview-card')
+      if (previewEl) {
+        previewEl.scrollIntoView({ behavior: 'smooth' })
+      }
+    }, 100)
   } catch (error) {
-    ElMessage.error('生成失败')
+    ElMessage.error('AI生成失败，请重试')
   } finally {
     generating.value = false
   }
@@ -360,10 +219,16 @@ const generateDraft = async () => {
 
 const saveDraft = async () => {
   saving.value = true
-  
+
   try {
+    // 模拟保存草稿
     await new Promise(resolve => setTimeout(resolve, 1000))
     ElMessage.success('草稿保存成功')
+
+    // 跳转到草稿管理页面
+    setTimeout(() => {
+      router.push('/app/patent-draft/manage')
+    }, 1000)
   } catch (error) {
     ElMessage.error('保存失败')
   } finally {
@@ -372,7 +237,86 @@ const saveDraft = async () => {
 }
 
 const downloadDraft = () => {
-  ElMessage.success('草稿下载中...')
+  try {
+    const content = generateDraftContent()
+
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `${draftData.title}_专利草稿.txt`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+
+    ElMessage.success('下载成功')
+  } catch (error) {
+    ElMessage.error('下载失败')
+  }
+}
+
+// AI生成辅助方法
+const generateBackgroundTechnology = (technicalField: string): string => {
+  return `${technicalField}中的现有技术存在一些不足之处，需要进一步改进和优化。`
+}
+
+const generateTechnicalProblem = (technicalSolution: string): string => {
+  return `现有技术中存在的问题需要通过创新的技术方案来解决。`
+}
+
+const generateClaims = (title: string, solution: string): any[] => {
+  return [
+    {
+      id: 'claim-1',
+      type: 'independent',
+      content: `一种${title}，其特征在于：包括${solution.substring(0, 50)}...等技术特征。`,
+      order: 1
+    }
+  ]
+}
+
+const generateDescription = (solution: string): string => {
+  return `本发明的具体实施方式如下：
+
+${solution}
+
+本发明的技术方案能够有效解决现有技术中的问题，具有良好的实用性和推广价值。`
+}
+
+const generateAbstract = (title: string, solution: string): string => {
+  const summary = solution.length > 150 ? solution.substring(0, 150) + '...' : solution
+  return `本发明公开了一种${title}。${summary}本发明的技术方案具有良好的实用性和创新性。`
+}
+
+const generateDraftContent = (): string => {
+  const lines = [
+    '专利申请草稿',
+    '',
+    `发明名称：${draftData.title}`,
+    '',
+    '技术领域：',
+    draftData.technicalField,
+    '',
+    '背景技术：',
+    draftData.backgroundTechnology || '由AI生成',
+    '',
+    '发明内容：',
+    draftData.technicalSolution,
+    '',
+    '权利要求书：',
+    ...(draftData.claims?.map((claim: any, index: number) => `${index + 1}. ${claim.content}`) || []),
+    '',
+    '说明书摘要：',
+    draftData.abstract || '由AI生成',
+    '',
+    '说明书：',
+    draftData.description || '由AI生成',
+    '',
+    `生成时间：${new Date().toLocaleString()}`
+  ]
+
+  return lines.join('\n')
 }
 </script>
 
@@ -380,6 +324,8 @@ const downloadDraft = () => {
 .patent-draft-new-container {
   .page-header {
     margin-bottom: var(--spacing-lg);
+    text-align: center;
+    padding: var(--spacing-xl) 0;
 
     .page-title {
       font-size: var(--font-size-2xl);
@@ -390,122 +336,50 @@ const downloadDraft = () => {
 
     .page-subtitle {
       color: var(--color-text-secondary);
-      font-size: var(--font-size-sm);
+      font-size: var(--font-size-base);
     }
   }
 
-  .wizard-card {
+  .form-card {
     margin-bottom: var(--spacing-lg);
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
 
-    .step-content {
-      margin: var(--spacing-2xl) 0;
-
-      h3 {
-        margin-bottom: var(--spacing-lg);
-        color: var(--color-text-primary);
-      }
-
-      .template-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: var(--spacing-lg);
-
-        .template-item {
-          border: 2px solid var(--color-border-light);
-          border-radius: var(--border-radius-base);
-          padding: var(--spacing-lg);
-          cursor: pointer;
-          transition: all var(--transition-fast);
-
-          &:hover {
-            border-color: var(--color-primary);
-          }
-
-          &.selected {
-            border-color: var(--color-primary);
-            background-color: rgba(24, 144, 255, 0.05);
-          }
-
-          .template-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: var(--spacing-sm);
-
-            h4 {
-              margin: 0;
-              color: var(--color-text-primary);
-            }
-          }
-
-          .template-desc {
-            color: var(--color-text-secondary);
-            margin-bottom: var(--spacing-md);
-          }
-
-          .template-fields {
-            display: flex;
-            gap: var(--spacing-xs);
-            flex-wrap: wrap;
-
-            .field-tag {
-              background-color: var(--color-bg-tertiary);
-              padding: var(--spacing-xs) var(--spacing-sm);
-              border-radius: var(--border-radius-small);
-              font-size: var(--font-size-xs);
-              color: var(--color-text-secondary);
-            }
-          }
-        }
-      }
-
-      .claims-section {
-        .claims-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: var(--spacing-lg);
-        }
-
-        .claims-list {
-          .claim-item {
-            margin-bottom: var(--spacing-lg);
-            padding: var(--spacing-lg);
-            border: 1px solid var(--color-border-light);
-            border-radius: var(--border-radius-base);
-
-            .claim-header {
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-              margin-bottom: var(--spacing-md);
-
-              .claim-actions {
-                display: flex;
-                gap: var(--spacing-sm);
-                align-items: center;
-              }
-            }
-          }
-        }
-      }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: var(--font-weight-medium);
     }
 
-    .step-actions {
+    .form-tips {
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .form-actions {
       display: flex;
       justify-content: center;
       gap: var(--spacing-md);
-      margin-top: var(--spacing-2xl);
+      margin-top: var(--spacing-xl);
       padding-top: var(--spacing-lg);
       border-top: 1px solid var(--color-border-light);
+
+      .el-button {
+        min-width: 140px;
+      }
     }
   }
 
   .preview-card {
+    max-width: 1000px;
+    margin: 0 auto;
+
     .preview-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      font-weight: var(--font-weight-medium);
 
       .preview-actions {
         display: flex;
@@ -516,34 +390,73 @@ const downloadDraft = () => {
     .preview-content {
       .preview-section {
         margin-bottom: var(--spacing-2xl);
+        padding: var(--spacing-lg);
+        background-color: var(--color-bg-light);
+        border-radius: var(--border-radius-base);
+        border-left: 4px solid var(--color-primary);
 
         h4 {
           color: var(--color-text-primary);
           margin-bottom: var(--spacing-md);
           font-size: var(--font-size-lg);
+          font-weight: var(--font-weight-semibold);
         }
 
         h5 {
           color: var(--color-text-primary);
           margin: var(--spacing-lg) 0 var(--spacing-sm) 0;
           font-size: var(--font-size-base);
+          font-weight: var(--font-weight-medium);
         }
 
         p {
           color: var(--color-text-secondary);
           line-height: var(--line-height-relaxed);
           margin: 0;
+          text-align: justify;
         }
 
         .claim-preview {
           margin-bottom: var(--spacing-md);
-          padding: var(--spacing-sm);
-          background-color: var(--color-bg-secondary);
+          padding: var(--spacing-md);
+          background-color: var(--color-bg-white);
           border-radius: var(--border-radius-base);
+          border: 1px solid var(--color-border-light);
           line-height: var(--line-height-relaxed);
+
+          strong {
+            color: var(--color-primary);
+            font-weight: var(--font-weight-semibold);
+          }
         }
       }
     }
   }
+
+  // 响应式设计
+  @media (max-width: 768px) {
+    .form-card {
+      margin: 0 var(--spacing-sm) var(--spacing-lg) var(--spacing-sm);
+    }
+
+    .preview-card {
+      margin: 0 var(--spacing-sm);
+    }
+
+    .form-actions {
+      flex-direction: column;
+      align-items: center;
+
+      .el-button {
+        width: 100%;
+        max-width: 300px;
+      }
+    }
+  }
+}
+
+// 全局样式补充
+.mr-1 {
+  margin-right: 4px;
 }
 </style>

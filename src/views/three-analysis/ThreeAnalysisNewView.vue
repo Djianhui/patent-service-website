@@ -3,7 +3,7 @@
     <!-- 页面头部 -->
     <div class="page-header">
       <h1 class="page-title">新建三性分析</h1>
-      <p class="page-subtitle">输入专利信息，AI将为您分析专利的新颖性、创造性和实用性</p>
+      <p class="page-subtitle">输入专利信息，为您分析专利的新颖性、创造性和实用性</p>
     </div>
 
     <!-- 输入表单 -->
@@ -18,12 +18,7 @@
         </el-form-item>
 
         <el-form-item label="技术方案" required>
-          <el-input
-            v-model="formData.technicalSolution"
-            type="textarea"
-            :rows="8"
-            placeholder="请详细描述专利的技术方案"
-          />
+          <el-input v-model="formData.technicalSolution" type="textarea" :rows="8" placeholder="请详细描述专利的技术方案" />
         </el-form-item>
 
         <el-form-item label="分析类型">
@@ -37,11 +32,7 @@
         <el-form-item>
           <div class="form-actions">
             <el-button @click="resetForm">重置</el-button>
-            <el-button 
-              type="primary" 
-              @click="startAnalysis" 
-              :loading="analyzing"
-            >
+            <el-button type="primary" @click="startAnalysis" :loading="analyzing">
               {{ analyzing ? '分析中...' : '开始分析' }}
             </el-button>
           </div>
@@ -63,10 +54,7 @@
       <div v-if="analysisResult && !analyzing" class="analysis-content">
         <div class="overall-evaluation">
           <h3>综合评估</h3>
-          <el-progress 
-            type="circle" 
-            :percentage="analysisResult.overallScore" 
-          />
+          <el-progress type="circle" :percentage="analysisResult.overallScore" />
         </div>
 
         <div class="analysis-sections">
@@ -135,7 +123,7 @@ const startAnalysis = async () => {
     if (analysisProgress.value >= 100) {
       clearInterval(interval)
       analyzing.value = false
-      
+
       // 模拟分析结果
       analysisResult.value = {
         overallScore: 85,
@@ -152,7 +140,7 @@ const startAnalysis = async () => {
           conclusion: '该技术方案具备实用性，能够产生积极的技术效果。'
         }
       }
-      
+
       ElMessage.success('分析完成！')
     }
   }, 500)
@@ -203,7 +191,7 @@ const downloadReport = () => {
   .result-card {
     .analyzing-status {
       text-align: center;
-      
+
       .progress-text {
         color: var(--color-text-secondary);
         font-size: var(--font-size-sm);
