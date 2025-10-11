@@ -57,26 +57,20 @@
             <div class="patent-header">
               <h3 class="patent-title">{{ patent.title }}</h3>
               <div class="patent-actions">
-                <el-button
-                  size="small"
-                  @click.stop="viewPatentDetailDialog(patent)"
-                >
-                  <el-icon><View /></el-icon>
+                <el-button size="small" @click.stop="viewPatentDetailDialog(patent)">
+                  <el-icon>
+                    <View />
+                  </el-icon>
                   在线阅览
                 </el-button>
-                <el-button
-                  size="small"
-                  @click.stop="downloadPatent(patent)"
-                >
-                  <el-icon><Download /></el-icon>
+                <el-button size="small" @click.stop="downloadPatent(patent)">
+                  <el-icon>
+                    <Download />
+                  </el-icon>
                   下载
                 </el-button>
-                <el-button
-                  size="small"
-                  :icon="isFavorite(patent.id) ? 'StarFilled' : 'Star'"
-                  :type="isFavorite(patent.id) ? 'warning' : 'default'"
-                  @click.stop="toggleFavorite(patent)"
-                >
+                <el-button size="small" :icon="isFavorite(patent.id) ? 'StarFilled' : 'Star'"
+                  :type="isFavorite(patent.id) ? 'warning' : 'default'" @click.stop="toggleFavorite(patent)">
                   {{ isFavorite(patent.id) ? '已收藏' : '收藏' }}
                 </el-button>
               </div>
@@ -301,7 +295,7 @@ const handleSizeChange = () => {
 const viewPatentDetailDialog = async (patent: Patent) => {
   detailLoading.value = true
   detailVisible.value = true
-  
+
   try {
     const detailPatent = await patentSearchStore.getPatentDetail(patent.id)
     currentPatent.value = detailPatent
@@ -334,7 +328,7 @@ ${patent.claims.map((claim, index) => `${index + 1}. ${claim}`).join('\n')}
 说明书：
 ${patent.description}
     `
-    
+
     const blob = new Blob([content], { type: 'text/plain;charset=utf-8' })
     const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
@@ -344,7 +338,7 @@ ${patent.description}
     link.click()
     document.body.removeChild(link)
     URL.revokeObjectURL(url)
-    
+
     ElMessage.success('下载成功')
   } catch (error) {
     ElMessage.error('下载失败')

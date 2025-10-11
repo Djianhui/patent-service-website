@@ -175,13 +175,13 @@ export const patentSearchService = {
   async favoritePatent(id: string): Promise<void> {
     // 模拟 API 调用延迟
     await new Promise(resolve => setTimeout(resolve, 500))
-    
+
     // 查找专利并添加到收藏列表
     const patent = mockPatents.find(p => p.id === id)
     if (patent && !mockFavoritePatents.find(p => p.id === id)) {
       mockFavoritePatents.push(patent)
     }
-    
+
     // 真实 API 调用（已注释）
     // await request.post(`/patent/${id}/favorite`)
   },
@@ -190,13 +190,13 @@ export const patentSearchService = {
   async unfavoritePatent(id: string): Promise<void> {
     // 模拟 API 调用延迟
     await new Promise(resolve => setTimeout(resolve, 500))
-    
+
     // 从收藏列表中删除
     const index = mockFavoritePatents.findIndex(p => p.id === id)
     if (index !== -1) {
       mockFavoritePatents.splice(index, 1)
     }
-    
+
     // 真实 API 调用（已注释）
     // await request.delete(`/patent/${id}/favorite`)
   },
@@ -208,21 +208,21 @@ export const patentSearchService = {
   }): Promise<SearchResult> {
     // 模拟 API 调用延迟
     await new Promise(resolve => setTimeout(resolve, 800))
-    
+
     // 分页处理
     const page = params?.page || 1
     const pageSize = params?.pageSize || 20
     const start = (page - 1) * pageSize
     const end = start + pageSize
     const paginatedPatents = mockFavoritePatents.slice(start, end)
-    
+
     return {
       patents: paginatedPatents,
       total: mockFavoritePatents.length,
       page,
       pageSize
     }
-    
+
     // 真实 API 调用（已注释）
     // const response = await request.get<SearchResult>('/patent/favorites', params)
     // return response.data
