@@ -1,19 +1,10 @@
 <template>
   <div class="app-container">
-    <AppHeader 
-      :user="user"
-      :collapsed="sidebarCollapsed"
-      @toggle-sidebar="toggleSidebar"
-      @logout="handleLogout"
-    />
-    
+    <AppHeader :user="user" :collapsed="sidebarCollapsed" @toggle-sidebar="toggleSidebar" @logout="handleLogout" />
+
     <div class="app-body">
-      <AppSidebar 
-        :collapsed="sidebarCollapsed"
-        :menu-items="menuItems"
-        @menu-select="handleMenuSelect"
-      />
-      
+      <AppSidebar :collapsed="sidebarCollapsed" :menu-items="menuItems" @menu-select="handleMenuSelect" />
+
       <div class="app-main">
         <router-view />
       </div>
@@ -73,11 +64,6 @@ const menuItems = ref([
         id: 'patent-search-quick',
         title: '快速检索',
         path: '/app/patent-search/quick'
-      },
-      {
-        id: 'patent-search-advanced',
-        title: '高级检索',
-        path: '/app/patent-search/advanced'
       },
       {
         id: 'patent-search-results',
@@ -174,7 +160,7 @@ onMounted(() => {
   if (saved !== null) {
     sidebarCollapsed.value = saved === 'true'
   }
-  
+
   // 检查登录状态
   if (!authStore.isLoggedIn) {
     router.push('/login')
@@ -206,7 +192,7 @@ onMounted(() => {
   .app-body {
     flex-direction: column;
   }
-  
+
   .app-main {
     padding: var(--spacing-md);
   }

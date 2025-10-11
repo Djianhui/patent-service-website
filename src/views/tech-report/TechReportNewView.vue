@@ -116,7 +116,9 @@ const technicalFields = ref([
   { label: '新能源', value: 'energy' },
   { label: '医疗设备', value: 'medical' },
   { label: '通信技术', value: 'communication' },
-  { label: '软件技术', value: 'software' }
+  { label: '软件技术', value: 'software' },
+  { label: '农业装备', value: 'agricultural' },
+  { label: '防务技术', value: 'defense' }
 ])
 
 // 生成步骤

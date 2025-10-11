@@ -14,30 +14,11 @@
 
       <el-form :model="searchForm" @submit.prevent="handleSearch">
         <el-form-item>
-          <el-input
-            v-model="searchForm.keyword"
-            placeholder="请输入关键词、发明人、申请人或专利号"
-            size="large"
-            clearable
-            @keyup.enter="handleSearch"
-          >
-            <template #prepend>
-              <el-select v-model="searchForm.searchType" style="width: 120px">
-                <el-option label="关键词" value="keyword" />
-                <el-option label="标题" value="title" />
-                <el-option label="摘要" value="abstract" />
-                <el-option label="申请人" value="applicant" />
-                <el-option label="发明人" value="inventor" />
-                <el-option label="专利号" value="patentNumber" />
-              </el-select>
-            </template>
+          <el-input v-model="searchForm.keyword" placeholder="请输入关键词、发明人、申请人或专利号" size="large" clearable
+            @keyup.enter="handleSearch">
             <template #append>
-              <el-button 
-                type="primary" 
-                :loading="searching" 
-                @click="handleSearch"
-                :disabled="!searchForm.keyword.trim()"
-              >
+              <el-button type="primary" :loading="searching" @click="handleSearch"
+                :disabled="!searchForm.keyword.trim()">
                 {{ searching ? '检索中...' : '搜索' }}
               </el-button>
             </template>
@@ -47,12 +28,8 @@
         <!-- 快捷搜索建议 -->
         <div class="search-suggestions">
           <span class="suggestions-label">热门搜索：</span>
-          <el-tag
-            v-for="suggestion in searchSuggestions"
-            :key="suggestion"
-            class="suggestion-tag"
-            @click="searchForm.keyword = suggestion; handleSearch()"
-          >
+          <el-tag v-for="suggestion in searchSuggestions" :key="suggestion" class="suggestion-tag"
+            @click="searchForm.keyword = suggestion; handleSearch()">
             {{ suggestion }}
           </el-tag>
         </div>
@@ -76,15 +53,24 @@
       <div v-loading="searching" class="results-content">
         <!-- 搜索结果列表 -->
         <div class="patent-list">
-          <div
-            v-for="patent in searchResults"
-            :key="patent.id"
-            class="patent-item"
-            @click="viewPatentDetail(patent)"
-          >
+          <div v-for="patent in searchResults" :key="patent.id" class="patent-item" @click="viewPatentDetail(patent)">
             <div class="patent-header">
               <h3 class="patent-title">{{ patent.title }}</h3>
               <div class="patent-actions">
+                <el-button
+                  size="small"
+                  @click.stop="viewPatentDetailDialog(patent)"
+                >
+                  <el-icon><View /></el-icon>
+                  在线阅览
+                </el-button>
+                <el-button
+                  size="small"
+                  @click.stop="downloadPatent(patent)"
+                >
+                  <el-icon><Download /></el-icon>
+                  下载
+                </el-button>
                 <el-button
                   size="small"
                   :icon="isFavorite(patent.id) ? 'StarFilled' : 'Star'"
@@ -98,19 +84,27 @@
 
             <div class="patent-meta">
               <span class="meta-item">
-                <el-icon><Document /></el-icon>
+                <el-icon>
+                  <Document />
+                </el-icon>
                 {{ patent.publicationNumber }}
               </span>
               <span class="meta-item">
-                <el-icon><User /></el-icon>
+                <el-icon>
+                  <User />
+                </el-icon>
                 {{ patent.applicant }}
               </span>
               <span class="meta-item">
-                <el-icon><Calendar /></el-icon>
+                <el-icon>
+                  <Calendar />
+                </el-icon>
                 {{ formatDate(patent.publicationDate) }}
               </span>
               <span class="meta-item">
-                <el-icon><Collection /></el-icon>
+                <el-icon>
+                  <Collection />
+                </el-icon>
                 {{ patent.ipcClass?.slice(0, 2).join(', ') }}
               </span>
             </div>
@@ -120,12 +114,7 @@
             </div>
 
             <div class="patent-tags">
-              <el-tag
-                v-for="tag in patent.ipcClass?.slice(0, 3)"
-                :key="tag"
-                size="small"
-                type="info"
-              >
+              <el-tag v-for="tag in patent.ipcClass?.slice(0, 3)" :key="tag" size="small" type="info">
                 {{ tag }}
               </el-tag>
             </div>
@@ -143,18 +132,84 @@
 
         <!-- 分页 -->
         <div class="pagination-wrapper" v-if="total > 0">
-          <el-pagination
-            v-model:current-page="pagination.page"
-            v-model:page-size="pagination.pageSize"
-            :total="total"
-            :page-sizes="[10, 20, 50]"
-            layout="total, sizes, prev, pager, next, jumper"
-            @size-change="handleSizeChange"
-            @current-change="handlePageChange"
-          />
+          <el-pagination v-model:current-page="pagination.page" v-model:page-size="pagination.pageSize" :total="total"
+            :page-sizes="[10, 20, 50]" layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange"
+            @current-change="handlePageChange" />
         </div>
       </div>
     </el-card>
+
+    <!-- 专利详情对话框 -->
+    <el-dialog v-model="detailVisible" :title="currentPatent?.title || '专利详情'" width="80%" top="5vh" destroy-on-close>
+      <div v-loading="detailLoading" class="patent-detail">
+        <div v-if="currentPatent" class="detail-content">
+          <!-- 专利基本信息 -->
+          <div class="detail-header">
+            <h2>{{ currentPatent.title }}</h2>
+            <div class="patent-meta-detail">
+              <div class="meta-row">
+                <span class="meta-label">申请号：</span>
+                <span>{{ currentPatent.applicationNumber }}</span>
+              </div>
+              <div class="meta-row">
+                <span class="meta-label">公开号：</span>
+                <span>{{ currentPatent.publicationNumber }}</span>
+              </div>
+              <div class="meta-row">
+                <span class="meta-label">申请人：</span>
+                <span>{{ currentPatent.applicant }}</span>
+              </div>
+              <div class="meta-row">
+                <span class="meta-label">发明人：</span>
+                <span>{{ currentPatent.inventor.join(', ') }}</span>
+              </div>
+              <div class="meta-row">
+                <span class="meta-label">申请日：</span>
+                <span>{{ formatDate(currentPatent.applicationDate) }}</span>
+              </div>
+              <div class="meta-row">
+                <span class="meta-label">公开日：</span>
+                <span>{{ formatDate(currentPatent.publicationDate) }}</span>
+              </div>
+              <div class="meta-row">
+                <span class="meta-label">IPC分类：</span>
+                <span>{{ currentPatent.ipcClass.join(', ') }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 摘要 -->
+          <div class="detail-section">
+            <h3>摘要</h3>
+            <p>{{ currentPatent.abstract }}</p>
+          </div>
+
+          <!-- 权利要求 -->
+          <div class="detail-section">
+            <h3>权利要求</h3>
+            <div v-for="(claim, index) in currentPatent.claims" :key="index" class="claim-item">
+              <strong>{{ index + 1 }}. </strong>{{ claim }}
+            </div>
+          </div>
+
+          <!-- 说明书 -->
+          <div class="detail-section">
+            <h3>说明书</h3>
+            <p class="description-text">{{ currentPatent.description }}</p>
+          </div>
+        </div>
+      </div>
+
+      <template #footer>
+        <el-button @click="detailVisible = false">关闭</el-button>
+        <el-button type="primary" @click="currentPatent && downloadPatent(currentPatent)">
+          <el-icon>
+            <Download />
+          </el-icon>
+          下载专利
+        </el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -162,7 +217,7 @@
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { Document, User, Calendar, Collection, Star, StarFilled } from '@element-plus/icons-vue'
+import { Document, User, Calendar, Collection, Star, StarFilled, View, Download } from '@element-plus/icons-vue'
 import { usePatentSearchStore } from '@/stores/patentSearch'
 import { formatDate } from '@/utils'
 import type { Patent } from '@/types'
@@ -173,10 +228,12 @@ const patentSearchStore = usePatentSearchStore()
 
 // 响应式数据
 const hasSearched = ref(false)
+const detailVisible = ref(false)
+const detailLoading = ref(false)
+const currentPatent = ref<Patent | null>(null)
 
 const searchForm = reactive({
-  keyword: '',
-  searchType: 'keyword'
+  keyword: ''
 })
 
 const pagination = reactive({
@@ -186,6 +243,7 @@ const pagination = reactive({
 
 // 搜索建议
 const searchSuggestions = ref([
+  '组装式食用菌种植棚',
   '人工智能',
   '机器学习',
   '物联网',
@@ -193,7 +251,8 @@ const searchSuggestions = ref([
   '5G通信',
   '新能源',
   '生物医药',
-  '量子计算'
+  '量子计算',
+  '农业装备'
 ])
 
 // 计算属性
@@ -237,6 +296,59 @@ const handlePageChange = async () => {
 const handleSizeChange = () => {
   pagination.page = 1
   handlePageChange()
+}
+
+const viewPatentDetailDialog = async (patent: Patent) => {
+  detailLoading.value = true
+  detailVisible.value = true
+  
+  try {
+    const detailPatent = await patentSearchStore.getPatentDetail(patent.id)
+    currentPatent.value = detailPatent
+  } catch (error) {
+    ElMessage.error('加载专利详情失败')
+    currentPatent.value = patent // 使用列表中的数据作为备选
+  } finally {
+    detailLoading.value = false
+  }
+}
+
+const downloadPatent = async (patent: Patent) => {
+  try {
+    const content = `
+专利标题：${patent.title}
+申请号：${patent.applicationNumber}
+公开号：${patent.publicationNumber}
+申请人：${patent.applicant}
+发明人：${patent.inventor.join(', ')}
+申请日：${patent.applicationDate}
+公开日：${patent.publicationDate}
+IPC分类：${patent.ipcClass.join(', ')}
+
+摘要：
+${patent.abstract}
+
+权利要求：
+${patent.claims.map((claim, index) => `${index + 1}. ${claim}`).join('\n')}
+
+说明书：
+${patent.description}
+    `
+    
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `${patent.title}_${patent.publicationNumber}.txt`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+    
+    ElMessage.success('下载成功')
+  } catch (error) {
+    ElMessage.error('下载失败')
+  }
 }
 
 const viewPatentDetail = (patent: Patent) => {
@@ -444,6 +556,84 @@ onMounted(() => {
         flex-direction: column;
         align-items: flex-start;
         gap: var(--spacing-sm);
+      }
+    }
+  }
+}
+
+// 专利详情对话框样式
+.patent-detail {
+  .detail-content {
+    .detail-header {
+      margin-bottom: var(--spacing-xl);
+      padding-bottom: var(--spacing-lg);
+      border-bottom: 1px solid var(--color-border-light);
+
+      h2 {
+        font-size: var(--font-size-xl);
+        font-weight: var(--font-weight-semibold);
+        color: var(--color-text-primary);
+        margin-bottom: var(--spacing-lg);
+      }
+
+      .patent-meta-detail {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: var(--spacing-sm);
+
+        .meta-row {
+          display: flex;
+
+          .meta-label {
+            font-weight: var(--font-weight-medium);
+            color: var(--color-text-secondary);
+            min-width: 80px;
+            flex-shrink: 0;
+          }
+        }
+      }
+    }
+
+    .detail-section {
+      margin-bottom: var(--spacing-xl);
+
+      h3 {
+        font-size: var(--font-size-lg);
+        font-weight: var(--font-weight-medium);
+        color: var(--color-primary);
+        margin-bottom: var(--spacing-md);
+        padding-bottom: var(--spacing-sm);
+        border-bottom: 2px solid var(--color-primary-light);
+      }
+
+      p {
+        color: var(--color-text-primary);
+        line-height: var(--line-height-relaxed);
+        margin: 0;
+        text-align: justify;
+      }
+
+      .claim-item {
+        margin-bottom: var(--spacing-md);
+        padding: var(--spacing-md);
+        background-color: var(--color-bg-secondary);
+        border-radius: var(--border-radius-base);
+        line-height: var(--line-height-relaxed);
+      }
+
+      .description-text {
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .patent-detail {
+    .detail-content {
+      .detail-header .patent-meta-detail {
+        grid-template-columns: 1fr;
       }
     }
   }

@@ -108,14 +108,6 @@ const routes: RouteRecordRaw[] = [
             }
           },
           {
-            path: 'advanced',
-            name: 'PatentSearchAdvanced',
-            component: () => import('@/views/patent-search/AdvancedSearchView.vue'),
-            meta: {
-              title: '高级检索'
-            }
-          },
-          {
             path: 'results',
             name: 'PatentSearchResults',
             component: () => import('@/views/patent-search/SearchResultsView.vue'),
