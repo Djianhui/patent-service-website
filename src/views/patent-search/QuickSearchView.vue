@@ -14,20 +14,23 @@
 
       <el-form :model="searchForm" @submit.prevent="handleSearch">
         <el-form-item>
-          <el-input v-model="searchForm.keyword" placeholder="请输入关键词、发明人、申请人或专利号" size="large" clearable
-            @keyup.enter="handleSearch">
-            <template #append>
-              <el-button type="primary" :loading="searching" @click="handleSearch"
-                :disabled="!searchForm.keyword.trim()">
-                {{ searching ? '检索中...' : '搜索' }}
-              </el-button>
-            </template>
-          </el-input>
+          <el-input v-model="searchForm.keyword" type="textarea" :rows="6"
+            placeholder="请输入技术方案，建议只输入一个技术方案，200-500字效果最佳" clearable maxlength="1000" show-word-limit
+            resize="vertical" />
+        </el-form-item>
+
+        <el-form-item>
+          <div class="search-actions">
+            <el-button type="primary" size="large" :loading="searching" @click="handleSearch"
+              :disabled="!searchForm.keyword.trim()">
+              {{ searching ? '检索中...' : '开始检索' }}
+            </el-button>
+          </div>
         </el-form-item>
 
         <!-- 快捷搜索建议 -->
         <div class="search-suggestions">
-          <span class="suggestions-label">热门搜索：</span>
+          <span class="suggestions-label">试试以下案例：</span>
           <el-tag v-for="suggestion in searchSuggestions" :key="suggestion" class="suggestion-tag"
             @click="searchForm.keyword = suggestion; handleSearch()">
             {{ suggestion }}
@@ -238,15 +241,6 @@ const pagination = reactive({
 // 搜索建议
 const searchSuggestions = ref([
   '组装式食用菌种植棚',
-  '人工智能',
-  '机器学习',
-  '物联网',
-  '区块链',
-  '5G通信',
-  '新能源',
-  '生物医药',
-  '量子计算',
-  '农业装备'
 ])
 
 // 计算属性
@@ -405,6 +399,12 @@ onMounted(() => {
 
   .search-card {
     margin-bottom: var(--spacing-lg);
+
+    .search-actions {
+      display: flex;
+      justify-content: center;
+      padding-top: var(--spacing-md);
+    }
 
     .search-suggestions {
       display: flex;
