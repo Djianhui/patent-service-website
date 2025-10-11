@@ -32,11 +32,11 @@ export const authService = {
           { username: 'admin', password: '123456', userInfo: { id: '1', username: 'admin', email: 'admin@example.com' } },
           { username: '15211191964', password: '123456', userInfo: { id: '2', username: '15211191964', email: '15211191964@example.com' } }
         ]
-        
-        const account = validAccounts.find(acc => 
+
+        const account = validAccounts.find(acc =>
           acc.username === data.username && acc.password === data.password
         )
-        
+
         if (account) {
           resolve({
             token: 'mock-jwt-token-' + Date.now(),

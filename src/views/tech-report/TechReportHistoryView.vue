@@ -14,16 +14,11 @@
     <el-card class="filter-card">
       <el-form :model="filterForm" inline>
         <el-form-item label="关键词">
-          <el-input
-            v-model="filterForm.keyword"
-            placeholder="搜索报告标题或内容"
-            clearable
-            @clear="handleSearch"
-            @keyup.enter="handleSearch"
-          />
+          <el-input v-model="filterForm.keyword" placeholder="搜索报告标题或内容" clearable @clear="handleSearch"
+            @keyup.enter="handleSearch" />
         </el-form-item>
         <el-form-item label="状态">
-          <el-select v-model="filterForm.status" placeholder="选择状态" clearable>
+          <el-select v-model="filterForm.status" placeholder="选择状态" clearable style="width: 150px">
             <el-option label="全部" value="" />
             <el-option label="生成中" value="generating" />
             <el-option label="已完成" value="completed" />
@@ -31,15 +26,8 @@
           </el-select>
         </el-form-item>
         <el-form-item label="时间范围">
-          <el-date-picker
-            v-model="filterForm.dateRange"
-            type="daterange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            format="YYYY-MM-DD"
-            value-format="YYYY-MM-DD"
-          />
+          <el-date-picker v-model="filterForm.dateRange" type="daterange" range-separator="至" start-placeholder="开始日期"
+            end-placeholder="结束日期" format="YYYY-MM-DD" value-format="YYYY-MM-DD" />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="handleSearch">搜索</el-button>
@@ -51,12 +39,7 @@
     <!-- 报告列表 -->
     <el-card class="list-card">
       <div v-loading="loading" class="report-list">
-        <div
-          v-for="report in reportList"
-          :key="report.id"
-          class="report-item"
-          @click="viewReport(report)"
-        >
+        <div v-for="report in reportList" :key="report.id" class="report-item" @click="viewReport(report)">
           <div class="report-header">
             <h3 class="report-title">{{ report.title }}</h3>
             <div class="report-status">
@@ -65,26 +48,32 @@
               </el-tag>
             </div>
           </div>
-          
+
           <div class="report-meta">
             <span class="meta-item">
-              <el-icon><User /></el-icon>
+              <el-icon>
+                <User />
+              </el-icon>
               {{ report.technicalField || '未分类' }}
             </span>
             <span class="meta-item">
-              <el-icon><Calendar /></el-icon>
+              <el-icon>
+                <Calendar />
+              </el-icon>
               {{ formatDate(report.createTime) }}
             </span>
             <span class="meta-item">
-              <el-icon><Document /></el-icon>
+              <el-icon>
+                <Document />
+              </el-icon>
               {{ report.inputType === 'text' ? '文本输入' : '文件上传' }}
             </span>
           </div>
-          
+
           <div class="report-content">
             <p>{{ getReportSummary(report) }}</p>
           </div>
-          
+
           <div class="report-actions" @click.stop>
             <el-button size="small" text @click="viewReport(report)">
               查看
@@ -110,17 +99,101 @@
 
       <!-- 分页 -->
       <div class="pagination-wrapper" v-if="total > 0">
-        <el-pagination
-          v-model:current-page="pagination.page"
-          v-model:page-size="pagination.pageSize"
-          :total="total"
-          :page-sizes="[10, 20, 50, 100]"
-          layout="total, sizes, prev, pager, next, jumper"
-          @size-change="handleSizeChange"
-          @current-change="handlePageChange"
-        />
+        <el-pagination v-model:current-page="pagination.page" v-model:page-size="pagination.pageSize" :total="total"
+          :page-sizes="[10, 20, 50, 100]" layout="total, sizes, prev, pager, next, jumper"
+          @size-change="handleSizeChange" @current-change="handlePageChange" />
       </div>
     </el-card>
+
+    <!-- 文件预览对话框 -->
+    <el-dialog v-model="previewVisible" :title="currentReport?.title || '报告预览'" width="80%" top="5vh" destroy-on-close>
+      <div v-loading="previewLoading" class="preview-container">
+        <div v-if="currentReport" class="report-preview">
+          <!-- 报告头部信息 -->
+          <div class="preview-header">
+            <div class="report-info">
+              <h2>{{ currentReport.title }}</h2>
+              <div class="report-meta">
+                <el-tag :type="getStatusType(currentReport.status)">
+                  {{ getStatusText(currentReport.status) }}
+                </el-tag>
+                <span class="meta-text">技术领域：{{ currentReport.technicalField || '未分类' }}</span>
+                <span class="meta-text">创建时间：{{ formatDate(currentReport.createTime) }}</span>
+              </div>
+            </div>
+            <div class="preview-actions">
+              <el-button @click="downloadReport(currentReport)">
+                <el-icon>
+                  <Download />
+                </el-icon>
+                下载报告
+              </el-button>
+            </div>
+          </div>
+
+          <!-- 报告内容 -->
+          <div class="preview-content">
+            <div v-if="currentReport.reportContent" class="report-sections">
+              <!-- 技术摘要 -->
+              <div class="section">
+                <h3>技术摘要</h3>
+                <p>{{ currentReport.reportContent.summary }}</p>
+              </div>
+
+              <!-- 技术背景 -->
+              <div class="section">
+                <h3>技术背景</h3>
+                <p>{{ currentReport.reportContent.backgroundTechnology }}</p>
+              </div>
+
+              <!-- 技术问题 -->
+              <div class="section">
+                <h3>技术问题</h3>
+                <p>{{ currentReport.reportContent.technicalProblem }}</p>
+              </div>
+
+              <!-- 技术方案 -->
+              <div class="section">
+                <h3>技术方案</h3>
+                <p>{{ currentReport.reportContent.technicalSolution }}</p>
+              </div>
+
+              <!-- 技术效果 -->
+              <div class="section">
+                <h3>技术效果</h3>
+                <p>{{ currentReport.reportContent.beneficialEffects }}</p>
+              </div>
+
+              <!-- 实施方法 -->
+              <div class="section" v-if="currentReport.reportContent.implementationMethods">
+                <h3>实施方法</h3>
+                <ul>
+                  <li v-for="(method, index) in currentReport.reportContent.implementationMethods" :key="index">
+                    {{ method }}
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- 原始输入内容 -->
+            <div v-else class="raw-content">
+              <h3>原始内容</h3>
+              <p>{{ currentReport.inputContent }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <template #footer>
+        <el-button @click="previewVisible = false">关闭</el-button>
+        <el-button type="primary" @click="currentReport && downloadReport(currentReport)">
+          <el-icon>
+            <Download />
+          </el-icon>
+          下载报告
+        </el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -128,7 +201,7 @@
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { User, Calendar, Document } from '@element-plus/icons-vue'
+import { User, Calendar, Document, Download } from '@element-plus/icons-vue'
 import { useTechReportStore } from '@/stores/techReport'
 import { formatDate } from '@/utils'
 import type { TechReport } from '@/types'
@@ -139,6 +212,9 @@ const techReportStore = useTechReportStore()
 
 // 响应式数据
 const loading = ref(false)
+const previewVisible = ref(false)
+const previewLoading = ref(false)
+const currentReport = ref<TechReport | null>(null)
 
 const filterForm = reactive({
   keyword: '',
@@ -222,8 +298,20 @@ const handleSizeChange = () => {
   loadReports()
 }
 
-const viewReport = (report: TechReport) => {
-  router.push(`/app/tech-report/${report.id}`)
+const viewReport = async (report: TechReport) => {
+  previewLoading.value = true
+  previewVisible.value = true
+
+  try {
+    // 获取详细报告数据
+    const detailReport = await techReportStore.getReportDetail(report.id)
+    currentReport.value = detailReport
+  } catch (error) {
+    ElMessage.error('加载报告详情失败')
+    currentReport.value = report // 使用列表中的数据作为备选
+  } finally {
+    previewLoading.value = false
+  }
 }
 
 const downloadReport = async (report: TechReport) => {
@@ -383,6 +471,101 @@ onMounted(() => {
 
       .report-actions {
         justify-content: flex-end;
+      }
+    }
+  }
+}
+
+// 预览对话框样式
+.preview-container {
+  .report-preview {
+    .preview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding-bottom: var(--spacing-lg);
+      border-bottom: 1px solid var(--color-border-light);
+      margin-bottom: var(--spacing-lg);
+
+      .report-info {
+        flex: 1;
+
+        h2 {
+          font-size: var(--font-size-xl);
+          font-weight: var(--font-weight-semibold);
+          color: var(--color-text-primary);
+          margin: 0 0 var(--spacing-md) 0;
+        }
+
+        .report-meta {
+          display: flex;
+          align-items: center;
+          gap: var(--spacing-lg);
+          flex-wrap: wrap;
+
+          .meta-text {
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-sm);
+          }
+        }
+      }
+
+      .preview-actions {
+        flex-shrink: 0;
+        margin-left: var(--spacing-lg);
+      }
+    }
+
+    .preview-content {
+      .report-sections {
+        .section {
+          margin-bottom: var(--spacing-2xl);
+
+          h3 {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-medium);
+            color: var(--color-primary);
+            margin-bottom: var(--spacing-md);
+            padding-bottom: var(--spacing-sm);
+            border-bottom: 2px solid var(--color-primary-light);
+          }
+
+          p {
+            color: var(--color-text-primary);
+            line-height: var(--line-height-relaxed);
+            font-size: var(--font-size-base);
+            margin: 0;
+            text-align: justify;
+          }
+
+          ul {
+            margin: 0;
+            padding-left: var(--spacing-lg);
+
+            li {
+              color: var(--color-text-primary);
+              line-height: var(--line-height-relaxed);
+              margin-bottom: var(--spacing-sm);
+            }
+          }
+        }
+      }
+
+      .raw-content {
+        h3 {
+          font-size: var(--font-size-lg);
+          font-weight: var(--font-weight-medium);
+          color: var(--color-primary);
+          margin-bottom: var(--spacing-md);
+        }
+
+        p {
+          color: var(--color-text-primary);
+          line-height: var(--line-height-relaxed);
+          font-size: var(--font-size-base);
+          white-space: pre-wrap;
+          word-break: break-word;
+        }
       }
     }
   }

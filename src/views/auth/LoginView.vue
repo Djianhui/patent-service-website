@@ -3,52 +3,30 @@
     <div class="login-wrapper">
       <div class="login-header">
         <div class="logo">
-          <el-icon class="logo-icon"><Document /></el-icon>
+          <el-icon class="logo-icon">
+            <Document />
+          </el-icon>
           <span class="logo-text">专利服务平台</span>
         </div>
         <h2 class="login-title">用户登录</h2>
         <p class="login-subtitle">登录您的账户以使用专利服务</p>
       </div>
 
-      <el-form
-        ref="loginFormRef"
-        :model="loginForm"
-        :rules="loginRules"
-        class="login-form"
-        @submit.prevent="handleLogin"
-      >
+      <el-form ref="loginFormRef" :model="loginForm" :rules="loginRules" class="login-form"
+        @submit.prevent="handleLogin">
         <el-form-item prop="username">
-          <el-input
-            v-model="loginForm.username"
-            :prefix-icon="User"
-            placeholder="请输入用户名/手机号"
-            size="large"
-            clearable
-            @keyup.enter="handleLogin"
-          />
+          <el-input v-model="loginForm.username" :prefix-icon="User" placeholder="请输入用户名/手机号" size="large" clearable
+            @keyup.enter="handleLogin" />
         </el-form-item>
 
         <el-form-item prop="password">
-          <el-input
-            v-model="loginForm.password"
-            type="password"
-            :prefix-icon="Lock"
-            placeholder="请输入密码"
-            size="large"
-            show-password
-            clearable
-            @keyup.enter="handleLogin"
-          />
+          <el-input v-model="loginForm.password" type="password" :prefix-icon="Lock" placeholder="请输入密码" size="large"
+            show-password clearable @keyup.enter="handleLogin" />
         </el-form-item>
 
         <!-- 默认账号提示 -->
         <div class="default-account-hint">
-          <el-alert
-            title="测试账号"
-            type="info"
-            :closable="false"
-            show-icon
-          >
+          <el-alert title="测试账号" type="info" :closable="false" show-icon>
             <template #default>
               <div class="account-info">
                 <p>手机号：15211191964</p>
@@ -73,13 +51,7 @@
         </el-form-item>
 
         <el-form-item>
-          <el-button
-            type="primary"
-            size="large"
-            :loading="loading"
-            @click="handleLogin"
-            class="login-button"
-          >
+          <el-button type="primary" size="large" :loading="loading" @click="handleLogin" class="login-button">
             {{ loading ? '登录中...' : '登录' }}
           </el-button>
         </el-form-item>
@@ -109,19 +81,33 @@
         <p>为您提供专利检索、分析、撰写、答辩等一站式服务</p>
         <div class="features">
           <div class="feature-item">
-            <el-icon><Search /></el-icon>
+            <el-icon>
+              <Search />
+            </el-icon>
             <span>智能检索</span>
           </div>
           <div class="feature-item">
-            <el-icon><DataAnalysis /></el-icon>
+            <el-icon>
+              <DataAnalysis />
+            </el-icon>
             <span>三性分析</span>
           </div>
           <div class="feature-item">
-            <el-icon><Edit /></el-icon>
+            <el-icon>
+              <Edit />
+            </el-icon>
             <span>专利撰写</span>
           </div>
           <div class="feature-item">
-            <el-icon><ChatDotSquare /></el-icon>
+            <el-icon>
+              <Edit />
+            </el-icon>
+            <span>技术方案报告</span>
+          </div>
+          <div class="feature-item">
+            <el-icon>
+              <ChatDotSquare />
+            </el-icon>
             <span>答辩支持</span>
           </div>
         </div>
@@ -134,11 +120,11 @@
 import { ref, reactive, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
-import { 
-  Document, 
-  User, 
-  Lock, 
-  Platform, 
+import {
+  Document,
+  User,
+  Lock,
+  Platform,
   ChromeFilled,
   Search,
   DataAnalysis,
@@ -333,18 +319,18 @@ onMounted(() => {
 
   .default-account-hint {
     margin-bottom: var(--spacing-lg);
-    
+
     .account-info {
       display: flex;
       flex-direction: column;
       gap: var(--spacing-xs);
-      
+
       p {
         margin: 0;
         font-size: var(--font-size-sm);
         color: var(--color-text-regular);
       }
-      
+
       .el-button {
         margin-top: var(--spacing-sm);
         align-self: flex-start;
