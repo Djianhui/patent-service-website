@@ -22,23 +22,68 @@
       </div>
     </div>
 
-    <!-- 统计卡片 -->
-    <div class="stats-grid">
-      <div class="stat-card" v-for="stat in stats" :key="stat.key">
-        <div class="stat-content">
-          <div class="stat-info">
-            <div class="stat-title">{{ stat.title }}</div>
-            <div class="stat-value">{{ stat.value }}</div>
-            <div class="stat-change" :class="stat.changeType">
-              <el-icon>
-                <component :is="stat.changeType === 'increase' ? 'TrendCharts' : 'TrendCharts'" />
-              </el-icon>
-              {{ stat.change }}
+    <!-- 系统使用引导 -->
+    <div class="guide-section">
+      <el-card class="guide-card">
+        <template #header>
+          <div class="guide-header">
+            <el-icon class="guide-icon">
+              <InfoFilled />
+            </el-icon>
+            <span>系统使用引导</span>
+          </div>
+        </template>
+
+        <div class="guide-content">
+          <p class="guide-description">
+            智能专利服务系统为您提供一站式专利申请解决方案，请按照以下步骤使用系统：
+          </p>
+
+          <div class="steps-container">
+            <div v-for="(step, index) in guideSteps" :key="step.key" class="step-item" @click="router.push(step.path)">
+              <div class="step-number">{{ index + 1 }}</div>
+              <div class="step-content">
+                <div class="step-title">
+                  <el-icon class="step-icon" :style="{ color: step.color }">
+                    <component :is="step.icon" />
+                  </el-icon>
+                  {{ step.title }}
+                </div>
+                <div class="step-description">{{ step.description }}</div>
+              </div>
+              <div v-if="index < guideSteps.length - 1" class="step-arrow">
+                <el-icon>
+                  <ArrowRight />
+                </el-icon>
+              </div>
             </div>
           </div>
-          <div class="stat-icon" :style="{ backgroundColor: stat.color }">
+
+          <div class="guide-tips">
+            <el-alert title="温馨提示" description="您可以从任何步骤开始使用系统，系统会根据您的需求提供相应的服务支持" type="info" show-icon
+              :closable="false" />
+          </div>
+        </div>
+      </el-card>
+    </div>
+
+    <!-- 快捷工具 -->
+    <div class="quick-tools-section">
+      <h2 class="section-title">快捷工具</h2>
+      <div class="tools-grid">
+        <div v-for="tool in quickTools" :key="tool.key" class="tool-card" @click="$router.push(tool.path)">
+          <div class="tool-icon" :style="{ backgroundColor: tool.color }">
             <el-icon>
-              <component :is="stat.icon" />
+              <component :is="tool.icon" />
+            </el-icon>
+          </div>
+          <div class="tool-content">
+            <div class="tool-title">{{ tool.title }}</div>
+            <div class="tool-description">{{ tool.description }}</div>
+          </div>
+          <div class="tool-arrow">
+            <el-icon>
+              <ArrowRight />
             </el-icon>
           </div>
         </div>
@@ -60,11 +105,7 @@
           </template>
 
           <div class="activity-list">
-            <div
-              v-for="activity in recentActivities"
-              :key="activity.id"
-              class="activity-item"
-            >
+            <div v-for="activity in recentActivities" :key="activity.id" class="activity-item">
               <div class="activity-icon" :class="activity.type">
                 <el-icon>
                   <component :is="activity.icon" />
@@ -87,18 +128,14 @@
         </el-card>
 
         <!-- 快捷工具 -->
-        <el-card class="tools-card">
+        <!-- <el-card class="tools-card">
           <template #header>
-            <span>快捷工具</span>
+            <span>常用功能</span>
           </template>
 
           <div class="tools-grid">
-            <div
-              v-for="tool in quickTools"
-              :key="tool.key"
-              class="tool-item"
-              @click="$router.push(tool.path)"
-            >
+            <div v-for="tool in quickTools.slice(0, 4)" :key="tool.key" class="tool-item"
+              @click="$router.push(tool.path)">
               <div class="tool-icon" :style="{ backgroundColor: tool.color }">
                 <el-icon>
                   <component :is="tool.icon" />
@@ -110,42 +147,27 @@
               </div>
             </div>
           </div>
-        </el-card>
+        </el-card> -->
       </div>
 
       <div class="right-column">
-        <!-- 进度统计图表 -->
-        <el-card class="chart-card">
-          <template #header>
-            <span>本月工作统计</span>
-          </template>
-
-          <div ref="chartRef" class="chart-container"></div>
-        </el-card>
-
         <!-- 待办事项 -->
         <el-card class="todo-card">
           <template #header>
             <div class="card-header">
               <span>待办事项</span>
               <el-button size="small" text @click="showAddTodo = true">
-                <el-icon><Plus /></el-icon>
+                <el-icon>
+                  <Plus />
+                </el-icon>
                 添加
               </el-button>
             </div>
           </template>
 
           <div class="todo-list">
-            <div
-              v-for="todo in todoList"
-              :key="todo.id"
-              class="todo-item"
-              :class="{ completed: todo.completed }"
-            >
-              <el-checkbox
-                v-model="todo.completed"
-                @change="updateTodo(todo)"
-              />
+            <div v-for="todo in todoList" :key="todo.id" class="todo-item" :class="{ completed: todo.completed }">
+              <el-checkbox v-model="todo.completed" @change="updateTodo(todo)" />
               <div class="todo-content">
                 <div class="todo-title">{{ todo.title }}</div>
                 <div class="todo-deadline" v-if="todo.deadline">
@@ -153,7 +175,9 @@
                 </div>
               </div>
               <el-button size="small" text @click="deleteTodo(todo.id)">
-                <el-icon><Delete /></el-icon>
+                <el-icon>
+                  <Delete />
+                </el-icon>
               </el-button>
             </div>
           </div>
@@ -172,12 +196,7 @@
           <el-input v-model="newTodo.title" placeholder="请输入待办事项标题" />
         </el-form-item>
         <el-form-item label="截止时间">
-          <el-date-picker
-            v-model="newTodo.deadline"
-            type="datetime"
-            placeholder="选择截止时间"
-            style="width: 100%"
-          />
+          <el-date-picker v-model="newTodo.deadline" type="datetime" placeholder="选择截止时间" style="width: 100%" />
         </el-form-item>
       </el-form>
 
@@ -190,7 +209,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted, nextTick } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { formatDate, generateRandomString } from '@/utils'
@@ -202,7 +221,10 @@ import {
   DataAnalysis,
   Edit,
   ChatDotSquare,
-  Delete
+  Delete,
+  InfoFilled,
+  ArrowRight,
+  DocumentChecked
 } from '@element-plus/icons-vue'
 // import * as echarts from 'echarts'
 
@@ -211,50 +233,53 @@ const router = useRouter()
 const authStore = useAuthStore()
 
 // 响应式数据
-const chartRef = ref<HTMLElement>()
 const showAddTodo = ref(false)
 
-// 统计数据
-const stats = ref([
+// 系统使用引导步骤
+const guideSteps = ref([
   {
-    key: 'reports',
+    key: 'tech-report',
     title: '技术方案报告',
-    value: '12',
-    change: '+2',
-    changeType: 'increase',
+    description: '输入技术方案，系统自动生成专业的技术分析报告',
+    icon: 'Document',
     color: '#1890ff',
-    icon: 'Document'
+    path: '/app/tech-report/new'
   },
   {
-    key: 'searches',
-    title: '专利检索次数',
-    value: '48',
-    change: '+15',
-    changeType: 'increase',
-    color: '#52c41a',
-    icon: 'Search'
-  },
-  {
-    key: 'analysis',
-    title: '三性分析',
-    value: '8',
-    change: '+3',
-    changeType: 'increase',
-    color: '#faad14',
-    icon: 'DataAnalysis'
-  },
-  {
-    key: 'drafts',
-    title: '专利草稿',
-    value: '5',
-    change: '+1',
-    changeType: 'increase',
+    key: 'patent-draft',
+    title: '专利草稿撰写',
+    description: '基于技术方案，AI智能撰写专利申请文件',
+    icon: 'Edit',
     color: '#722ed1',
-    icon: 'Edit'
+    path: '/app/patent-draft/new'
+  },
+  {
+    key: 'patent-search',
+    title: '专利检索',
+    description: '检索相关专利文献，分析技术领域现状',
+    icon: 'Search',
+    color: '#52c41a',
+    path: '/app/patent-search/quick'
+  },
+  {
+    key: 'three-analysis',
+    title: '三性分析',
+    description: '分析专利的新颖性、创造性和实用性',
+    icon: 'DataAnalysis',
+    color: '#faad14',
+    path: '/app/three-analysis/new'
+  },
+  {
+    key: 'defense-simulation',
+    title: '模拟审查',
+    description: '模拟专利审查过程，提前发现问题并优化',
+    icon: 'DocumentChecked',
+    color: '#f5222d',
+    path: '/app/defense-support/simulation'
   }
 ])
 
-// 最近活动
+// 快捷工具
 const recentActivities = ref([
   {
     id: '1',
@@ -293,6 +318,14 @@ const quickTools = ref([
     path: '/app/tech-report/new'
   },
   {
+    key: 'patent-draft',
+    title: '专利撰写',
+    description: '撰写专利申请文件',
+    icon: 'Edit',
+    color: '#722ed1',
+    path: '/app/patent-draft/new'
+  },
+  {
     key: 'patent-search',
     title: '专利检索',
     description: '检索相关专利文献',
@@ -309,12 +342,12 @@ const quickTools = ref([
     path: '/app/three-analysis/new'
   },
   {
-    key: 'patent-draft',
-    title: '专利撰写',
-    description: '撰写专利申请文件',
-    icon: 'Edit',
-    color: '#722ed1',
-    path: '/app/patent-draft/new'
+    key: 'defense-support',
+    title: '答辩支持',
+    description: '模拟审查意见通知书',
+    icon: 'DocumentChecked',
+    color: '#f5222d',
+    path: '/app/defense-support/simulation'
   }
 ])
 
@@ -391,86 +424,9 @@ const deleteTodo = (id: string) => {
   }
 }
 
-const initChart = () => {
-  if (!chartRef.value) return
-
-  // 临时显示图表占位符
-  chartRef.value.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 300px; color: #999; font-size: 14px;">图表功能开发中...</div>'
-
-  /*
-  // ECharts 实现（需要安装依赖）
-  const chart = echarts.init(chartRef.value)
-
-  const option = {
-    tooltip: {
-      trigger: 'axis'
-    },
-    legend: {
-      data: ['技术方案报告', '专利检索', '三性分析', '专利撰写']
-    },
-    grid: {
-      left: '3%',
-      right: '4%',
-      bottom: '3%',
-      containLabel: true
-    },
-    xAxis: {
-      type: 'category',
-      boundaryGap: false,
-      data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
-    },
-    yAxis: {
-      type: 'value'
-    },
-    series: [
-      {
-        name: '技术方案报告',
-        type: 'line',
-        stack: 'Total',
-        data: [2, 3, 1, 4, 2, 3, 2],
-        smooth: true,
-        itemStyle: { color: '#1890ff' }
-      },
-      {
-        name: '专利检索',
-        type: 'line',
-        stack: 'Total',
-        data: [8, 12, 6, 15, 10, 8, 12],
-        smooth: true,
-        itemStyle: { color: '#52c41a' }
-      },
-      {
-        name: '三性分析',
-        type: 'line',
-        stack: 'Total',
-        data: [1, 2, 0, 3, 1, 2, 1],
-        smooth: true,
-        itemStyle: { color: '#faad14' }
-      },
-      {
-        name: '专利撰写',
-        type: 'line',
-        stack: 'Total',
-        data: [1, 1, 2, 0, 1, 1, 0],
-        smooth: true,
-        itemStyle: { color: '#722ed1' }
-      }
-    ]
-  }
-
-  chart.setOption(option)
-
-  // 响应式调整
-  window.addEventListener('resize', () => {
-    chart.resize()
-  })
-  */
-}
-
 // 生命周期
 onMounted(async () => {
-  await nextTick()
-  initChart()
+  // 页面初始化
 })
 </script>
 
@@ -514,6 +470,211 @@ onMounted(async () => {
           .el-button {
             flex: 1;
           }
+        }
+      }
+    }
+  }
+
+  .guide-section {
+    margin-bottom: var(--spacing-2xl);
+
+    .guide-card {
+      .guide-header {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-sm);
+        font-weight: var(--font-weight-medium);
+        color: var(--color-text-primary);
+
+        .guide-icon {
+          color: var(--color-primary);
+          font-size: 18px;
+        }
+      }
+
+      .guide-content {
+        .guide-description {
+          color: var(--color-text-secondary);
+          font-size: var(--font-size-sm);
+          margin-bottom: var(--spacing-lg);
+          line-height: var(--line-height-relaxed);
+        }
+
+        .steps-container {
+          display: flex;
+          flex-wrap: wrap;
+          gap: var(--spacing-md);
+          margin-bottom: var(--spacing-lg);
+
+          @media (max-width: 1200px) {
+            flex-direction: column;
+          }
+
+          .step-item {
+            flex: 1;
+            min-width: 200px;
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-md);
+            border: 2px solid var(--color-border-light);
+            border-radius: var(--border-radius-base);
+            background: var(--color-bg-light);
+            cursor: pointer;
+            transition: all var(--transition-base);
+            position: relative;
+
+            &:hover {
+              border-color: var(--color-primary);
+              box-shadow: var(--shadow-light);
+              transform: translateY(-2px);
+            }
+
+            .step-number {
+              width: 32px;
+              height: 32px;
+              background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+              color: white;
+              border-radius: var(--border-radius-round);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-weight: var(--font-weight-bold);
+              font-size: var(--font-size-sm);
+              margin-right: var(--spacing-md);
+              flex-shrink: 0;
+            }
+
+            .step-content {
+              flex: 1;
+
+              .step-title {
+                display: flex;
+                align-items: center;
+                gap: var(--spacing-xs);
+                font-weight: var(--font-weight-medium);
+                color: var(--color-text-primary);
+                margin-bottom: var(--spacing-xs);
+                font-size: var(--font-size-base);
+
+                .step-icon {
+                  font-size: 16px;
+                }
+              }
+
+              .step-description {
+                color: var(--color-text-secondary);
+                font-size: var(--font-size-xs);
+                line-height: var(--line-height-base);
+              }
+            }
+
+            .step-arrow {
+              position: absolute;
+              right: -15px;
+              color: var(--color-text-placeholder);
+              font-size: 18px;
+              z-index: 1;
+
+              @media (max-width: 1200px) {
+                display: none;
+              }
+            }
+
+            @media (max-width: 1200px) {
+              &:not(:last-child)::after {
+                content: '';
+                position: absolute;
+                bottom: -8px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 0;
+                height: 0;
+                border-left: 6px solid transparent;
+                border-right: 6px solid transparent;
+                border-top: 8px solid var(--color-text-placeholder);
+              }
+            }
+          }
+        }
+
+        .guide-tips {
+          margin-top: var(--spacing-lg);
+        }
+      }
+    }
+  }
+
+  .quick-tools-section {
+    margin-bottom: var(--spacing-2xl);
+
+    .section-title {
+      font-size: var(--font-size-xl);
+      font-weight: var(--font-weight-semibold);
+      color: var(--color-text-primary);
+      margin-bottom: var(--spacing-lg);
+      text-align: center;
+    }
+
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: var(--spacing-lg);
+
+      @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+      }
+
+      .tool-card {
+        display: flex;
+        align-items: center;
+        padding: var(--spacing-lg);
+        background: var(--color-bg-primary);
+        border-radius: var(--border-radius-large);
+        box-shadow: var(--shadow-light);
+        cursor: pointer;
+        transition: all var(--transition-base);
+        border: 2px solid transparent;
+
+        &:hover {
+          transform: translateY(-4px);
+          box-shadow: var(--shadow-base);
+          border-color: var(--color-primary);
+        }
+
+        .tool-icon {
+          width: 60px;
+          height: 60px;
+          border-radius: var(--border-radius-base);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          font-size: 24px;
+          margin-right: var(--spacing-lg);
+          flex-shrink: 0;
+        }
+
+        .tool-content {
+          flex: 1;
+
+          .tool-title {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text-primary);
+            margin-bottom: var(--spacing-xs);
+          }
+
+          .tool-description {
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-sm);
+            line-height: var(--line-height-relaxed);
+          }
+        }
+
+        .tool-arrow {
+          color: var(--color-text-placeholder);
+          font-size: 18px;
+          margin-left: var(--spacing-md);
         }
       }
     }
@@ -711,6 +872,13 @@ onMounted(async () => {
             }
           }
         }
+      }
+    }
+
+    .chart-card {
+      .chart-container {
+        height: 300px;
+        width: 100%;
       }
     }
 
