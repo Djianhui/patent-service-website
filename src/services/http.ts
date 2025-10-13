@@ -4,7 +4,7 @@ import type { ApiResponse } from '@/types'
 
 // 创建axios实例
 const api: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api',
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'https://patent.langdetech.cn/api',
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json'
@@ -19,7 +19,7 @@ api.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
-    
+
     // 请求加密等处理
     console.log('发送请求:', config.method?.toUpperCase(), config.url)
     return config
@@ -32,24 +32,19 @@ api.interceptors.request.use(
 
 // 响应拦截器
 api.interceptors.response.use(
-  (response: AxiosResponse<ApiResponse>) => {
+  (response: AxiosResponse) => {
     const { data } = response
-    
-    // 检查业务状态码
-    if (data.success) {
-      return response
-    } else {
-      ElMessage.error(data.message || '请求失败')
-      return Promise.reject(new Error(data.message))
-    }
+
+    // 直接返回响应，让具体的 service 层处理数据格式
+    return response
   },
-  (error: AxiosError<ApiResponse>) => {
+  (error: AxiosError) => {
     console.error('响应错误:', error)
-    
+
     // 处理不同的错误状态码
     if (error.response) {
       const { status, data } = error.response
-      
+
       switch (status) {
         case 401:
           // 未授权，清除token并跳转登录页
@@ -68,37 +63,38 @@ api.interceptors.response.use(
           ElMessage.error('服务器内部错误')
           break
         default:
-          ElMessage.error(data?.message || '请求失败')
+          const errorMsg = (data as any)?.message || '请求失败'
+          ElMessage.error(errorMsg)
       }
     } else if (error.request) {
       ElMessage.error('网络错误，请检查网络连接')
     } else {
       ElMessage.error('请求配置错误')
     }
-    
+
     return Promise.reject(error)
   }
 )
 
 // 通用请求方法
 export const request = {
-  get<T = any>(url: string, params?: any): Promise<ApiResponse<T>> {
+  get<T = any>(url: string, params?: any): Promise<T> {
     return api.get(url, { params }).then(res => res.data)
   },
 
-  post<T = any>(url: string, data?: any): Promise<ApiResponse<T>> {
+  post<T = any>(url: string, data?: any): Promise<T> {
     return api.post(url, data).then(res => res.data)
   },
 
-  put<T = any>(url: string, data?: any): Promise<ApiResponse<T>> {
+  put<T = any>(url: string, data?: any): Promise<T> {
     return api.put(url, data).then(res => res.data)
   },
 
-  delete<T = any>(url: string): Promise<ApiResponse<T>> {
+  delete<T = any>(url: string): Promise<T> {
     return api.delete(url).then(res => res.data)
   },
 
-  upload<T = any>(url: string, formData: FormData): Promise<ApiResponse<T>> {
+  upload<T = any>(url: string, formData: FormData): Promise<T> {
     return api.post(url, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'

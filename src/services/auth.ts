@@ -24,35 +24,53 @@ export interface LoginResponse {
 export const authService = {
   // 用户登录
   async login(data: LoginRequest): Promise<LoginResponse> {
-    // 模拟登录请求
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        // 支持多个默认账号
-        const validAccounts = [
-          { username: 'admin', password: '123456', userInfo: { id: '1', username: 'admin', email: 'admin@example.com' } },
-          { username: '15211191964', password: '123456', userInfo: { id: '2', username: '15211191964', email: '15211191964@example.com' } }
-        ]
+    try {
+      // 调用后端登录接口
+      const response = await request.post<any>('/login', {
+        username: data.username,
+        password: data.password
+      })
 
-        const account = validAccounts.find(acc =>
-          acc.username === data.username && acc.password === data.password
-        )
+      console.log('后端返回数据:', response)
 
-        if (account) {
-          resolve({
-            token: 'mock-jwt-token-' + Date.now(),
-            user: {
-              ...account.userInfo,
-              role: 'admin' as any,
-              createdAt: new Date().toISOString(),
-              updatedAt: new Date().toISOString()
-            },
-            expiresIn: 7200
-          })
-        } else {
-          reject(new Error('用户名或密码错误'))
+      // 检查后端返回的是否成功
+      // 后端返回的数据结构: {code: 200, msg: "操作成功", token: "..."}
+      if (response.code === 200 && response.token) {
+        // 成功情况，返回标准格式
+        return {
+          token: response.token,
+          user: response.user || {
+            id: '1',
+            username: data.username,
+            email: `${data.username}@example.com`,
+            role: 'admin',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          },
+          expiresIn: 7200
         }
-      }, 1000)
-    })
+      } else {
+        // 失败情况，抛出后端返回的错误信息
+        const errorMessage = response.msg || response.message || '登录失败'
+        throw new Error(errorMessage)
+      }
+    } catch (error: any) {
+      console.error('登录失败:', error)
+
+      // 处理不同类型的错误
+      if (error.response && error.response.data) {
+        // HTTP 响应错误，获取后端返回的错误信息
+        const backendError = error.response.data
+        const errorMessage = backendError.msg || backendError.message || '登录失败'
+        throw new Error(errorMessage)
+      } else if (error.message) {
+        // 前端处理过程中的错误
+        throw new Error(error.message)
+      } else {
+        // 其他未知错误
+        throw new Error('网络错误，请检查网络连接')
+      }
+    }
   },
 
   // 用户注册

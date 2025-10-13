@@ -29,8 +29,8 @@
           <el-alert title="测试账号" type="info" :closable="false" show-icon>
             <template #default>
               <div class="account-info">
-                <p>手机号：15211191964</p>
-                <p>密码：123456</p>
+                <p>用户名：admin</p>
+                <p>密码：admin123</p>
                 <el-button size="small" type="primary" plain @click="quickLogin">
                   一键登录
                 </el-button>
@@ -175,20 +175,25 @@ const handleLogin = async () => {
   loading.value = true
 
   try {
+    console.log('开始登录，用户名:', loginForm.username)
+
     await authStore.login({
       username: loginForm.username,
       password: loginForm.password,
       remember: loginForm.remember
     })
 
+    console.log('登录成功')
     ElMessage.success('登录成功')
 
     // 获取重定向路径
     const redirectPath = (route.query.redirect as string) || '/app/dashboard'
+    console.log('准备跳转到:', redirectPath)
     router.push(redirectPath)
   } catch (error: any) {
     console.error('登录失败:', error)
-    ElMessage.error(error.message || '登录失败，请检查用户名和密码')
+    const errorMessage = error.message || '登录失败，请检查用户名和密码'
+    ElMessage.error(errorMessage)
   } finally {
     loading.value = false
   }
@@ -199,8 +204,8 @@ const handleSocialLogin = (type: string) => {
 }
 
 const quickLogin = () => {
-  loginForm.username = '15211191964'
-  loginForm.password = '123456'
+  loginForm.username = 'admin'
+  loginForm.password = 'admin123'
   handleLogin()
 }
 
