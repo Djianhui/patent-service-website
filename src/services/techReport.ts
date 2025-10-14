@@ -59,6 +59,45 @@ export interface GenerateReportRequest {
   type?: number
 }
 
+// 分页查询请求参数
+export interface PageQueryRequest {
+  keyword?: string        // 搜索关键字
+  pageIndex?: number      // 页码，默认1
+  pageSize?: number       // 页大小，默认10
+  pageSorts?: Array<{     // 排序
+    asc: boolean
+    column: string
+  }>
+  state?: number          // 状态（0:未完成 1:已完成 2:失败）
+  type: number            // 类型（1:技术报告 2:专利检索 3:三性分析 4:专利撰写 5:答辩支持）
+}
+
+// 分页查询响应结果
+export interface PageQueryResponse {
+  code: number
+  data: {
+    pageIndex: number
+    pageSize: number
+    records: Array<{
+      createTime: string
+      firstImgUrl: string
+      id: number
+      mdUrl: string
+      params: any
+      pdfUrl: string
+      state: number         // 0:未完成 1:已完成 2:失败
+      taskId: string
+      taskJson: string
+      type: number
+      updateTime: string
+      userId: number
+      wordUrl: string
+    }>
+    total: number
+  }
+  msg: string
+}
+
 export const techReportService = {
   // 生成技术方案报告
   async generateReport(data: GenerateReportRequest): Promise<any> {
@@ -105,43 +144,138 @@ export const techReportService = {
     }
   },
 
-  // 获取报告列表
+  // 获取报告列表（分页查询）
   async getReportList(params?: {
     page?: number
     pageSize?: number
     keyword?: string
     status?: string
   }): Promise<{ reports: TechReport[]; total: number }> {
-    // 模拟 API 调用延迟
-    await new Promise(resolve => setTimeout(resolve, 800))
+    try {
+      console.log('=== 获取报告列表 ===')
+      console.log('请求参数:', params)
 
-    // 根据参数过滤数据
-    let filteredReports = [...mockReports]
+      // 构建请求参数
+      const requestData: PageQueryRequest = {
+        keyword: params?.keyword || '',
+        pageIndex: params?.page || 1,
+        pageSize: params?.pageSize || 10,
+        type: 1  // 1:技术报告
+      }
 
-    // 状态过滤
-    if (params?.status) {
-      filteredReports = filteredReports.filter(report => report.status === params.status)
+      // 如果有状态筛选
+      if (params?.status) {
+        // 将前端状态映射到后端状态
+        const statusMap: Record<string, number> = {
+          'generating': 0,   // 处理中
+          'completed': 1,    // 已完成
+          'failed': 2        // 失败
+        }
+        requestData.state = statusMap[params.status]
+      }
+
+      console.log('最终请求数据:', requestData)
+
+      // 调用后端接口
+      const response = await request.post<PageQueryResponse>('/task/getPage', requestData)
+
+      console.log('后端返回数据:', response)
+
+      if (response.code === 200 && response.data) {
+        // 将后端数据转换为前端格式
+        const reports: TechReport[] = response.data.records.map(record => {
+          // 状态映射
+          let status: ReportStatus
+          switch (record.state) {
+            case 0:
+              status = ReportStatus.GENERATING  // 处理中
+              break
+            case 1:
+              status = ReportStatus.COMPLETED   // 已完成
+              break
+            case 2:
+              status = ReportStatus.FAILED      // 失败
+              break
+            default:
+              status = ReportStatus.GENERATING
+          }
+
+          // 解析 taskJson 获取标题和输入内容
+          let title = '技术方案报告'
+          let inputContent = ''
+          let technicalField = ''
+
+          try {
+            if (record.taskJson) {
+              const taskData = JSON.parse(record.taskJson)
+              inputContent = taskData.prompt || ''
+              technicalField = taskData.prompt || ''
+              title = `${inputContent.substring(0, 20)}技术方案报告`
+            }
+          } catch (e) {
+            console.warn('解析 taskJson 失败:', e)
+          }
+
+          return {
+            id: String(record.id),
+            title,
+            inputType: 'text' as const,
+            inputContent,
+            technicalField,
+            createTime: record.createTime,
+            status,
+            userId: String(record.userId),
+            // 报告内容（如果已完成，可从 mdUrl 或 pdfUrl 获取）
+            reportContent: {
+              summary: '报告已生成，请下载查看完整内容',
+              technicalField,
+              backgroundTechnology: '',
+              technicalProblem: '',
+              technicalSolution: '',
+              beneficialEffects: '',
+              implementationMethods: []
+            },
+            // 文件链接（添加到类型外，用于下载）
+            pdfUrl: record.pdfUrl,
+            wordUrl: record.wordUrl,
+            mdUrl: record.mdUrl,
+            firstImgUrl: record.firstImgUrl
+          } as TechReport & {
+            pdfUrl?: string
+            wordUrl?: string
+            mdUrl?: string
+            firstImgUrl?: string
+          }
+        })
+
+        console.log('转换后的报告列表:', reports)
+
+        return {
+          reports,
+          total: response.data.total
+        }
+      } else {
+        throw new Error(response.msg || '获取报告列表失败')
+      }
+    } catch (error: any) {
+      console.error('=== 获取报告列表失败 ===')
+      console.error(error)
+
+      // 处理401认证错误
+      if (error.response && error.response.status === 401) {
+        throw new Error('登录已过期，请重新登录')
+      }
+
+      // 处理其他错误
+      if (error.response && error.response.data) {
+        const backendError = error.response.data
+        throw new Error(backendError.msg || backendError.message || '获取报告列表失败')
+      } else if (error.message) {
+        throw new Error(error.message)
+      } else {
+        throw new Error('网络错误，请检查网络连接')
+      }
     }
-
-    // 关键词过滤
-    if (params?.keyword) {
-      const keyword = params.keyword.toLowerCase()
-      filteredReports = filteredReports.filter(report =>
-        report.title.toLowerCase().includes(keyword) ||
-        report.inputContent.toLowerCase().includes(keyword) ||
-        (report.technicalField && report.technicalField.toLowerCase().includes(keyword))
-      )
-    }
-
-    // 返回模拟数据
-    return {
-      reports: filteredReports,
-      total: filteredReports.length
-    }
-
-    // 真实 API 调用（已注释）
-    // const response = await request.get<{ reports: TechReport[]; total: number }>('/tech-report/list', params)
-    // return response.data
   },
 
   // 获取报告详情

@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { techReportService } from '@/services/techReport'
-import type { TechReport, ReportStatus } from '@/types'
+import type { TechReport } from '@/types'
+import { ReportStatus } from '@/types'
 
 export const useTechReportStore = defineStore('techReport', () => {
   // State
@@ -17,7 +18,7 @@ export const useTechReportStore = defineStore('techReport', () => {
   const reportList = computed(() => reports.value)
   const isGenerating = computed(() => generating.value)
   const reportCount = computed(() => reports.value.length)
-  const completedReports = computed(() => 
+  const completedReports = computed(() =>
     reports.value.filter(report => report.status === ReportStatus.COMPLETED)
   )
 
@@ -32,11 +33,11 @@ export const useTechReportStore = defineStore('techReport', () => {
     generating.value = true
     try {
       const report = await techReportService.generateReport(data)
-      
+
       // 添加到报告列表
       reports.value.unshift(report)
       currentReport.value = report
-      
+
       return report
     } catch (error) {
       console.error('生成报告失败:', error)
@@ -55,16 +56,16 @@ export const useTechReportStore = defineStore('techReport', () => {
     loading.value = true
     try {
       const response = await techReportService.getReportList(params)
-      
+
       if (params?.page === 1 || !params?.page) {
         reports.value = response.reports
       } else {
         reports.value.push(...response.reports)
       }
-      
+
       total.value = response.total
       currentPage.value = params?.page || 1
-      
+
       return response
     } catch (error) {
       console.error('获取报告列表失败:', error)
@@ -79,13 +80,13 @@ export const useTechReportStore = defineStore('techReport', () => {
     try {
       const report = await techReportService.getReportDetail(id)
       currentReport.value = report
-      
+
       // 更新列表中的报告
       const index = reports.value.findIndex(r => r.id === id)
       if (index !== -1) {
         reports.value[index] = report
       }
-      
+
       return report
     } catch (error) {
       console.error('获取报告详情失败:', error)
@@ -98,14 +99,14 @@ export const useTechReportStore = defineStore('techReport', () => {
   const deleteReport = async (id: string) => {
     try {
       await techReportService.deleteReport(id)
-      
+
       // 从列表中移除
       const index = reports.value.findIndex(r => r.id === id)
       if (index !== -1) {
         reports.value.splice(index, 1)
         total.value -= 1
       }
-      
+
       // 如果删除的是当前报告，清空当前报告
       if (currentReport.value?.id === id) {
         currentReport.value = null
@@ -118,8 +119,22 @@ export const useTechReportStore = defineStore('techReport', () => {
 
   const exportReport = async (id: string, format: 'pdf' | 'word' | 'txt' = 'pdf') => {
     try {
+      // 先查找当前报告
+      const report = reports.value.find(r => r.id === id)
+
+      // 如果报告有直接下载链接，直接使用
+      if (report && (report as any).pdfUrl && format === 'pdf') {
+        window.open((report as any).pdfUrl, '_blank')
+        return
+      }
+      if (report && (report as any).wordUrl && format === 'word') {
+        window.open((report as any).wordUrl, '_blank')
+        return
+      }
+
+      // 否则使用旧的blob下载方式
       const blob = await techReportService.exportReport(id, format)
-      
+
       // 创建下载链接
       const url = URL.createObjectURL(blob)
       const link = document.createElement('a')
@@ -167,13 +182,13 @@ export const useTechReportStore = defineStore('techReport', () => {
     total,
     currentPage,
     pageSize,
-    
+
     // Getters
     reportList,
     isGenerating,
     reportCount,
     completedReports,
-    
+
     // Actions
     generateReport,
     getReportList,

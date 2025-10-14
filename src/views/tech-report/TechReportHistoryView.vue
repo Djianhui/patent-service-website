@@ -39,51 +39,77 @@
     <!-- 报告列表 -->
     <el-card class="list-card">
       <div v-loading="loading" class="report-list">
-        <div v-for="report in reportList" :key="report.id" class="report-item" @click="viewReport(report)">
-          <div class="report-header">
-            <h3 class="report-title">{{ report.title }}</h3>
-            <div class="report-status">
-              <el-tag :type="getStatusType(report.status)">
-                {{ getStatusText(report.status) }}
-              </el-tag>
+        <div v-for="report in reportList" :key="report.id" class="report-item">
+          <!-- 首页图片 -->
+          <div class="report-image" v-if="(report as any).firstImgUrl" @click.stop>
+            <el-image :src="(report as any).firstImgUrl" fit="contain" :alt="report.title" lazy
+              :preview-src-list="[(report as any).firstImgUrl]" :initial-index="0" preview-teleported>
+              <template #error>
+                <div class="image-error">
+                  <el-icon>
+                    <Picture />
+                  </el-icon>
+                  <span>图片加载失败</span>
+                </div>
+              </template>
+              <template #placeholder>
+                <div class="image-loading">
+                  <el-icon class="is-loading">
+                    <Loading />
+                  </el-icon>
+                </div>
+              </template>
+            </el-image>
+            <div class="image-mask">
+              <el-icon>
+                <ZoomIn />
+              </el-icon>
+              <span>点击放大</span>
             </div>
           </div>
 
-          <div class="report-meta">
-            <span class="meta-item">
-              <el-icon>
-                <User />
-              </el-icon>
-              {{ report.technicalField || '未分类' }}
-            </span>
-            <span class="meta-item">
-              <el-icon>
-                <Calendar />
-              </el-icon>
-              {{ formatDate(report.createTime) }}
-            </span>
-            <span class="meta-item">
-              <el-icon>
-                <Document />
-              </el-icon>
-              {{ report.inputType === 'text' ? '文本输入' : '文件上传' }}
-            </span>
-          </div>
+          <!-- 报告内容区域 -->
+          <div class="report-info" @click="viewReport(report)">
+            <div class="report-header">
+              <h3 class="report-title">{{ report.title }}</h3>
+              <div class="report-status">
+                <el-tag :type="getStatusType(report.status)">
+                  {{ getStatusText(report.status) }}
+                </el-tag>
+              </div>
+            </div>
 
-          <div class="report-content">
-            <p>{{ getReportSummary(report) }}</p>
-          </div>
+            <div class="report-meta">
+              <span class="meta-item">
+                <el-icon>
+                  <User />
+                </el-icon>
+                {{ report.technicalField || '未分类' }}
+              </span>
+              <span class="meta-item">
+                <el-icon>
+                  <Calendar />
+                </el-icon>
+                {{ formatDate(report.createTime) }}
+              </span>
 
-          <div class="report-actions" @click.stop>
-            <el-button size="small" text @click="viewReport(report)">
-              查看
-            </el-button>
-            <el-button size="small" text @click="downloadReport(report)">
-              下载
-            </el-button>
-            <el-button size="small" text type="danger" @click="deleteReport(report)">
-              删除
-            </el-button>
+            </div>
+
+            <div class="report-content">
+              <p>{{ getReportSummary(report) }}</p>
+            </div>
+
+            <div class="report-actions" @click.stop>
+              <!-- <el-button size="small" text @click="viewReport(report)">
+                查看
+              </el-button> -->
+              <el-button size="small" text @click="downloadReport(report)">
+                下载
+              </el-button>
+              <el-button size="small" text type="danger" @click="deleteReport(report)">
+                删除
+              </el-button>
+            </div>
           </div>
         </div>
 
@@ -201,7 +227,7 @@
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { User, Calendar, Document, Download } from '@element-plus/icons-vue'
+import { User, Calendar, Document, Download, Picture, Loading, ZoomIn } from '@element-plus/icons-vue'
 import { useTechReportStore } from '@/stores/techReport'
 import { formatDate } from '@/utils'
 import type { TechReport } from '@/types'
@@ -373,17 +399,99 @@ onMounted(() => {
   .list-card {
     .report-list {
       .report-item {
+        display: flex;
+        gap: var(--spacing-lg);
         padding: var(--spacing-lg);
         border-bottom: 1px solid var(--color-border-light);
         cursor: pointer;
-        transition: background-color var(--transition-fast);
+        transition: all var(--transition-fast);
 
         &:hover {
           background-color: var(--color-bg-secondary);
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
         }
 
         &:last-child {
           border-bottom: none;
+        }
+
+        // 首页图片区域
+        .report-image {
+          position: relative;
+          flex-shrink: 0;
+          width: 280px; // 增大宽度
+          height: 210px; // 增大高度
+          border-radius: var(--border-radius-md);
+          overflow: hidden;
+          background-color: var(--color-bg-secondary);
+          cursor: pointer;
+          transition: all var(--transition-fast);
+
+          &:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+
+            .image-mask {
+              opacity: 1;
+            }
+          }
+
+          .el-image {
+            width: 100%;
+            height: 100%;
+            display: block;
+          }
+
+          .image-error,
+          .image-loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--color-text-placeholder);
+            font-size: var(--font-size-sm);
+
+            .el-icon {
+              font-size: 32px;
+              margin-bottom: var(--spacing-xs);
+            }
+          }
+
+          // 悬停蒙层
+          .image-mask {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            opacity: 0;
+            transition: opacity var(--transition-fast);
+            pointer-events: none;
+
+            .el-icon {
+              font-size: 32px;
+              margin-bottom: var(--spacing-xs);
+            }
+
+            span {
+              font-size: var(--font-size-sm);
+            }
+          }
+        }
+
+        // 报告信息区域
+        .report-info {
+          flex: 1;
+          min-width: 0; // 防止flex子元素溢出
+          display: flex;
+          flex-direction: column;
         }
 
         .report-header {
@@ -398,10 +506,16 @@ onMounted(() => {
             color: var(--color-text-primary);
             margin: 0;
             flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
           }
 
           .report-status {
             margin-left: var(--spacing-md);
+            flex-shrink: 0;
           }
         }
 
@@ -409,6 +523,7 @@ onMounted(() => {
           display: flex;
           gap: var(--spacing-lg);
           margin-bottom: var(--spacing-md);
+          flex-wrap: wrap;
 
           .meta-item {
             display: flex;
@@ -425,12 +540,18 @@ onMounted(() => {
 
         .report-content {
           margin-bottom: var(--spacing-md);
+          flex: 1;
 
           p {
             color: var(--color-text-secondary);
             line-height: var(--line-height-relaxed);
             font-size: var(--font-size-sm);
             margin: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
           }
         }
 
@@ -464,6 +585,13 @@ onMounted(() => {
     }
 
     .list-card .report-list .report-item {
+      flex-direction: column;
+
+      .report-image {
+        width: 100%;
+        height: 280px; // 增大移动端高度
+      }
+
       .report-meta {
         flex-direction: column;
         gap: var(--spacing-xs);
