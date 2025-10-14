@@ -2,9 +2,30 @@
   <div class="defense-simulation-container">
     <!-- 页面头部 -->
     <div class="page-header">
-      <h1 class="page-title">模拟审查</h1>
-      <p class="page-subtitle">上传专利文件，生成审查意见通知书</p>
+      <h1 class="page-title">答辩支持</h1>
+      <p class="page-subtitle">上传专利文件，生成审查意见通知书或答辩意见回复</p>
     </div>
+
+    <!-- 功能选择区域 -->
+    <el-card class="function-select-card">
+      <template #header>
+        <span>选择功能</span>
+      </template>
+      <el-radio-group v-model="selectedFunction" size="large" class="function-group">
+        <el-radio-button :label="0">
+          <el-icon>
+            <DocumentChecked />
+          </el-icon>
+          模拟审查
+        </el-radio-button>
+        <el-radio-button :label="1">
+          <el-icon>
+            <EditPen />
+          </el-icon>
+          答辩意见回复
+        </el-radio-button>
+      </el-radio-group>
+    </el-card>
 
     <!-- 上传区域 -->
     <el-card class="upload-card">
@@ -28,25 +49,31 @@
           </template>
         </el-upload>
 
-        <div v-if="currentFile" class="file-info">
-          <div class="file-item">
+        <div v-if="uploadedFiles.length > 0" class="file-list">
+          <div v-for="(file, index) in uploadedFiles" :key="index" class="file-item">
             <el-icon>
               <Document />
             </el-icon>
-            <span class="file-name">{{ currentFile.name }}</span>
-            <span class="file-size">{{ formatFileSize(currentFile.size) }}</span>
-            <el-button size="small" type="danger" @click="removeFile">
+            <span class="file-name">{{ file.name }}</span>
+            <span class="file-size">{{ formatFileSize(file.size) }}</span>
+            <el-button size="small" type="danger" @click="removeFile(index)">
               <el-icon>
                 <Delete />
               </el-icon>
             </el-button>
           </div>
+        </div>
 
-          <div class="upload-actions">
-            <el-button type="primary" size="large" :loading="uploading" @click="startSimulation">
-              {{ uploading ? '分析中...' : '开始模拟审查' }}
-            </el-button>
-          </div>
+        <div class="description-area">
+          <el-input v-model="defenseDescription" type="textarea" :rows="4"
+            :placeholder="selectedFunction === 0 ? '请描述需要模拟审查的重点内容（可选）...' : '请输入答辩信息描述...'" maxlength="1000"
+            show-word-limit />
+        </div>
+
+        <div v-if="uploadedFiles.length > 0" class="upload-actions">
+          <el-button type="primary" size="large" :loading="uploading" @click="startDefenseTask">
+            {{ uploading ? '处理中...' : (selectedFunction === 0 ? '开始模拟审查' : '生成答辩意见') }}
+          </el-button>
         </div>
       </div>
     </el-card>
@@ -55,9 +82,9 @@
     <el-card class="simulation-list-card">
       <template #header>
         <div class="list-header">
-          <span>审查记录</span>
+          <span>任务记录</span>
           <div class="list-actions">
-            <el-input v-model="searchKeyword" placeholder="搜索专利标题、申请人..." clearable @input="handleSearch"
+            <el-input v-model="searchKeyword" placeholder="搜索..." clearable @input="handleSearch"
               style="width: 300px; margin-right: 16px">
               <template #prefix>
                 <el-icon>
@@ -68,97 +95,90 @@
             <el-select v-model="statusFilter" placeholder="状态筛选" clearable @change="handleStatusChange"
               style="width: 150px">
               <el-option label="全部" value="" />
-              <el-option label="已完成" value="completed" />
-              <el-option label="分析中" value="analyzing" />
-              <el-option label="失败" value="failed" />
+              <el-option label="已完成" value="1" />
+              <el-option label="生成中" value="0" />
+              <el-option label="失败" value="2" />
             </el-select>
           </div>
         </div>
       </template>
 
       <div v-loading="loading" class="list-content">
-        <!-- 审查记录列表 -->
-        <div class="simulation-list">
-          <div v-for="simulation in simulationList" :key="simulation.id" class="simulation-item"
-            @click="viewSimulationDetail(simulation)">
-            <div class="simulation-header">
-              <div class="simulation-info">
-                <h3 class="simulation-title">{{ simulation.patentInfo.title }}</h3>
-                <div class="simulation-meta">
-                  <span class="meta-item">
-                    <el-icon>
-                      <User />
-                    </el-icon>
-                    {{ simulation.patentInfo.applicant }}
-                  </span>
+        <!-- 任务记录列表 -->
+        <div class="defense-list">
+          <div v-for="item in defenseList" :key="item.id" class="defense-item">
+            <div class="defense-header">
+              <div class="defense-info">
+                <h3 class="defense-title">
+
+                  {{ item.functionType === 0 ? '模拟审查' : '答辩意见回复' }}
+                </h3>
+                <div class="defense-meta">
                   <span class="meta-item">
                     <el-icon>
                       <Calendar />
                     </el-icon>
-                    {{ formatDate(simulation.createTime) }}
+                    {{ formatDate(item.createTime) }}
                   </span>
-                  <span class="meta-item">
+                  <!-- <span class="meta-item">
                     <el-icon>
                       <Document />
                     </el-icon>
-                    {{ simulation.patentFile.name }}
-                  </span>
+                    {{ item.fileUrls ? item.fileUrls.length : 0 }} 个文件
+                  </span> -->
                 </div>
               </div>
-              <div class="simulation-actions">
-                <el-tag :type="getStatusType(simulation.status)" size="small">
-                  {{ getStatusText(simulation.status) }}
+              <div class="defense-actions">
+                <el-tag :type="item.state === 1 ? 'success' : (item.state === 0 ? 'warning' : 'danger')" size="small">
+                  {{ item.state === 1 ? '已完成' : (item.state === 0 ? '生成中' : '失败') }}
                 </el-tag>
-                <el-button size="small" @click.stop="viewSimulationDetail(simulation)">
-                  <el-icon>
-                    <View />
-                  </el-icon>
-                  查看详情
-                </el-button>
-                <el-button size="small" @click.stop="downloadOpinion(simulation)">
+                <el-button size="small" text @click.stop="downloadPDF(item)" :disabled="!item.pdfUrl">
                   <el-icon>
                     <Download />
                   </el-icon>
-                  下载意见书
+                  下载PDF
                 </el-button>
-                <el-button size="small" type="danger" @click.stop="deleteSimulation(simulation)">
+                <el-button size="small" text @click.stop="downloadWord(item)" :disabled="!item.wordUrl">
                   <el-icon>
-                    <Delete />
+                    <Download />
                   </el-icon>
-                  删除
+                  下载Word
                 </el-button>
               </div>
             </div>
 
-            <div class="simulation-summary">
-              <div class="opinion-info">
-                <span class="opinion-number">{{ simulation.examinationOpinion.reviewNumber }}</span>
-                <el-tag :type="getSeverityType(simulation.examinationOpinion.severity)" size="small">
-                  {{ getSeverityText(simulation.examinationOpinion.severity) }}
-                </el-tag>
-              </div>
-              <div class="rejection-reasons">
-                <span class="reasons-label">驳回理由：</span>
-                <el-tag v-for="reason in simulation.examinationOpinion.rejectionReasons.slice(0, 3)" :key="reason.type"
-                  size="small" type="warning" style="margin-right: 8px">
-                  {{ getReasonText(reason.type) }}
-                </el-tag>
-                <span v-if="simulation.examinationOpinion.rejectionReasons.length > 3">
-                  等{{ simulation.examinationOpinion.rejectionReasons.length }}项
-                </span>
-              </div>
+            <!-- 图片展示 -->
+            <div class="defense-images" v-if="item.firstImgUrl">
+              <el-image :src="item.firstImgUrl" fit="contain" loading="lazy" :preview-src-list="[item.firstImgUrl]"
+                style="width: 280px; height: 210px; border-radius: 4px; cursor: pointer;">
+                <template #placeholder>
+                  <div
+                    style="display: flex; align-items: center; justify-content: center; height: 100%; background-color: var(--color-bg-light);">
+                    <el-icon :size="30" color="var(--color-text-tertiary)">
+                      <Picture />
+                    </el-icon>
+                  </div>
+                </template>
+                <template #error>
+                  <div
+                    style="display: flex; align-items: center; justify-content: center; height: 100%; background-color: var(--color-bg-light);">
+                    <span style="color: var(--color-text-tertiary); font-size: 12px;">图片加载失败</span>
+                  </div>
+                </template>
+              </el-image>
             </div>
 
-            <div class="patent-abstract">
-              <p>{{ getAbstractSummary(simulation.patentInfo.abstract) }}</p>
+            <!-- 描述信息 -->
+            <div class="defense-description" v-if="item.description">
+              <p>{{ item.description.length > 150 ? item.description.substring(0, 150) + '...' : item.description }}</p>
             </div>
           </div>
         </div>
 
         <!-- 空状态 -->
-        <div v-if="!loading && simulationList.length === 0" class="empty-state">
-          <el-empty description="暂无审查记录">
-            <p>上传专利文件开始首次模拟审查</p>
+        <div v-if="!loading && defenseList.length === 0" class="empty-state">
+          <el-empty description="暂无任务记录">
+            <p>上传专利文件开始首次任务</p>
           </el-empty>
         </div>
 
@@ -185,12 +205,15 @@ import {
   User,
   Calendar,
   View,
-  Download
+  Download,
+  DocumentChecked,
+  EditPen,
+  Picture,
+  Loading as LoadingIcon,
+  ZoomIn
 } from '@element-plus/icons-vue'
-import { simulationService } from '@/services/simulation'
+import { defenseSupportService, DefenseFunctionType } from '@/services/defenseSupport'
 import { formatDate } from '@/utils'
-import type { SimulationReview } from '@/types'
-import { SimulationStatus } from '@/types'
 
 // Composables
 const router = useRouter()
@@ -198,10 +221,12 @@ const router = useRouter()
 // 响应式数据
 const loading = ref(false)
 const uploading = ref(false)
-const currentFile = ref<File | null>(null)
+const selectedFunction = ref<DefenseFunctionType>(DefenseFunctionType.SIMULATION_REVIEW)
+const uploadedFiles = ref<Array<{ file: File; url: string; name: string; size: number }>>([])
+const defenseDescription = ref('')
 const searchKeyword = ref('')
 const statusFilter = ref('')
-const simulationList = ref<SimulationReview[]>([])
+const defenseList = ref<any[]>([])
 const total = ref(0)
 
 const pagination = reactive({
@@ -213,14 +238,26 @@ const pagination = reactive({
 const loadData = async () => {
   loading.value = true
   try {
-    const result = await simulationService.getSimulationList({
+    const result = await defenseSupportService.getDefenseList({
       page: pagination.page,
       pageSize: pagination.pageSize,
       keyword: searchKeyword.value,
-      status: statusFilter.value as SimulationStatus
+      state: statusFilter.value ? parseInt(statusFilter.value) : undefined
     })
 
-    simulationList.value = result.data
+    console.log('=== 前端接收到的数据 ===')
+    console.log('result.data:', result.data)
+    result.data.forEach((item, index) => {
+      console.log(`第${index + 1}条数据:`, {
+        id: item.id,
+        functionType: item.functionType,
+        functionType类型: typeof item.functionType,
+        判断结果: item.functionType === 0 ? '模拟审查' : '答辩意见回复'
+      })
+    })
+    console.log('========================')
+
+    defenseList.value = result.data
     total.value = result.total
   } catch (error: any) {
     ElMessage.error(error.message || '加载数据失败')
@@ -229,43 +266,83 @@ const loadData = async () => {
   }
 }
 
-const handleFileChange = (file: any) => {
-  currentFile.value = file.raw
-}
+const handleFileChange = async (file: any) => {
+  const rawFile = file.raw
 
-const beforeUpload = (file: File) => {
-  const isValidFormat = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'].includes(file.type)
-  const isValidSize = file.size / 1024 / 1024 < 10
+  // 验证文件
+  const isValidFormat = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'].includes(rawFile.type)
+  const isValidSize = rawFile.size / 1024 / 1024 < 10
 
   if (!isValidFormat) {
     ElMessage.error('只支持 PDF、DOC、DOCX 格式的文件！')
-    return false
+    return
   }
   if (!isValidSize) {
     ElMessage.error('文件大小不能超过 10MB！')
-    return false
+    return
   }
+
+  // 上传文件到服务器
+  try {
+    ElMessage.info('正在上传文件...')
+    const url = await defenseSupportService.uploadFile(rawFile)
+
+    uploadedFiles.value.push({
+      file: rawFile,
+      url: url,
+      name: rawFile.name,
+      size: rawFile.size
+    })
+
+    ElMessage.success('文件上传成功')
+  } catch (error: any) {
+    ElMessage.error(error.message || '文件上传失败')
+  }
+}
+
+const beforeUpload = (file: File) => {
   return false // 阻止自动上传
 }
 
-const removeFile = () => {
-  currentFile.value = null
+const removeFile = (index: number) => {
+  uploadedFiles.value.splice(index, 1)
 }
 
-const startSimulation = async () => {
-  if (!currentFile.value) {
-    ElMessage.warning('请先选择专利文件')
+const startDefenseTask = async () => {
+  if (uploadedFiles.value.length === 0) {
+    ElMessage.warning('请先上传专利文件')
     return
   }
 
   uploading.value = true
   try {
-    await simulationService.uploadPatentFile(currentFile.value)
-    ElMessage.success('模拟审查完成！')
-    currentFile.value = null
-    loadData() // 刷新列表
+    const fileUrls = uploadedFiles.value.map(f => f.url)
+
+    // 如果没有输入描述，根据功能类型给一个默认值
+    let promptText = defenseDescription.value.trim()
+    if (!promptText) {
+      promptText = selectedFunction.value === DefenseFunctionType.SIMULATION_REVIEW
+        ? '请对上传的专利文件进行全面的模拟审查'
+        : '请根据专利文件生成答辩意见回复'
+    }
+
+    await defenseSupportService.createDefenseTask({
+      functionType: selectedFunction.value,
+      fileUrls: fileUrls,
+      prompt: promptText
+    })
+
+    const taskName = selectedFunction.value === DefenseFunctionType.SIMULATION_REVIEW ? '模拟审查' : '答辩意见回复'
+    ElMessage.success(`${taskName}任务已提交，请在列表中查看结果`)
+
+    // 清空表单
+    uploadedFiles.value = []
+    defenseDescription.value = ''
+
+    // 刷新列表
+    loadData()
   } catch (error: any) {
-    ElMessage.error(error.message || '模拟审查失败')
+    ElMessage.error(error.message || '任务提交失败')
   } finally {
     uploading.value = false
   }
@@ -290,81 +367,22 @@ const handleSizeChange = () => {
   loadData()
 }
 
-const viewSimulationDetail = (simulation: SimulationReview) => {
-  // TODO: 跳转到详情页面
-  ElMessage.info('查看详情功能开发中...')
-}
-
-const downloadOpinion = (simulation: SimulationReview) => {
-  // 生成审查意见书内容
-  const content = generateOpinionContent(simulation)
-
-  const blob = new Blob([content], { type: 'text/plain;charset=utf-8' })
-  const url = URL.createObjectURL(blob)
-  const link = document.createElement('a')
-  link.href = url
-  link.download = `${simulation.examinationOpinion.reviewNumber}_审查意见通知书.txt`
-  document.body.appendChild(link)
-  link.click()
-  document.body.removeChild(link)
-  URL.revokeObjectURL(url)
-
-  ElMessage.success('下载成功')
-}
-
-const deleteSimulation = async (simulation: SimulationReview) => {
-  try {
-    await ElMessageBox.confirm(
-      `确定要删除"${simulation.patentInfo.title}"的审查记录吗？`,
-      '确认删除',
-      {
-        confirmButtonText: '删除',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }
-    )
-
-    await simulationService.deleteSimulation(simulation.id)
-    ElMessage.success('删除成功')
-    loadData()
-  } catch (error: any) {
-    if (error !== 'cancel') {
-      ElMessage.error('删除失败')
-    }
+const downloadPDF = (item: any) => {
+  if (!item.pdfUrl) {
+    ElMessage.warning('该任务暂无PDF文件')
+    return
   }
+  window.open(item.pdfUrl, '_blank')
+  ElMessage.success('正在打开下载链接...')
 }
 
-const generateOpinionContent = (simulation: SimulationReview): string => {
-  const lines = [
-    '专利审查意见通知书',
-    '',
-    `审查意见书编号：${simulation.examinationOpinion.reviewNumber}`,
-    `专利申请号：${simulation.patentInfo.applicationNumber || '未知'}`,
-    `专利名称：${simulation.patentInfo.title}`,
-    `申请人：${simulation.patentInfo.applicant}`,
-    `发明人：${simulation.patentInfo.inventor.join(', ')}`,
-    `答复期限：${simulation.examinationOpinion.deadline}`,
-    '',
-    simulation.examinationOpinion.content,
-    '',
-    '驳回理由详述：',
-    ...simulation.examinationOpinion.rejectionReasons.map((reason, index) => [
-      `${index + 1}. ${getReasonText(reason.type)}：`,
-      reason.description,
-      reason.citedPriors.length > 0 ? `引用文献：${reason.citedPriors.map(p => p.publicationNumber).join(', ')}` : '',
-      `法律依据：${reason.legalBasis.join(', ')}`,
-      ''
-    ]).flat(),
-    '审查员意见：',
-    simulation.examinationOpinion.examinerComments,
-    '',
-    '法律依据：',
-    ...simulation.examinationOpinion.legalBasis.map(basis => `- ${basis}`),
-    '',
-    `生成时间：${formatDate(simulation.createTime)}`
-  ]
-
-  return lines.join('\n')
+const downloadWord = (item: any) => {
+  if (!item.wordUrl) {
+    ElMessage.warning('该任务暂无Word文件')
+    return
+  }
+  window.open(item.wordUrl, '_blank')
+  ElMessage.success('正在打开下载链接...')
 }
 
 // 工具方法
@@ -374,57 +392,6 @@ const formatFileSize = (bytes: number): string => {
   const sizes = ['B', 'KB', 'MB', 'GB']
   const i = Math.floor(Math.log(bytes) / Math.log(k))
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
-}
-
-const getAbstractSummary = (abstract: string): string => {
-  return abstract.length > 120 ? abstract.substring(0, 120) + '...' : abstract
-}
-
-const getStatusType = (status: SimulationStatus): string => {
-  switch (status) {
-    case SimulationStatus.COMPLETED: return 'success'
-    case SimulationStatus.ANALYZING: return 'warning'
-    case SimulationStatus.FAILED: return 'danger'
-    default: return 'info'
-  }
-}
-
-const getStatusText = (status: SimulationStatus): string => {
-  switch (status) {
-    case SimulationStatus.COMPLETED: return '已完成'
-    case SimulationStatus.ANALYZING: return '分析中'
-    case SimulationStatus.FAILED: return '失败'
-    default: return '未知'
-  }
-}
-
-const getSeverityType = (severity: string): string => {
-  switch (severity) {
-    case 'high': return 'danger'
-    case 'medium': return 'warning'
-    case 'low': return 'success'
-    default: return 'info'
-  }
-}
-
-const getSeverityText = (severity: string): string => {
-  switch (severity) {
-    case 'high': return '严重'
-    case 'medium': return '一般'
-    case 'low': return '轻微'
-    default: return '未知'
-  }
-}
-
-const getReasonText = (type: string): string => {
-  switch (type) {
-    case 'novelty': return '新颖性'
-    case 'creativity': return '创造性'
-    case 'practicality': return '实用性'
-    case 'clarity': return '清楚性'
-    case 'support': return '支持性'
-    default: return '其他'
-  }
 }
 
 // 生命周期
@@ -451,6 +418,26 @@ onMounted(() => {
     }
   }
 
+  .function-select-card {
+    margin-bottom: var(--spacing-lg);
+
+    .function-group {
+      display: flex;
+      justify-content: center;
+      gap: var(--spacing-md);
+
+      :deep(.el-radio-button) {
+        .el-radio-button__inner {
+          padding: 12px 24px;
+          font-size: var(--font-size-base);
+          display: flex;
+          align-items: center;
+          gap: var(--spacing-xs);
+        }
+      }
+    }
+  }
+
   .upload-card {
     margin-bottom: var(--spacing-lg);
 
@@ -459,18 +446,18 @@ onMounted(() => {
         width: 100%;
       }
 
-      .file-info {
+      .file-list {
         margin-top: var(--spacing-lg);
-        padding: var(--spacing-md);
-        border: 1px solid var(--color-border-light);
-        border-radius: var(--border-radius-base);
-        background-color: var(--color-bg-secondary);
 
         .file-item {
           display: flex;
           align-items: center;
           gap: var(--spacing-sm);
-          margin-bottom: var(--spacing-md);
+          padding: var(--spacing-sm);
+          margin-bottom: var(--spacing-sm);
+          border: 1px solid var(--color-border-light);
+          border-radius: var(--border-radius-base);
+          background-color: var(--color-bg-secondary);
 
           .file-name {
             flex: 1;
@@ -482,10 +469,15 @@ onMounted(() => {
             font-size: var(--font-size-sm);
           }
         }
+      }
 
-        .upload-actions {
-          text-align: center;
-        }
+      .description-area {
+        margin-top: var(--spacing-lg);
+      }
+
+      .upload-actions {
+        text-align: center;
+        margin-top: var(--spacing-lg);
       }
     }
   }
@@ -505,38 +497,33 @@ onMounted(() => {
     }
 
     .list-content {
-      .simulation-list {
-        .simulation-item {
+      .defense-list {
+        .defense-item {
           padding: var(--spacing-lg);
           border-bottom: 1px solid var(--color-border-light);
-          cursor: pointer;
           transition: background-color var(--transition-fast);
-
-          &:hover {
-            background-color: var(--color-bg-secondary);
-          }
 
           &:last-child {
             border-bottom: none;
           }
 
-          .simulation-header {
+          .defense-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
             margin-bottom: var(--spacing-md);
 
-            .simulation-info {
+            .defense-info {
               flex: 1;
 
-              .simulation-title {
+              .defense-title {
                 font-size: var(--font-size-lg);
                 font-weight: var(--font-weight-medium);
                 color: var(--color-text-primary);
                 margin: 0 0 var(--spacing-sm) 0;
               }
 
-              .simulation-meta {
+              .defense-meta {
                 display: flex;
                 gap: var(--spacing-lg);
                 flex-wrap: wrap;
@@ -551,7 +538,7 @@ onMounted(() => {
               }
             }
 
-            .simulation-actions {
+            .defense-actions {
               display: flex;
               gap: var(--spacing-xs);
               align-items: center;
@@ -559,39 +546,24 @@ onMounted(() => {
             }
           }
 
-          .simulation-summary {
+          .defense-images {
             margin-bottom: var(--spacing-md);
-            padding: var(--spacing-md);
-            background-color: var(--color-bg-secondary);
-            border-radius: var(--border-radius-base);
+            display: flex;
+            gap: var(--spacing-sm);
+            flex-wrap: wrap;
 
-            .opinion-info {
-              display: flex;
-              align-items: center;
-              gap: var(--spacing-md);
-              margin-bottom: var(--spacing-sm);
+            :deep(.el-image) {
+              border: 1px solid var(--color-border-light);
+              transition: all var(--transition-base);
 
-              .opinion-number {
-                font-weight: var(--font-weight-medium);
-                color: var(--color-text-primary);
-              }
-            }
-
-            .rejection-reasons {
-              display: flex;
-              align-items: center;
-              gap: var(--spacing-xs);
-              flex-wrap: wrap;
-
-              .reasons-label {
-                font-size: var(--font-size-sm);
-                color: var(--color-text-secondary);
-                white-space: nowrap;
+              &:hover {
+                border-color: var(--color-primary);
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
               }
             }
           }
 
-          .patent-abstract {
+          .defense-description {
             p {
               color: var(--color-text-secondary);
               line-height: var(--line-height-relaxed);
@@ -625,12 +597,12 @@ onMounted(() => {
 
 @media (max-width: 768px) {
   .defense-simulation-container {
-    .simulation-list-card .list-content .simulation-list .simulation-item {
-      .simulation-header {
+    .simulation-list-card .list-content .defense-list .defense-item {
+      .defense-header {
         flex-direction: column;
         gap: var(--spacing-sm);
 
-        .simulation-actions {
+        .defense-actions {
           margin-left: 0;
           width: 100%;
           justify-content: flex-start;
