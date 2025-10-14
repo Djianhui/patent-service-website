@@ -1,6 +1,45 @@
 import { request } from './http'
 import type { ThreeAnalysis, Patent, NoveltyAnalysis, CreativityAnalysis, PracticalityAnalysis, OverallEvaluation } from '@/types'
 
+// 分页查询请求参数
+export interface PageQueryRequest {
+  keyword?: string
+  pageIndex?: number
+  pageSize?: number
+  pageSorts?: Array<{
+    asc: boolean
+    column: string
+  }>
+  state?: number
+  type: number  // 3: 三性分析
+}
+
+// 分页查询响应结果
+export interface PageQueryResponse {
+  code: number
+  data: {
+    pageIndex: number
+    pageSize: number
+    records: Array<{
+      createTime: string
+      firstImgUrl: string
+      id: number
+      mdUrl: string
+      params: any
+      pdfUrl: string
+      state: number
+      taskId: string
+      taskJson: string
+      type: number
+      updateTime: string
+      userId: number
+      wordUrl: string
+    }>
+    total: number
+  }
+  msg: string
+}
+
 // 模拟三性分析数据
 const mockThreeAnalyses: ThreeAnalysis[] = [
   {
@@ -187,40 +226,195 @@ const mockThreeAnalyses: ThreeAnalysis[] = [
 
 // 模拟API接口
 export const threeAnalysisService = {
+  // 创建三性分析（提交到后端）
+  async createAnalysis(data: {
+    title: string
+    technicalSolution: string
+    analysisTypes: string[]
+  }): Promise<any> {
+    try {
+      console.log('=== 开始三性分析 ===')
+      console.log('专利标题:', data.title)
+      console.log('技术方案:', data.technicalSolution)
+
+      // 拼接 prompt：专利标题 + 技术方案
+      const prompt = `${data.title}\n${data.technicalSolution}`
+
+      // 调用API生成三性分析报告
+      const response = await request.post<any>('/manus/task', {
+        prompt: prompt,
+        type: 3  // 3: 三性分析
+      })
+
+      console.log('三性分析提交响应:', response)
+
+      if (response.code === 200) {
+        return response
+      } else {
+        throw new Error(response.msg || '分析失败')
+      }
+    } catch (error: any) {
+      console.error('=== 三性分析失败 ===')
+      console.error(error)
+
+      if (error.response && error.response.status === 401) {
+        throw new Error('登录已过期，请重新登录')
+      }
+
+      if (error.response && error.response.data) {
+        const backendError = error.response.data
+        throw new Error(backendError.msg || backendError.message || '分析失败')
+      } else if (error.message) {
+        throw new Error(error.message)
+      } else {
+        throw new Error('网络错误，请检查网络连接')
+      }
+    }
+  },
+
   // 获取三性分析历史列表
   async getAnalysisHistory(params: {
     page?: number
     pageSize?: number
     keyword?: string
+    status?: string
   } = {}) {
-    const { page = 1, pageSize = 10, keyword = '' } = params
+    try {
+      console.log('=== 获取三性分析历史 ===')
+      console.log('请求参数:', params)
 
-    // 模拟API延迟
-    await new Promise(resolve => setTimeout(resolve, 800))
+      const requestData: PageQueryRequest = {
+        keyword: params.keyword || '',
+        pageIndex: params.page || 1,
+        pageSize: params.pageSize || 10,
+        type: 3  // 3: 三性分析
+      }
 
-    let filteredAnalyses = [...mockThreeAnalyses]
+      // 状态映射
+      if (params.status) {
+        const statusMap: Record<string, number> = {
+          'generating': 0,
+          'completed': 1,
+          'failed': 2
+        }
+        requestData.state = statusMap[params.status]
+      }
 
-    // 关键词过滤
-    if (keyword) {
-      const searchKeyword = keyword.toLowerCase()
-      filteredAnalyses = filteredAnalyses.filter(analysis =>
-        analysis.patentInfo.title.toLowerCase().includes(searchKeyword) ||
-        analysis.patentInfo.abstract.toLowerCase().includes(searchKeyword) ||
-        analysis.patentInfo.applicant.toLowerCase().includes(searchKeyword)
-      )
-    }
+      console.log('最终请求数据:', requestData)
 
-    // 分页
-    const total = filteredAnalyses.length
-    const start = (page - 1) * pageSize
-    const end = start + pageSize
-    const data = filteredAnalyses.slice(start, end)
+      const response = await request.post<PageQueryResponse>('/task/getPage', requestData)
 
-    return {
-      data,
-      total,
-      page,
-      pageSize
+      console.log('后端返回数据:', response)
+
+      if (response.code === 200 && response.data) {
+        // 转换为 ThreeAnalysis 类型
+        const analyses: ThreeAnalysis[] = response.data.records.map(record => {
+          // 解析 taskJson
+          let title = '三性分析报告'
+          let abstract = ''
+          let technicalSolution = ''
+
+          try {
+            if (record.taskJson) {
+              const taskData = JSON.parse(record.taskJson)
+              const promptLines = taskData.prompt ? taskData.prompt.split('\n') : []
+              if (promptLines.length > 0) {
+                title = promptLines[0] || '三性分析报告'
+              }
+              if (promptLines.length > 1) {
+                technicalSolution = promptLines.slice(1).join('\n')
+                abstract = technicalSolution.substring(0, 200) + '...'
+              }
+            }
+          } catch (e) {
+            console.warn('解析 taskJson 失败:', e)
+          }
+
+          return {
+            id: String(record.id),
+            patentInfo: {
+              id: String(record.id),
+              title,
+              abstract: abstract || '正在分析中...',
+              applicant: '系统生成',
+              inventor: [],
+              applicationNumber: record.taskId || String(record.id),
+              publicationNumber: record.taskId || String(record.id),
+              applicationDate: record.createTime,
+              publicationDate: record.createTime,
+              ipcClass: [],
+              claims: [],
+              description: technicalSolution
+            },
+            noveltyAnalysis: {
+              hasNovelty: true,
+              priorArt: [],
+              analysis: '',
+              conclusion: ''
+            },
+            creativityAnalysis: {
+              creativityLevel: 'medium',
+              technicalFeatures: [],
+              technicalEffects: [],
+              analysis: '',
+              conclusion: ''
+            },
+            practicalityAnalysis: {
+              isPractical: true,
+              implementationMethod: '',
+              analysis: '',
+              conclusion: ''
+            },
+            overallEvaluation: {
+              score: 0,
+              level: 'average',
+              risks: [],
+              suggestions: []
+            },
+            createTime: record.createTime,
+            userId: String(record.userId),
+            // 扩展字段
+            firstImgUrl: record.firstImgUrl,
+            pdfUrl: record.pdfUrl,
+            wordUrl: record.wordUrl,
+            mdUrl: record.mdUrl,
+            state: record.state
+          } as ThreeAnalysis & {
+            firstImgUrl?: string
+            pdfUrl?: string
+            wordUrl?: string
+            mdUrl?: string
+            state?: number
+          }
+        })
+
+        console.log('转换后的分析列表:', analyses)
+
+        return {
+          data: analyses,
+          total: response.data.total,
+          page: params.page || 1,
+          pageSize: params.pageSize || 10
+        }
+      } else {
+        throw new Error(response.msg || '获取分析历史失败')
+      }
+    } catch (error: any) {
+      console.error('=== 获取分析历史失败 ===')
+      console.error(error)
+
+      if (error.response && error.response.status === 401) {
+        throw new Error('登录已过期，请重新登录')
+      }
+
+      if (error.response && error.response.data) {
+        const backendError = error.response.data
+        throw new Error(backendError.msg || backendError.message || '获取分析历史失败')
+      } else if (error.message) {
+        throw new Error(error.message)
+      } else {
+        throw new Error('网络错误，请检查网络连接')
+      }
     }
   },
 
@@ -244,63 +438,5 @@ export const threeAnalysisService = {
     if (index > -1) {
       mockThreeAnalyses.splice(index, 1)
     }
-  },
-
-  // 创建新的三性分析
-  async createAnalysis(data: {
-    title: string
-    technicalSolution: string
-    analysisTypes: string[]
-  }): Promise<ThreeAnalysis> {
-    await new Promise(resolve => setTimeout(resolve, 3000))
-
-    // 模拟生成分析结果
-    const newAnalysis: ThreeAnalysis = {
-      id: Date.now().toString(),
-      patentInfo: {
-        id: `patent-${Date.now()}`,
-        title: data.title,
-        abstract: data.technicalSolution.substring(0, 200) + '...',
-        applicant: '用户自定义',
-        inventor: ['发明人'],
-        applicationNumber: 'CN' + Date.now().toString(),
-        publicationNumber: 'CN' + (Date.now() + 1000).toString() + 'A',
-        applicationDate: new Date().toISOString().split('T')[0] || '',
-        publicationDate: new Date().toISOString().split('T')[0] || '',
-        ipcClass: ['A01G1/04'],
-        claims: ['权利要求内容...'],
-        description: data.technicalSolution
-      },
-      noveltyAnalysis: {
-        hasNovelty: Math.random() > 0.3,
-        priorArt: [],
-        analysis: '经过分析，该技术方案具有一定的新颖性...',
-        conclusion: '本申请具备新颖性。'
-      },
-      creativityAnalysis: {
-        creativityLevel: Math.random() > 0.5 ? 'high' : 'medium',
-        technicalFeatures: ['技术特征1', '技术特征2'],
-        technicalEffects: ['技术效果1', '技术效果2'],
-        analysis: '技术方案具有一定的创造性...',
-        conclusion: '本申请具有创造性。'
-      },
-      practicalityAnalysis: {
-        isPractical: true,
-        implementationMethod: '基于现有技术实现...',
-        analysis: '技术方案具有良好的实用性...',
-        conclusion: '本申请具备实用性。'
-      },
-      overallEvaluation: {
-        score: Math.floor(Math.random() * 30) + 70,
-        level: 'good',
-        risks: ['风险提示1', '风险提示2'],
-        suggestions: ['建议1', '建议2']
-      },
-      createTime: new Date().toISOString(),
-      userId: 'user-123'
-    }
-
-    mockThreeAnalyses.unshift(newAnalysis)
-    return newAnalysis
   }
 }

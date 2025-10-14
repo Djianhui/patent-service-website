@@ -49,103 +49,79 @@
       <div v-loading="loading" class="list-content">
         <!-- 分析记录列表 -->
         <div class="analysis-list">
-          <div v-for="analysis in analysisList" :key="analysis.id" class="analysis-item"
-            @click="viewAnalysisDetail(analysis)">
-            <div class="analysis-header">
-              <div class="analysis-info">
-                <h3 class="analysis-title">{{ analysis.patentInfo.title }}</h3>
-                <div class="analysis-meta">
-                  <span class="meta-item">
+          <div v-for="analysis in analysisList" :key="analysis.id" class="analysis-item">
+            <!-- 首页图片 -->
+            <div class="analysis-image" v-if="(analysis as any).firstImgUrl" @click.stop>
+              <el-image :src="(analysis as any).firstImgUrl" fit="contain" :alt="analysis.patentInfo.title" lazy
+                :preview-src-list="[(analysis as any).firstImgUrl]" :initial-index="0" preview-teleported>
+                <template #error>
+                  <div class="image-error">
                     <el-icon>
-                      <User />
+                      <Picture />
                     </el-icon>
-                    {{ analysis.patentInfo.applicant }}
-                  </span>
-                  <span class="meta-item">
-                    <el-icon>
-                      <Calendar />
+                    <span>图片加载失败</span>
+                  </div>
+                </template>
+                <template #placeholder>
+                  <div class="image-loading">
+                    <el-icon class="is-loading">
+                      <Loading />
                     </el-icon>
-                    {{ formatDate(analysis.createTime) }}
-                  </span>
-                  <span class="meta-item">
-                    <el-icon>
-                      <Document />
-                    </el-icon>
-                    {{ analysis.patentInfo.publicationNumber }}
-                  </span>
-                </div>
-              </div>
-              <div class="analysis-actions">
-                <el-button size="small" @click.stop="viewAnalysisDetail(analysis)">
-                  <el-icon>
-                    <View />
-                  </el-icon>
-                  查看详情
-                </el-button>
-                <el-button size="small" @click.stop="downloadReport(analysis)">
-                  <el-icon>
-                    <Download />
-                  </el-icon>
-                  下载报告
-                </el-button>
-                <el-button size="small" type="danger" @click.stop="deleteAnalysis(analysis)">
-                  <el-icon>
-                    <Delete />
-                  </el-icon>
-                  删除
-                </el-button>
+                  </div>
+                </template>
+              </el-image>
+              <div class="image-mask">
+                <el-icon>
+                  <ZoomIn />
+                </el-icon>
+                <span>点击放大</span>
               </div>
             </div>
 
-            <!-- 评估结果 -->
-            <div class="evaluation-summary">
-              <div class="score-section">
-                <span class="score-label">综合评分：</span>
-                <el-progress :percentage="analysis.overallEvaluation.score"
-                  :status="getScoreStatus(analysis.overallEvaluation.score)" style="width: 200px" />
-                <span class="score-value">{{ analysis.overallEvaluation.score }}分</span>
-                <el-tag :type="getLevelType(analysis.overallEvaluation.level)" size="small">
-                  {{ getLevelText(analysis.overallEvaluation.level) }}
-                </el-tag>
+            <!-- 分析信息区域 -->
+            <div class="analysis-content">
+              <div class="analysis-header">
+                <div class="analysis-info">
+                  <h3 class="analysis-title">{{ analysis.patentInfo.title }}</h3>
+                  <div class="analysis-meta">
+                    <span class="meta-item">
+                      <el-icon>
+                        <User />
+                      </el-icon>
+                      {{ analysis.patentInfo.applicant }}
+                    </span>
+                    <span class="meta-item">
+                      <el-icon>
+                        <Calendar />
+                      </el-icon>
+                      {{ formatDate(analysis.createTime) }}
+                    </span>
+                    <span class="meta-item">
+                      <!-- <el-icon>
+                        <Document />
+                      </el-icon>
+                      {{ analysis.patentInfo.publicationNumber }} -->
+                    </span>
+                  </div>
+                </div>
+                <div class="analysis-actions">
+
+                  <el-button size="small" text @click.stop="downloadReport(analysis)"
+                    :disabled="!(analysis as any).pdfUrl">
+                    <el-icon>
+                      <Download />
+                    </el-icon>
+                    下载PDF
+                  </el-button>
+                  <el-button size="small" type="danger" @click.stop="deleteAnalysis(analysis)">
+                    <el-icon>
+                      <Delete />
+                    </el-icon>
+                    删除
+                  </el-button>
+                </div>
               </div>
 
-              <div class="analysis-results">
-                <div class="result-item">
-                  <span class="result-label">新颖性：</span>
-                  <el-tag :type="analysis.noveltyAnalysis.hasNovelty ? 'success' : 'danger'" size="small">
-                    {{ analysis.noveltyAnalysis.hasNovelty ? '具备' : '不具备' }}
-                  </el-tag>
-                </div>
-                <div class="result-item">
-                  <span class="result-label">创造性：</span>
-                  <el-tag :type="getCreativityType(analysis.creativityAnalysis.creativityLevel)" size="small">
-                    {{ getCreativityText(analysis.creativityAnalysis.creativityLevel) }}
-                  </el-tag>
-                </div>
-                <div class="result-item">
-                  <span class="result-label">实用性：</span>
-                  <el-tag :type="analysis.practicalityAnalysis.isPractical ? 'success' : 'danger'" size="small">
-                    {{ analysis.practicalityAnalysis.isPractical ? '具备' : '不具备' }}
-                  </el-tag>
-                </div>
-              </div>
-            </div>
-
-            <!-- 专利摘要 -->
-            <div class="patent-abstract">
-              <p>{{ getAbstractSummary(analysis.patentInfo.abstract) }}</p>
-            </div>
-
-            <!-- 风险提示 -->
-            <div class="risk-hints" v-if="analysis.overallEvaluation.risks.length > 0">
-              <span class="risk-label">风险提示：</span>
-              <el-tag v-for="(risk, index) in analysis.overallEvaluation.risks.slice(0, 2)" :key="index" type="warning"
-                size="small" style="margin-right: 8px">
-                {{ risk }}
-              </el-tag>
-              <span v-if="analysis.overallEvaluation.risks.length > 2" class="more-risks">
-                等{{ analysis.overallEvaluation.risks.length }}项风险
-              </span>
             </div>
           </div>
         </div>
@@ -183,7 +159,10 @@ import {
   Document,
   View,
   Download,
-  Delete
+  Delete,
+  Picture,
+  Loading,
+  ZoomIn
 } from '@element-plus/icons-vue'
 import { threeAnalysisService } from '@/services/threeAnalysis'
 import { formatDate } from '@/utils'
@@ -245,32 +224,6 @@ const handleSizeChange = () => {
   loadData()
 }
 
-const viewAnalysisDetail = (analysis: ThreeAnalysis) => {
-  router.push(`/app/three-analysis/${analysis.id}`)
-}
-
-const downloadReport = async (analysis: ThreeAnalysis) => {
-  try {
-    // 生成报告内容
-    const reportContent = generateReportContent(analysis)
-
-    // 创建并下载文件
-    const blob = new Blob([reportContent], { type: 'text/plain;charset=utf-8' })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.href = url
-    link.download = `${analysis.patentInfo.title}_三性分析报告.txt`
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    URL.revokeObjectURL(url)
-
-    ElMessage.success('报告下载成功')
-  } catch (error) {
-    ElMessage.error('下载失败')
-  }
-}
-
 const deleteAnalysis = async (analysis: ThreeAnalysis) => {
   try {
     await ElMessageBox.confirm(
@@ -295,52 +248,22 @@ const deleteAnalysis = async (analysis: ThreeAnalysis) => {
   }
 }
 
-const generateReportContent = (analysis: ThreeAnalysis): string => {
-  const reportLines = [
-    '专利三性分析报告',
-    '',
-    `专利标题：${analysis.patentInfo.title}`,
-    `申请号：${analysis.patentInfo.applicationNumber}`,
-    `公开号：${analysis.patentInfo.publicationNumber}`,
-    `申请人：${analysis.patentInfo.applicant}`,
-    `发明人：${analysis.patentInfo.inventor.join(', ')}`,
-    `申请日：${analysis.patentInfo.applicationDate}`,
-    `公开日：${analysis.patentInfo.publicationDate}`,
-    `IPC分类：${analysis.patentInfo.ipcClass.join(', ')}`,
-    '',
-    `专利摘要：`,
-    analysis.patentInfo.abstract,
-    '',
-    '一、新颖性分析',
-    `结论：${analysis.noveltyAnalysis.hasNovelty ? '具备新颖性' : '不具备新颖性'}`,
-    `分析：${analysis.noveltyAnalysis.analysis}`,
-    `总结：${analysis.noveltyAnalysis.conclusion}`,
-    '',
-    '二、创造性分析',
-    `创造性水平：${getCreativityText(analysis.creativityAnalysis.creativityLevel)}`,
-    `技术特征：${analysis.creativityAnalysis.technicalFeatures.join(', ')}`,
-    `技术效果：${analysis.creativityAnalysis.technicalEffects.join(', ')}`,
-    `分析：${analysis.creativityAnalysis.analysis}`,
-    `总结：${analysis.creativityAnalysis.conclusion}`,
-    '',
-    '三、实用性分析',
-    `结论：${analysis.practicalityAnalysis.isPractical ? '具备实用性' : '不具备实用性'}`,
-    `实施方法：${analysis.practicalityAnalysis.implementationMethod}`,
-    `分析：${analysis.practicalityAnalysis.analysis}`,
-    `总结：${analysis.practicalityAnalysis.conclusion}`,
-    '',
-    '四、综合评估',
-    `综合评分：${analysis.overallEvaluation.score}分`,
-    `评估等级：${getLevelText(analysis.overallEvaluation.level)}`,
-    '风险提示：',
-    ...analysis.overallEvaluation.risks.map(risk => `- ${risk}`),
-    '改进建议：',
-    ...analysis.overallEvaluation.suggestions.map(suggestion => `- ${suggestion}`),
-    '',
-    `报告生成时间：${formatDate(analysis.createTime)}`
-  ]
+const downloadReport = async (analysis: ThreeAnalysis) => {
+  try {
+    // 检查是否有 pdfUrl
+    const pdfUrl = (analysis as any).pdfUrl
+    if (!pdfUrl) {
+      ElMessage.warning('该报告暂无PDF文件')
+      return
+    }
 
-  return reportLines.join('\n')
+    // 直接打开PDF链接
+    window.open(pdfUrl, '_blank')
+    ElMessage.success('正在打开下载链接...')
+  } catch (error) {
+    console.error('下载失败:', error)
+    ElMessage.error('下载失败')
+  }
 }
 
 // 工具方法
@@ -460,9 +383,10 @@ onMounted(() => {
     .list-content {
       .analysis-list {
         .analysis-item {
+          display: flex;
+          gap: var(--spacing-lg);
           padding: var(--spacing-lg);
           border-bottom: 1px solid var(--color-border-light);
-          cursor: pointer;
           transition: background-color var(--transition-fast);
 
           &:hover {
@@ -471,6 +395,95 @@ onMounted(() => {
 
           &:last-child {
             border-bottom: none;
+          }
+
+          // 首页图片区域
+          .analysis-image {
+            position: relative;
+            flex-shrink: 0;
+            width: 280px;
+            height: 210px;
+            border-radius: var(--border-radius-base);
+            overflow: hidden;
+            background-color: var(--color-bg-secondary);
+
+            :deep(.el-image) {
+              width: 100%;
+              height: 100%;
+              cursor: zoom-in;
+
+              img {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+                background-color: white;
+              }
+            }
+
+            .image-error {
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              height: 100%;
+              color: var(--color-text-placeholder);
+              background-color: var(--color-bg-secondary);
+
+              .el-icon {
+                font-size: 48px;
+                margin-bottom: var(--spacing-sm);
+              }
+            }
+
+            .image-loading {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              height: 100%;
+              background-color: var(--color-bg-secondary);
+
+              .el-icon {
+                font-size: 32px;
+                color: var(--color-primary);
+              }
+            }
+
+            // 悬停蒙层
+            .image-mask {
+              position: absolute;
+              top: 0;
+              left: 0;
+              right: 0;
+              bottom: 0;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              gap: var(--spacing-xs);
+              background-color: rgba(0, 0, 0, 0.6);
+              color: white;
+              opacity: 0;
+              transition: opacity var(--transition-fast);
+              pointer-events: none;
+
+              .el-icon {
+                font-size: 32px;
+              }
+
+              span {
+                font-size: var(--font-size-sm);
+              }
+            }
+
+            &:hover .image-mask {
+              opacity: 1;
+            }
+          }
+
+          // 分析信息区域
+          .analysis-content {
+            flex: 1;
+            min-width: 0;
           }
 
           .analysis-header {
@@ -616,6 +629,19 @@ onMounted(() => {
 @media (max-width: 768px) {
   .three-analysis-history-container {
     .analysis-list-card .list-content .analysis-list .analysis-item {
+      flex-direction: column;
+
+      // 移动端图片区域
+      .analysis-image {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 4 / 3;
+      }
+
+      .analysis-content {
+        width: 100%;
+      }
+
       .analysis-header {
         flex-direction: column;
         align-items: flex-start;

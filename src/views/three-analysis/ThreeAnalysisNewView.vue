@@ -40,50 +40,15 @@
       </el-form>
     </el-card>
 
-    <!-- 分析结果 -->
-    <el-card v-if="analyzing || analysisResult" class="result-card">
+    <!-- 分析进度 -->
+    <el-card v-if="analyzing" class="result-card">
       <template #header>
-        <span>分析结果</span>
+        <span>提交中</span>
       </template>
 
-      <div v-if="analyzing" class="analyzing-status">
+      <div class="analyzing-status">
         <el-progress :percentage="analysisProgress" />
         <p class="progress-text">{{ progressText }}</p>
-      </div>
-
-      <div v-if="analysisResult && !analyzing" class="analysis-content">
-        <div class="overall-evaluation">
-          <h3>综合评估</h3>
-          <el-progress type="circle" :percentage="analysisResult.overallScore" />
-        </div>
-
-        <div class="analysis-sections">
-          <div class="section" v-if="formData.analysisTypes.includes('novelty')">
-            <h4>新颖性分析</h4>
-            <el-tag :type="analysisResult.novelty.hasNovelty ? 'success' : 'danger'">
-              {{ analysisResult.novelty.hasNovelty ? '具备新颖性' : '不具备新颖性' }}
-            </el-tag>
-            <p>{{ analysisResult.novelty.conclusion }}</p>
-          </div>
-
-          <div class="section" v-if="formData.analysisTypes.includes('inventiveness')">
-            <h4>创造性分析</h4>
-            <el-tag type="success">高创造性</el-tag>
-            <p>{{ analysisResult.inventiveness.conclusion }}</p>
-          </div>
-
-          <div class="section" v-if="formData.analysisTypes.includes('practicality')">
-            <h4>实用性分析</h4>
-            <el-tag :type="analysisResult.practicality.isPractical ? 'success' : 'danger'">
-              {{ analysisResult.practicality.isPractical ? '具备实用性' : '不具备实用性' }}
-            </el-tag>
-            <p>{{ analysisResult.practicality.conclusion }}</p>
-          </div>
-        </div>
-
-        <div class="result-actions">
-          <el-button type="primary" @click="downloadReport">下载报告</el-button>
-        </div>
       </div>
     </el-card>
   </div>
@@ -91,12 +56,14 @@
 
 <script setup lang="ts">
 import { ref, reactive, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { ElMessage, type FormInstance } from 'element-plus'
+import { threeAnalysisService } from '@/services/threeAnalysis'
 
+const router = useRouter()
 const formRef = ref<FormInstance>()
 const analyzing = ref(false)
 const analysisProgress = ref(0)
-const analysisResult = ref(null)
 
 const formData = reactive({
   title: '',
@@ -117,44 +84,41 @@ const startAnalysis = async () => {
   analyzing.value = true
   analysisProgress.value = 0
 
-  // 模拟分析过程
-  const interval = setInterval(() => {
-    analysisProgress.value += 20
-    if (analysisProgress.value >= 100) {
-      clearInterval(interval)
-      analyzing.value = false
-
-      // 模拟分析结果
-      analysisResult.value = {
-        overallScore: 85,
-        novelty: {
-          hasNovelty: true,
-          conclusion: '该技术方案具备新颖性，相对于现有技术存在明显区别。'
-        },
-        inventiveness: {
-          level: 'high',
-          conclusion: '该技术方案具有较高的创造性，技术特征的组合非显而易知。'
-        },
-        practicality: {
-          isPractical: true,
-          conclusion: '该技术方案具备实用性，能够产生积极的技术效果。'
-        }
+  try {
+    // 模拟进度
+    const progressInterval = setInterval(() => {
+      if (analysisProgress.value < 90) {
+        analysisProgress.value += 10
       }
+    }, 500)
 
-      ElMessage.success('分析完成！')
-    }
-  }, 500)
+    // 调用后端API
+    await threeAnalysisService.createAnalysis({
+      title: formData.title,
+      technicalSolution: formData.technicalSolution,
+      analysisTypes: formData.analysisTypes
+    })
+
+    clearInterval(progressInterval)
+    analysisProgress.value = 100
+
+    ElMessage.success('分析任务已提交，请在历史记录中查看结果')
+
+    // 跳转到历史记录页面
+    setTimeout(() => {
+      router.push('/app/three-analysis/history')
+    }, 1500)
+  } catch (error: any) {
+    ElMessage.error(error.message || '分析失败')
+  } finally {
+    analyzing.value = false
+  }
 }
 
 const resetForm = () => {
   if (formRef.value) {
     formRef.value.resetFields()
   }
-  analysisResult.value = null
-}
-
-const downloadReport = () => {
-  ElMessage.success('报告下载中...')
 }
 </script>
 
