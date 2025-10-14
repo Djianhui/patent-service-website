@@ -1,6 +1,7 @@
 import { request } from './http'
 import type { PatentDraft, Claim, Drawing, Template, TemplateContent } from '@/types'
 import { DraftStatus } from '@/types'
+import { convertImageUrl } from '@/utils'
 
 // 分页查询请求参数
 export interface PageQueryRequest {
@@ -237,7 +238,7 @@ export const patentDraftService = {
             updateTime: record.updateTime,
             userId: String(record.userId),
             // 扩展字段
-            firstImgUrl: record.firstImgUrl,
+            firstImgUrl: convertImageUrl(record.firstImgUrl),
             pdfUrl: record.pdfUrl,
             wordUrl: record.wordUrl,
             mdUrl: record.mdUrl,

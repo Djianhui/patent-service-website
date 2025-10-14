@@ -1,5 +1,6 @@
 import { request } from './http'
 import type { ThreeAnalysis, Patent, NoveltyAnalysis, CreativityAnalysis, PracticalityAnalysis, OverallEvaluation } from '@/types'
+import { convertImageUrl } from '@/utils'
 
 // 分页查询请求参数
 export interface PageQueryRequest {
@@ -374,7 +375,7 @@ export const threeAnalysisService = {
             createTime: record.createTime,
             userId: String(record.userId),
             // 扩展字段
-            firstImgUrl: record.firstImgUrl,
+            firstImgUrl: convertImageUrl(record.firstImgUrl),
             pdfUrl: record.pdfUrl,
             wordUrl: record.wordUrl,
             mdUrl: record.mdUrl,

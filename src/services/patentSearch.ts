@@ -1,5 +1,6 @@
 import { request } from './http'
 import type { Patent, SearchResult, PatentSearchCriteria } from '@/types'
+import { convertImageUrl } from '@/utils'
 
 // 分页查询请求参数
 export interface PageQueryRequest {
@@ -254,7 +255,7 @@ export const patentSearchService = {
             description: abstract,
             drawings: [],
             // 扩展字段
-            firstImgUrl: record.firstImgUrl,
+            firstImgUrl: convertImageUrl(record.firstImgUrl),
             pdfUrl: record.pdfUrl,
             wordUrl: record.wordUrl,
             mdUrl: record.mdUrl,

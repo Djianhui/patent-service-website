@@ -1,6 +1,7 @@
 import { request } from './http'
 import type { TechReport, TechReportContent } from '@/types'
 import { ReportStatus } from '@/types'
+import { convertImageUrl } from '@/utils'
 
 // 模拟数据
 const mockReports: TechReport[] = [
@@ -239,7 +240,7 @@ export const techReportService = {
             pdfUrl: record.pdfUrl,
             wordUrl: record.wordUrl,
             mdUrl: record.mdUrl,
-            firstImgUrl: record.firstImgUrl
+            firstImgUrl: convertImageUrl(record.firstImgUrl)
           } as TechReport & {
             pdfUrl?: string
             wordUrl?: string

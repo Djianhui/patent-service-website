@@ -69,7 +69,7 @@
           </div>
 
           <!-- 报告内容区域 -->
-          <div class="report-info" @click="viewReport(report)">
+          <div class="report-info">
             <div class="report-header">
               <h3 class="report-title">{{ report.title }}</h3>
               <div class="report-status">
@@ -100,9 +100,6 @@
             </div>
 
             <div class="report-actions" @click.stop>
-              <el-button size="small" text @click="viewReport(report)">
-                查看
-              </el-button>
               <el-button size="small" text @click="downloadReport(report)">
                 下载
               </el-button>
@@ -130,96 +127,6 @@
           @size-change="handleSizeChange" @current-change="handlePageChange" />
       </div>
     </el-card>
-
-    <!-- 文件预览对话框 -->
-    <el-dialog v-model="previewVisible" :title="currentReport?.title || '报告预览'" width="80%" top="5vh" destroy-on-close>
-      <div v-loading="previewLoading" class="preview-container">
-        <div v-if="currentReport" class="report-preview">
-          <!-- 报告头部信息 -->
-          <div class="preview-header">
-            <div class="report-info">
-              <h2>{{ currentReport.title }}</h2>
-              <div class="report-meta">
-                <el-tag :type="getStatusType(currentReport.status)">
-                  {{ getStatusText(currentReport.status) }}
-                </el-tag>
-                <span class="meta-text">技术领域：{{ currentReport.technicalField || '未分类' }}</span>
-                <span class="meta-text">创建时间：{{ formatDate(currentReport.createTime) }}</span>
-              </div>
-            </div>
-            <div class="preview-actions">
-              <el-button @click="downloadReport(currentReport)">
-                <el-icon>
-                  <Download />
-                </el-icon>
-                下载报告
-              </el-button>
-            </div>
-          </div>
-
-          <!-- 报告内容 -->
-          <div class="preview-content">
-            <div v-if="currentReport.reportContent" class="report-sections">
-              <!-- 技术摘要 -->
-              <div class="section">
-                <h3>技术摘要</h3>
-                <p>{{ currentReport.reportContent.summary }}</p>
-              </div>
-
-              <!-- 技术背景 -->
-              <div class="section">
-                <h3>技术背景</h3>
-                <p>{{ currentReport.reportContent.backgroundTechnology }}</p>
-              </div>
-
-              <!-- 技术问题 -->
-              <div class="section">
-                <h3>技术问题</h3>
-                <p>{{ currentReport.reportContent.technicalProblem }}</p>
-              </div>
-
-              <!-- 技术方案 -->
-              <div class="section">
-                <h3>技术方案</h3>
-                <p>{{ currentReport.reportContent.technicalSolution }}</p>
-              </div>
-
-              <!-- 技术效果 -->
-              <div class="section">
-                <h3>技术效果</h3>
-                <p>{{ currentReport.reportContent.beneficialEffects }}</p>
-              </div>
-
-              <!-- 实施方法 -->
-              <div class="section" v-if="currentReport.reportContent.implementationMethods">
-                <h3>实施方法</h3>
-                <ul>
-                  <li v-for="(method, index) in currentReport.reportContent.implementationMethods" :key="index">
-                    {{ method }}
-                  </li>
-                </ul>
-              </div>
-            </div>
-
-            <!-- 原始输入内容 -->
-            <div v-else class="raw-content">
-              <h3>原始内容</h3>
-              <p>{{ currentReport.inputContent }}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <template #footer>
-        <el-button @click="previewVisible = false">关闭</el-button>
-        <el-button type="primary" @click="currentReport && downloadReport(currentReport)">
-          <el-icon>
-            <Download />
-          </el-icon>
-          下载报告
-        </el-button>
-      </template>
-    </el-dialog>
   </div>
 </template>
 
@@ -238,9 +145,6 @@ const techReportStore = useTechReportStore()
 
 // 响应式数据
 const loading = ref(false)
-const previewVisible = ref(false)
-const previewLoading = ref(false)
-const currentReport = ref<TechReport | null>(null)
 
 const filterForm = reactive({
   keyword: '',
@@ -322,22 +226,6 @@ const handlePageChange = () => {
 const handleSizeChange = () => {
   pagination.page = 1
   loadReports()
-}
-
-const viewReport = async (report: TechReport) => {
-  previewLoading.value = true
-  previewVisible.value = true
-
-  try {
-    // 获取详细报告数据
-    const detailReport = await techReportStore.getReportDetail(report.id)
-    currentReport.value = detailReport
-  } catch (error) {
-    ElMessage.error('加载报告详情失败')
-    currentReport.value = report // 使用列表中的数据作为备选
-  } finally {
-    previewLoading.value = false
-  }
 }
 
 const downloadReport = async (report: TechReport) => {

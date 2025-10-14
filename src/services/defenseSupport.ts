@@ -1,4 +1,5 @@
 import { request } from './http'
+import { convertImageUrl } from '@/utils'
 
 // 答辩支持功能类型
 export enum DefenseFunctionType {
@@ -220,7 +221,7 @@ export const defenseSupportService = {
             functionType,
             description,
             fileUrls,
-            firstImgUrl: record.firstImgUrl,
+            firstImgUrl: convertImageUrl(record.firstImgUrl),
             pdfUrl: record.pdfUrl,
             wordUrl: record.wordUrl,
             mdUrl: record.mdUrl,

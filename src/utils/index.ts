@@ -35,6 +35,17 @@ export function formatFileSize(bytes: number): string {
 }
 
 /**
+ * 转换图片URL前缀
+ * 将旧的测试域名替换为新的生产域名
+ */
+export function convertImageUrl(url: string | undefined | null): string {
+  if (!url) return ''
+  
+  // 将 http://ccsutest.w1.luyouxia.net 替换为 https://patent.langdetech.cn/img
+  return url.replace('http://ccsutest.w1.luyouxia.net', 'https://patent.langdetech.cn/img')
+}
+
+/**
  * 防抖函数
  */
 export function debounce<T extends (...args: any[]) => any>(
