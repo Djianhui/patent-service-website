@@ -3,7 +3,7 @@
     <!-- 页面头部 -->
     <div class="page-header">
       <h1 class="page-title">专利快速检索</h1>
-      <p class="page-subtitle">输入关键词快速检索相关专利文献</p>
+      <p class="page-subtitle">输入技术方案快速检索相关专利文献</p>
     </div>
 
     <!-- 搜索区域 -->
@@ -32,97 +32,109 @@
         <div class="search-suggestions">
           <span class="suggestions-label">试试以下案例：</span>
           <el-tag v-for="suggestion in searchSuggestions" :key="suggestion" class="suggestion-tag"
-            @click="searchForm.keyword = suggestion; handleSearch()">
+            @click="searchForm.keyword = suggestion">
             {{ suggestion }}
           </el-tag>
         </div>
       </el-form>
     </el-card>
 
-    <!-- 搜索结果 -->
-    <el-card v-if="hasSearched" class="results-card">
+    <!-- 检索历史列表 -->
+    <el-card class="results-card">
       <template #header>
         <div class="results-header">
-          <span>检索结果</span>
+          <span>检索历史</span>
           <div class="results-info">
-            <span class="results-count">共找到 {{ total }} 件专利</span>
-            <el-button size="small" @click="exportResults" :disabled="searchResults.length === 0">
-              导出结果
-            </el-button>
+            <span class="results-count">共 {{ total }} 条记录</span>
           </div>
         </div>
       </template>
 
-      <div v-loading="searching" class="results-content">
-        <!-- 搜索结果列表 -->
+      <div v-loading="loading" class="results-content">
+        <!-- 检索历史列表 -->
         <div class="patent-list">
-          <div v-for="patent in searchResults" :key="patent.id" class="patent-item" @click="viewPatentDetail(patent)">
-            <div class="patent-header">
-              <h3 class="patent-title">{{ patent.title }}</h3>
-              <div class="patent-actions">
-                <el-button size="small" @click.stop="viewPatentDetailDialog(patent)">
-                  <el-icon>
-                    <View />
-                  </el-icon>
-                  在线阅览
-                </el-button>
-                <el-button size="small" @click.stop="downloadPatent(patent)">
-                  <el-icon>
-                    <Download />
-                  </el-icon>
-                  下载
-                </el-button>
-                <el-button size="small" :icon="isFavorite(patent.id) ? 'StarFilled' : 'Star'"
-                  :type="isFavorite(patent.id) ? 'warning' : 'default'" @click.stop="toggleFavorite(patent)">
-                  {{ isFavorite(patent.id) ? '已收藏' : '收藏' }}
-                </el-button>
+          <div v-for="patent in patentList" :key="patent.id" class="patent-item">
+            <!-- 首页图片 -->
+            <div class="patent-image" v-if="(patent as any).firstImgUrl" @click.stop>
+              <el-image :src="(patent as any).firstImgUrl" fit="contain" :alt="patent.title" lazy
+                :preview-src-list="[(patent as any).firstImgUrl]" :initial-index="0" preview-teleported>
+                <template #error>
+                  <div class="image-error">
+                    <el-icon>
+                      <Picture />
+                    </el-icon>
+                    <span>图片加载失败</span>
+                  </div>
+                </template>
+                <template #placeholder>
+                  <div class="image-loading">
+                    <el-icon class="is-loading">
+                      <Loading />
+                    </el-icon>
+                  </div>
+                </template>
+              </el-image>
+              <div class="image-mask">
+                <el-icon>
+                  <ZoomIn />
+                </el-icon>
+                <span>点击放大</span>
               </div>
             </div>
 
-            <div class="patent-meta">
-              <span class="meta-item">
-                <el-icon>
-                  <Document />
-                </el-icon>
-                {{ patent.publicationNumber }}
-              </span>
-              <span class="meta-item">
-                <el-icon>
-                  <User />
-                </el-icon>
-                {{ patent.applicant }}
-              </span>
-              <span class="meta-item">
-                <el-icon>
-                  <Calendar />
-                </el-icon>
-                {{ formatDate(patent.publicationDate) }}
-              </span>
-              <span class="meta-item">
-                <el-icon>
-                  <Collection />
-                </el-icon>
-                {{ patent.ipcClass?.slice(0, 2).join(', ') }}
-              </span>
-            </div>
+            <!-- 专利内容区域 -->
+            <div class="patent-info">
+              <div class="patent-header">
+                <h3 class="patent-title">{{ patent.title }}</h3>
+                <div class="patent-status">
+                  <el-tag :type="getStatusType((patent as any).state)">
+                    {{ getStatusText((patent as any).state) }}
+                  </el-tag>
+                </div>
+              </div>
 
-            <div class="patent-abstract">
-              <p>{{ getAbstractSummary(patent.abstract) }}</p>
-            </div>
+              <div class="patent-meta">
+                <span class="meta-item">
+                  <el-icon>
+                    <Document />
+                  </el-icon>
+                  {{ patent.publicationNumber }}
+                </span>
+                <span class="meta-item">
+                  <el-icon>
+                    <Calendar />
+                  </el-icon>
+                  {{ formatDate(patent.publicationDate) }}
+                </span>
+                <span class="meta-item">
+                  <el-icon>
+                    <User />
+                  </el-icon>
+                  {{ patent.applicant }}
+                </span>
+              </div>
 
-            <div class="patent-tags">
-              <el-tag v-for="tag in patent.ipcClass?.slice(0, 3)" :key="tag" size="small" type="info">
-                {{ tag }}
-              </el-tag>
+              <div class="patent-abstract">
+                <p>{{ getAbstractSummary(patent.abstract) }}</p>
+              </div>
+
+              <div class="patent-actions" @click.stop>
+                <el-button size="small" text @click="downloadReport(patent)" :disabled="!(patent as any).pdfUrl">
+                  <el-icon>
+                    <Download />
+                  </el-icon>
+                  下载PDF
+                </el-button>
+              </div>
             </div>
           </div>
         </div>
 
         <!-- 空状态 -->
-        <div v-if="!searching && searchResults.length === 0 && hasSearched" class="empty-state">
-          <el-empty description="未找到相关专利">
-            <el-button type="primary" @click="$router.push('/app/patent-search/advanced')">
-              尝试高级检索
+        <div v-if="!loading && patentList.length === 0" class="empty-state">
+          <el-empty description="暂无检索历史">
+            <el-button type="primary" @click="searchForm.keyword = ''; handleSearch()">
+              开始检索
             </el-button>
           </el-empty>
         </div>
@@ -136,77 +148,7 @@
       </div>
     </el-card>
 
-    <!-- 专利详情对话框 -->
-    <el-dialog v-model="detailVisible" :title="currentPatent?.title || '专利详情'" width="80%" top="5vh" destroy-on-close>
-      <div v-loading="detailLoading" class="patent-detail">
-        <div v-if="currentPatent" class="detail-content">
-          <!-- 专利基本信息 -->
-          <div class="detail-header">
-            <h2>{{ currentPatent.title }}</h2>
-            <div class="patent-meta-detail">
-              <div class="meta-row">
-                <span class="meta-label">申请号：</span>
-                <span>{{ currentPatent.applicationNumber }}</span>
-              </div>
-              <div class="meta-row">
-                <span class="meta-label">公开号：</span>
-                <span>{{ currentPatent.publicationNumber }}</span>
-              </div>
-              <div class="meta-row">
-                <span class="meta-label">申请人：</span>
-                <span>{{ currentPatent.applicant }}</span>
-              </div>
-              <div class="meta-row">
-                <span class="meta-label">发明人：</span>
-                <span>{{ currentPatent.inventor.join(', ') }}</span>
-              </div>
-              <div class="meta-row">
-                <span class="meta-label">申请日：</span>
-                <span>{{ formatDate(currentPatent.applicationDate) }}</span>
-              </div>
-              <div class="meta-row">
-                <span class="meta-label">公开日：</span>
-                <span>{{ formatDate(currentPatent.publicationDate) }}</span>
-              </div>
-              <div class="meta-row">
-                <span class="meta-label">IPC分类：</span>
-                <span>{{ currentPatent.ipcClass.join(', ') }}</span>
-              </div>
-            </div>
-          </div>
 
-          <!-- 摘要 -->
-          <div class="detail-section">
-            <h3>摘要</h3>
-            <p>{{ currentPatent.abstract }}</p>
-          </div>
-
-          <!-- 权利要求 -->
-          <div class="detail-section">
-            <h3>权利要求</h3>
-            <div v-for="(claim, index) in currentPatent.claims" :key="index" class="claim-item">
-              <strong>{{ index + 1 }}. </strong>{{ claim }}
-            </div>
-          </div>
-
-          <!-- 说明书 -->
-          <div class="detail-section">
-            <h3>说明书</h3>
-            <p class="description-text">{{ currentPatent.description }}</p>
-          </div>
-        </div>
-      </div>
-
-      <template #footer>
-        <el-button @click="detailVisible = false">关闭</el-button>
-        <el-button type="primary" @click="currentPatent && downloadPatent(currentPatent)">
-          <el-icon>
-            <Download />
-          </el-icon>
-          下载专利
-        </el-button>
-      </template>
-    </el-dialog>
   </div>
 </template>
 
@@ -214,7 +156,7 @@
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { Document, User, Calendar, Collection, Star, StarFilled, View, Download } from '@element-plus/icons-vue'
+import { Document, User, Calendar, Collection, Star, StarFilled, View, Download, Picture, Loading, ZoomIn } from '@element-plus/icons-vue'
 import { usePatentSearchStore } from '@/stores/patentSearch'
 import { formatDate } from '@/utils'
 import type { Patent } from '@/types'
@@ -224,10 +166,8 @@ const router = useRouter()
 const patentSearchStore = usePatentSearchStore()
 
 // 响应式数据
+const loading = ref(false)
 const hasSearched = ref(false)
-const detailVisible = ref(false)
-const detailLoading = ref(false)
-const currentPatent = ref<Patent | null>(null)
 
 const searchForm = reactive({
   keyword: ''
@@ -247,6 +187,7 @@ const searchSuggestions = ref([
 const searching = computed(() => patentSearchStore.isSearching)
 const searchResults = computed(() => patentSearchStore.searchResults)
 const total = computed(() => patentSearchStore.total)
+const patentList = computed(() => patentSearchStore.searchResults)
 
 // 方法
 const handleSearch = async () => {
@@ -263,8 +204,53 @@ const handleSearch = async () => {
       page: pagination.page,
       pageSize: pagination.pageSize
     })
+    // 检索成功后加载历史记录
+    await loadSearchHistory()
   } catch (error: any) {
     ElMessage.error(error.message || '检索失败')
+  }
+}
+
+// 加载检索历史
+const loadSearchHistory = async () => {
+  loading.value = true
+  try {
+    await patentSearchStore.getSearchHistory({
+      page: pagination.page,
+      pageSize: pagination.pageSize
+    })
+  } catch (error: any) {
+    ElMessage.error(error.message || '加载历史记录失败')
+  } finally {
+    loading.value = false
+  }
+}
+
+// 状态类型映射
+const getStatusType = (state: number): 'success' | 'warning' | 'danger' | 'info' => {
+  switch (state) {
+    case 1:
+      return 'success' // 已完成
+    case 0:
+      return 'warning' // 生成中
+    case 2:
+      return 'danger' // 失败
+    default:
+      return 'info'
+  }
+}
+
+// 状态文本映射
+const getStatusText = (state: number): string => {
+  switch (state) {
+    case 1:
+      return '已完成'
+    case 0:
+      return '生成中'
+    case 2:
+      return '失败'
+    default:
+      return '未知'
   }
 }
 
@@ -286,96 +272,33 @@ const handleSizeChange = () => {
   handlePageChange()
 }
 
-const viewPatentDetailDialog = async (patent: Patent) => {
-  detailLoading.value = true
-  detailVisible.value = true
-
-  try {
-    const detailPatent = await patentSearchStore.getPatentDetail(patent.id)
-    currentPatent.value = detailPatent
-  } catch (error) {
-    ElMessage.error('加载专利详情失败')
-    currentPatent.value = patent // 使用列表中的数据作为备选
-  } finally {
-    detailLoading.value = false
-  }
-}
-
-const downloadPatent = async (patent: Patent) => {
-  try {
-    const content = `
-专利标题：${patent.title}
-申请号：${patent.applicationNumber}
-公开号：${patent.publicationNumber}
-申请人：${patent.applicant}
-发明人：${patent.inventor.join(', ')}
-申请日：${patent.applicationDate}
-公开日：${patent.publicationDate}
-IPC分类：${patent.ipcClass.join(', ')}
-
-摘要：
-${patent.abstract}
-
-权利要求：
-${patent.claims.map((claim, index) => `${index + 1}. ${claim}`).join('\n')}
-
-说明书：
-${patent.description}
-    `
-
-    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.href = url
-    link.download = `${patent.title}_${patent.publicationNumber}.txt`
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    URL.revokeObjectURL(url)
-
-    ElMessage.success('下载成功')
-  } catch (error) {
-    ElMessage.error('下载失败')
-  }
-}
-
-const viewPatentDetail = (patent: Patent) => {
-  // 保存当前专利信息
-  patentSearchStore.currentPatent = patent
-  // 跳转到专利详情页面
-  router.push(`/app/patent-search/detail/${patent.id}`)
-}
-
-const toggleFavorite = async (patent: Patent) => {
-  try {
-    if (isFavorite(patent.id)) {
-      await patentSearchStore.unfavoritePatent(patent.id)
-      ElMessage.success('已取消收藏')
-    } else {
-      await patentSearchStore.favoritePatent(patent.id)
-      ElMessage.success('收藏成功')
-    }
-  } catch (error) {
-    ElMessage.error('操作失败')
-  }
-}
-
-const isFavorite = (patentId: string): boolean => {
-  return patentSearchStore.isFavorite(patentId)
-}
-
 const getAbstractSummary = (abstract: string): string => {
   return abstract.length > 200 ? abstract.substring(0, 200) + '...' : abstract
 }
 
-const exportResults = () => {
-  ElMessage.info('导出功能开发中...')
+// 下载报告
+const downloadReport = async (patent: Patent) => {
+  try {
+    // 检查是否有 pdfUrl
+    const pdfUrl = (patent as any).pdfUrl
+    if (!pdfUrl) {
+      ElMessage.warning('该报告暂无PDF文件')
+      return
+    }
+
+    // 直接打开PDF链接
+    window.open(pdfUrl, '_blank')
+    ElMessage.success('正在打开下载链接...')
+  } catch (error) {
+    console.error('下载失败:', error)
+    ElMessage.error('下载失败')
+  }
 }
 
 // 生命周期
 onMounted(() => {
-  // 页面初始化
-  patentSearchStore.clearResults()
+  // 页面初始化，加载历史记录
+  loadSearchHistory()
 })
 </script>
 
@@ -452,6 +375,8 @@ onMounted(() => {
     .results-content {
       .patent-list {
         .patent-item {
+          display: flex;
+          gap: var(--spacing-lg);
           padding: var(--spacing-lg);
           border-bottom: 1px solid var(--color-border-light);
           cursor: pointer;
@@ -463,6 +388,95 @@ onMounted(() => {
 
           &:last-child {
             border-bottom: none;
+          }
+
+          // 首页图片区域
+          .patent-image {
+            position: relative;
+            flex-shrink: 0;
+            width: 280px;
+            height: 210px;
+            border-radius: var(--border-radius-base);
+            overflow: hidden;
+            background-color: var(--color-bg-secondary);
+
+            :deep(.el-image) {
+              width: 100%;
+              height: 100%;
+              cursor: zoom-in;
+
+              img {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+                background-color: white;
+              }
+            }
+
+            .image-error {
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              height: 100%;
+              color: var(--color-text-placeholder);
+              background-color: var(--color-bg-secondary);
+
+              .el-icon {
+                font-size: 48px;
+                margin-bottom: var(--spacing-sm);
+              }
+            }
+
+            .image-loading {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              height: 100%;
+              background-color: var(--color-bg-secondary);
+
+              .el-icon {
+                font-size: 32px;
+                color: var(--color-primary);
+              }
+            }
+
+            // 悬停蒙层
+            .image-mask {
+              position: absolute;
+              top: 0;
+              left: 0;
+              right: 0;
+              bottom: 0;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              gap: var(--spacing-xs);
+              background-color: rgba(0, 0, 0, 0.6);
+              color: white;
+              opacity: 0;
+              transition: opacity var(--transition-fast);
+              pointer-events: none;
+
+              .el-icon {
+                font-size: 32px;
+              }
+
+              span {
+                font-size: var(--font-size-sm);
+              }
+            }
+
+            &:hover .image-mask {
+              opacity: 1;
+            }
+          }
+
+          // 专利信息区域
+          .patent-info {
+            flex: 1;
+            min-width: 0;
           }
 
           .patent-header {
@@ -478,6 +492,10 @@ onMounted(() => {
               margin: 0;
               flex: 1;
               line-height: var(--line-height-snug);
+            }
+
+            .patent-status {
+              margin-left: var(--spacing-md);
             }
 
             .patent-actions {
@@ -515,6 +533,20 @@ onMounted(() => {
             }
           }
 
+          .patent-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+            padding-top: var(--spacing-sm);
+
+            .el-button {
+              padding: 4px 8px;
+
+              .el-icon {
+                margin-right: 4px;
+              }
+            }
+          }
+
           .patent-tags {
             display: flex;
             gap: var(--spacing-xs);
@@ -541,6 +573,19 @@ onMounted(() => {
 @media (max-width: 768px) {
   .quick-search-container {
     .results-card .results-content .patent-list .patent-item {
+      flex-direction: column;
+
+      // 移动端图片区域
+      .patent-image {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 4 / 3;
+      }
+
+      .patent-info {
+        width: 100%;
+      }
+
       .patent-meta {
         flex-direction: column;
         gap: var(--spacing-xs);
@@ -550,84 +595,6 @@ onMounted(() => {
         flex-direction: column;
         align-items: flex-start;
         gap: var(--spacing-sm);
-      }
-    }
-  }
-}
-
-// 专利详情对话框样式
-.patent-detail {
-  .detail-content {
-    .detail-header {
-      margin-bottom: var(--spacing-xl);
-      padding-bottom: var(--spacing-lg);
-      border-bottom: 1px solid var(--color-border-light);
-
-      h2 {
-        font-size: var(--font-size-xl);
-        font-weight: var(--font-weight-semibold);
-        color: var(--color-text-primary);
-        margin-bottom: var(--spacing-lg);
-      }
-
-      .patent-meta-detail {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: var(--spacing-sm);
-
-        .meta-row {
-          display: flex;
-
-          .meta-label {
-            font-weight: var(--font-weight-medium);
-            color: var(--color-text-secondary);
-            min-width: 80px;
-            flex-shrink: 0;
-          }
-        }
-      }
-    }
-
-    .detail-section {
-      margin-bottom: var(--spacing-xl);
-
-      h3 {
-        font-size: var(--font-size-lg);
-        font-weight: var(--font-weight-medium);
-        color: var(--color-primary);
-        margin-bottom: var(--spacing-md);
-        padding-bottom: var(--spacing-sm);
-        border-bottom: 2px solid var(--color-primary-light);
-      }
-
-      p {
-        color: var(--color-text-primary);
-        line-height: var(--line-height-relaxed);
-        margin: 0;
-        text-align: justify;
-      }
-
-      .claim-item {
-        margin-bottom: var(--spacing-md);
-        padding: var(--spacing-md);
-        background-color: var(--color-bg-secondary);
-        border-radius: var(--border-radius-base);
-        line-height: var(--line-height-relaxed);
-      }
-
-      .description-text {
-        white-space: pre-wrap;
-        word-break: break-word;
-      }
-    }
-  }
-}
-
-@media (max-width: 768px) {
-  .patent-detail {
-    .detail-content {
-      .detail-header .patent-meta-detail {
-        grid-template-columns: 1fr;
       }
     }
   }

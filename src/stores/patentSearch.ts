@@ -30,19 +30,19 @@ export const usePatentSearchStore = defineStore('patentSearch', () => {
     searching.value = true
     try {
       const response = await patentSearchService.quickSearch(keyword, params)
-      
+
       if (params?.page === 1 || !params?.page) {
         searchResults.value = response.patents
       } else {
         searchResults.value.push(...response.patents)
       }
-      
+
       total.value = response.total
       currentPage.value = params?.page || 1
-      
+
       // 保存搜索条件
       lastSearchCriteria.value = { keyword }
-      
+
       return response
     } catch (error) {
       console.error('快速检索失败:', error)
@@ -59,19 +59,19 @@ export const usePatentSearchStore = defineStore('patentSearch', () => {
     searching.value = true
     try {
       const response = await patentSearchService.advancedSearch(criteria, params)
-      
+
       if (params?.page === 1 || !params?.page) {
         searchResults.value = response.patents
       } else {
         searchResults.value.push(...response.patents)
       }
-      
+
       total.value = response.total
       currentPage.value = params?.page || 1
-      
+
       // 保存搜索条件
       lastSearchCriteria.value = criteria
-      
+
       return response
     } catch (error) {
       console.error('高级检索失败:', error)
@@ -86,13 +86,13 @@ export const usePatentSearchStore = defineStore('patentSearch', () => {
     try {
       const patent = await patentSearchService.getPatentDetail(id)
       currentPatent.value = patent
-      
+
       // 更新搜索结果中的专利信息
       const index = searchResults.value.findIndex(p => p.id === id)
       if (index !== -1) {
         searchResults.value[index] = patent
       }
-      
+
       return patent
     } catch (error) {
       console.error('获取专利详情失败:', error)
@@ -105,7 +105,7 @@ export const usePatentSearchStore = defineStore('patentSearch', () => {
   const favoritePatent = async (id: string) => {
     try {
       await patentSearchService.favoritePatent(id)
-      
+
       // 更新本地状态
       const patent = searchResults.value.find(p => p.id === id) || currentPatent.value
       if (patent && !favoritePatents.value.find(p => p.id === id)) {
@@ -120,7 +120,7 @@ export const usePatentSearchStore = defineStore('patentSearch', () => {
   const unfavoritePatent = async (id: string) => {
     try {
       await patentSearchService.unfavoritePatent(id)
-      
+
       // 更新本地状态
       const index = favoritePatents.value.findIndex(p => p.id === id)
       if (index !== -1) {
@@ -156,7 +156,10 @@ export const usePatentSearchStore = defineStore('patentSearch', () => {
     loading.value = true
     try {
       const response = await patentSearchService.getSearchHistory(params)
-      searchHistory.value = response.history
+      // 将检索历史存储到 searchResults 中（因为它们是扩展的 Patent 类型）
+      searchResults.value = response.patents
+      total.value = response.total
+      currentPage.value = params?.page || 1
       return response
     } catch (error) {
       console.error('获取检索历史失败:', error)
@@ -169,7 +172,7 @@ export const usePatentSearchStore = defineStore('patentSearch', () => {
   const deleteSearchHistory = async (id: string) => {
     try {
       await patentSearchService.deleteSearchHistory(id)
-      
+
       // 更新本地状态
       const index = searchHistory.value.findIndex(h => h.id === id)
       if (index !== -1) {
@@ -194,7 +197,7 @@ export const usePatentSearchStore = defineStore('patentSearch', () => {
   const exportSearchResults = async (searchId: string, format: 'excel' | 'csv' = 'excel') => {
     try {
       const blob = await patentSearchService.exportSearchResults(searchId, format)
-      
+
       // 创建下载链接
       const url = URL.createObjectURL(blob)
       const link = document.createElement('a')
@@ -248,13 +251,13 @@ export const usePatentSearchStore = defineStore('patentSearch', () => {
     currentPage,
     pageSize,
     lastSearchCriteria,
-    
+
     // Getters
     hasResults,
     resultCount,
     favoriteCount,
     isSearching,
-    
+
     // Actions
     quickSearch,
     advancedSearch,

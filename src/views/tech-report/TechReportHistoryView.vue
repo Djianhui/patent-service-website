@@ -100,9 +100,9 @@
             </div>
 
             <div class="report-actions" @click.stop>
-              <!-- <el-button size="small" text @click="viewReport(report)">
+              <el-button size="small" text @click="viewReport(report)">
                 查看
-              </el-button> -->
+              </el-button>
               <el-button size="small" text @click="downloadReport(report)">
                 下载
               </el-button>

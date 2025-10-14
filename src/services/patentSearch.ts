@@ -1,6 +1,45 @@
 import { request } from './http'
 import type { Patent, SearchResult, PatentSearchCriteria } from '@/types'
 
+// 分页查询请求参数
+export interface PageQueryRequest {
+  keyword?: string
+  pageIndex?: number
+  pageSize?: number
+  pageSorts?: Array<{
+    asc: boolean
+    column: string
+  }>
+  state?: number
+  type: number  // 2: 专利检索
+}
+
+// 分页查询响应结果
+export interface PageQueryResponse {
+  code: number
+  data: {
+    pageIndex: number
+    pageSize: number
+    records: Array<{
+      createTime: string
+      firstImgUrl: string
+      id: number
+      mdUrl: string
+      params: any
+      pdfUrl: string
+      state: number
+      taskId: string
+      taskJson: string
+      type: number
+      updateTime: string
+      userId: number
+      wordUrl: string
+    }>
+    total: number
+  }
+  msg: string
+}
+
 // 模拟专利数据
 const mockPatents: Patent[] = [
   {
@@ -97,48 +136,164 @@ const mockPatents: Patent[] = [
 let mockFavoritePatents: Patent[] = []
 
 export const patentSearchService = {
-  // 快速检索
+  // 快速检索（生成专利检索报告）
   async quickSearch(keyword: string, params?: {
     page?: number
     pageSize?: number
   }): Promise<SearchResult> {
-    // 模拟 API 调用延迟
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    try {
+      console.log('=== 开始专利检索 ===')
+      console.log('检索关键词:', keyword)
 
-    // 根据关键词过滤数据
-    let filteredPatents = mockPatents
-    if (keyword.trim()) {
-      const searchKeyword = keyword.toLowerCase()
-      filteredPatents = mockPatents.filter(patent =>
-        patent.title.toLowerCase().includes(searchKeyword) ||
-        patent.abstract.toLowerCase().includes(searchKeyword) ||
-        patent.applicant.toLowerCase().includes(searchKeyword) ||
-        patent.inventor.some(inv => inv.toLowerCase().includes(searchKeyword)) ||
-        patent.applicationNumber.toLowerCase().includes(searchKeyword) ||
-        patent.publicationNumber.toLowerCase().includes(searchKeyword)
-      )
+      // 调用API生成专利检索报告
+      const response = await request.post<any>('/manus/task', {
+        prompt: keyword,
+        type: 2  // 2: 专利检索
+      })
+
+      console.log('检索提交响应:', response)
+
+      if (response.code === 200) {
+        // 检索提交成功，返回空结果（实际结果在历史记录中查看）
+        return {
+          patents: [],
+          total: 0,
+          page: params?.page || 1,
+          pageSize: params?.pageSize || 20
+        }
+      } else {
+        throw new Error(response.msg || '检索失败')
+      }
+    } catch (error: any) {
+      console.error('=== 专利检索失败 ===')
+      console.error(error)
+
+      if (error.response && error.response.status === 401) {
+        throw new Error('登录已过期，请重新登录')
+      }
+
+      if (error.response && error.response.data) {
+        const backendError = error.response.data
+        throw new Error(backendError.msg || backendError.message || '检索失败')
+      } else if (error.message) {
+        throw new Error(error.message)
+      } else {
+        throw new Error('网络错误，请检查网络连接')
+      }
     }
+  },
 
-    // 分页处理
-    const page = params?.page || 1
-    const pageSize = params?.pageSize || 20
-    const start = (page - 1) * pageSize
-    const end = start + pageSize
-    const paginatedPatents = filteredPatents.slice(start, end)
+  // 获取检索历史列表（分页）
+  async getSearchHistory(params?: {
+    page?: number
+    pageSize?: number
+    keyword?: string
+    status?: string
+  }): Promise<{
+    patents: Patent[]
+    total: number
+  }> {
+    try {
+      console.log('=== 获取检索历史 ===')
+      console.log('请求参数:', params)
 
-    return {
-      patents: paginatedPatents,
-      total: filteredPatents.length,
-      page,
-      pageSize
+      const requestData: PageQueryRequest = {
+        keyword: params?.keyword || '',
+        pageIndex: params?.page || 1,
+        pageSize: params?.pageSize || 20,
+        type: 2  // 2: 专利检索
+      }
+
+      // 状态映射
+      if (params?.status) {
+        const statusMap: Record<string, number> = {
+          'generating': 0,
+          'completed': 1,
+          'failed': 2
+        }
+        requestData.state = statusMap[params.status]
+      }
+
+      console.log('最终请求数据:', requestData)
+
+      const response = await request.post<PageQueryResponse>('/task/getPage', requestData)
+
+      console.log('后端返回数据:', response)
+
+      if (response.code === 200 && response.data) {
+        // 转换为 Patent 类型
+        const patents: Patent[] = response.data.records.map(record => {
+          // 解析 taskJson
+          let title = '专利检索报告'
+          let abstract = ''
+          let keyword = ''
+
+          try {
+            if (record.taskJson) {
+              const taskData = JSON.parse(record.taskJson)
+              keyword = taskData.prompt || ''
+              title = `${keyword.substring(0, 20)}专利检索报告`
+              // abstract = `基于"${keyword}"的专利检索结果`
+            }
+          } catch (e) {
+            console.warn('解析 taskJson 失败:', e)
+          }
+
+          return {
+            id: String(record.id),
+            title,
+            abstract,
+            applicant: '系统生成',
+            inventor: [],
+            applicationNumber: record.taskId || String(record.id),
+            publicationNumber: record.taskId || String(record.id),
+            applicationDate: record.createTime,
+            publicationDate: record.createTime,
+            ipcClass: [],
+            claims: [],
+            description: abstract,
+            drawings: [],
+            // 扩展字段
+            firstImgUrl: record.firstImgUrl,
+            pdfUrl: record.pdfUrl,
+            wordUrl: record.wordUrl,
+            mdUrl: record.mdUrl,
+            state: record.state
+          } as Patent & {
+            firstImgUrl?: string
+            pdfUrl?: string
+            wordUrl?: string
+            mdUrl?: string
+            state?: number
+          }
+        })
+
+        console.log('转换后的检索列表:', patents)
+
+        return {
+          patents,
+          total: response.data.total
+        }
+      } else {
+        throw new Error(response.msg || '获取检索历史失败')
+      }
+    } catch (error: any) {
+      console.error('=== 获取检索历史失败 ===')
+      console.error(error)
+
+      if (error.response && error.response.status === 401) {
+        throw new Error('登录已过期，请重新登录')
+      }
+
+      if (error.response && error.response.data) {
+        const backendError = error.response.data
+        throw new Error(backendError.msg || backendError.message || '获取检索历史失败')
+      } else if (error.message) {
+        throw new Error(error.message)
+      } else {
+        throw new Error('网络错误，请检查网络连接')
+      }
     }
-
-    // 真实 API 调用（已注释）
-    // const response = await request.post<SearchResult>('/patent/search/quick', {
-    //   keyword,
-    //   ...params
-    // })
-    // return response.data
   },
 
   // 高级检索
@@ -146,11 +301,11 @@ export const patentSearchService = {
     page?: number
     pageSize?: number
   }): Promise<SearchResult> {
-    const response = await request.post<SearchResult>('/patent/search/advanced', {
+    const response = await request.post('/patent/search/advanced', {
       ...criteria,
       ...params
     })
-    return response.data
+    return response
   },
 
   // 获取专利详情
@@ -228,24 +383,6 @@ export const patentSearchService = {
     // return response.data
   },
 
-  // 获取检索历史
-  async getSearchHistory(params?: {
-    page?: number
-    pageSize?: number
-  }): Promise<{
-    history: Array<{
-      id: string
-      keyword?: string
-      criteria?: PatentSearchCriteria
-      resultCount: number
-      searchTime: string
-    }>
-    total: number
-  }> {
-    const response = await request.get('/patent/search/history', params)
-    return response.data
-  },
-
   // 删除检索历史
   async deleteSearchHistory(id: string): Promise<void> {
     await request.delete(`/patent/search/history/${id}`)
@@ -253,13 +390,13 @@ export const patentSearchService = {
 
   // 获取相关专利推荐
   async getRelatedPatents(patentId: string, limit: number = 10): Promise<Patent[]> {
-    const response = await request.get<Patent[]>(`/patent/${patentId}/related?limit=${limit}`)
-    return response.data
+    const response = await request.get(`/patent/${patentId}/related?limit=${limit}`)
+    return response
   },
 
   // 导出检索结果
   async exportSearchResults(searchId: string, format: 'excel' | 'csv' = 'excel'): Promise<Blob> {
     const response = await request.get(`/patent/search/${searchId}/export?format=${format}`)
-    return response.data
+    return response
   }
 }
