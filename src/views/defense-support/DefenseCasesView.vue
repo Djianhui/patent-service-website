@@ -15,22 +15,12 @@
       <template #header>
         <div class="card-header">
           <span>答辩案例列表</span>
-          <el-input
-            v-model="searchKeyword"
-            placeholder="搜索案例..."
-            style="width: 300px"
-            clearable
-          />
+          <el-input v-model="searchKeyword" placeholder="搜索案例..." style="width: 300px" clearable />
         </div>
       </template>
 
       <div class="cases-list">
-        <div
-          v-for="case_ in filteredCases"
-          :key="case_.id"
-          class="case-item"
-          @click="viewCase(case_)"
-        >
+        <div v-for="case_ in filteredCases" :key="case_.id" class="case-item" @click="viewCase(case_)">
           <div class="case-header">
             <h3 class="case-title">{{ case_.title }}</h3>
             <div class="case-status">
@@ -42,15 +32,21 @@
 
           <div class="case-meta">
             <span class="meta-item">
-              <el-icon><Document /></el-icon>
+              <el-icon>
+                <Document />
+              </el-icon>
               申请号：{{ case_.applicationNumber }}
             </span>
             <span class="meta-item">
-              <el-icon><Calendar /></el-icon>
+              <el-icon>
+                <Calendar />
+              </el-icon>
               创建时间：{{ formatDate(case_.createTime) }}
             </span>
             <span class="meta-item">
-              <el-icon><Clock /></el-icon>
+              <el-icon>
+                <Clock />
+              </el-icon>
               答辩截止：{{ formatDate(case_.deadline) }}
             </span>
           </div>
@@ -95,30 +91,15 @@
         </el-form-item>
 
         <el-form-item label="审查意见" prop="examinationOpinion" required>
-          <el-input
-            v-model="newCase.examinationOpinion"
-            type="textarea"
-            :rows="5"
-            placeholder="请输入审查意见的主要内容"
-          />
+          <el-input v-model="newCase.examinationOpinion" type="textarea" :rows="5" placeholder="请输入审查意见的主要内容" />
         </el-form-item>
 
         <el-form-item label="答辩截止日期" prop="deadline">
-          <el-date-picker
-            v-model="newCase.deadline"
-            type="date"
-            placeholder="选择答辩截止日期"
-            style="width: 100%"
-          />
+          <el-date-picker v-model="newCase.deadline" type="date" placeholder="选择答辩截止日期" style="width: 100%" />
         </el-form-item>
 
         <el-form-item label="案例说明">
-          <el-input
-            v-model="newCase.summary"
-            type="textarea"
-            :rows="3"
-            placeholder="简要说明案例情况（可选）"
-          />
+          <el-input v-model="newCase.summary" type="textarea" :rows="3" placeholder="简要说明案例情况（可选）" />
         </el-form-item>
       </el-form>
 
@@ -184,7 +165,7 @@ const newCase = reactive({
 // 计算属性
 const filteredCases = computed(() => {
   if (!searchKeyword.value) return cases.value
-  
+
   return cases.value.filter(case_ =>
     case_.title.toLowerCase().includes(searchKeyword.value.toLowerCase()) ||
     case_.applicationNumber.includes(searchKeyword.value) ||
@@ -274,7 +255,7 @@ const createCase = async () => {
       title: newCase.title,
       applicationNumber: newCase.applicationNumber,
       examinationOpinion: newCase.examinationOpinion,
-      deadline: newCase.deadline?.toISOString() || '',
+      deadline: newCase.deadline ? (newCase.deadline as unknown as Date).toISOString() : '',
       summary: newCase.summary,
       status: 'preparing',
       createTime: new Date().toISOString()

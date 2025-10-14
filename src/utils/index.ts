@@ -26,11 +26,11 @@ export function formatDate(date: string | Date, format: string = 'YYYY-MM-DD HH:
  */
 export function formatFileSize(bytes: number): string {
   if (bytes === 0) return '0 B'
-  
+
   const k = 1024
   const sizes = ['B', 'KB', 'MB', 'GB', 'TB']
   const i = Math.floor(Math.log(bytes) / Math.log(k))
-  
+
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
 }
 
@@ -42,19 +42,19 @@ export function debounce<T extends (...args: any[]) => any>(
   wait: number,
   immediate: boolean = false
 ): (...args: Parameters<T>) => void {
-  let timeout: NodeJS.Timeout | null = null
-  
+  let timeout: ReturnType<typeof setTimeout> | null = null
+
   return function executedFunction(...args: Parameters<T>) {
     const later = () => {
       timeout = null
       if (!immediate) func(...args)
     }
-    
+
     const callNow = immediate && !timeout
-    
+
     if (timeout) clearTimeout(timeout)
     timeout = setTimeout(later, wait)
-    
+
     if (callNow) func(...args)
   }
 }
@@ -67,7 +67,7 @@ export function throttle<T extends (...args: any[]) => any>(
   limit: number
 ): (...args: Parameters<T>) => void {
   let inThrottle: boolean = false
-  
+
   return function executedFunction(...args: Parameters<T>) {
     if (!inThrottle) {
       func(...args)
@@ -209,7 +209,7 @@ export function getFileExtension(filename: string): string {
 export function checkFileType(file: File, allowedTypes: string[]): boolean {
   const fileType = file.type
   const fileExtension = getFileExtension(file.name).toLowerCase()
-  
+
   return allowedTypes.some(type => {
     if (type.includes('/')) {
       // MIME类型检查

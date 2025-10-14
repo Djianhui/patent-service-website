@@ -32,7 +32,13 @@ export const useTechReportStore = defineStore('techReport', () => {
   }) => {
     generating.value = true
     try {
-      const report = await techReportService.generateReport(data)
+      // 构建prompt，使用technicalField或inputContent
+      const prompt = data.technicalField || data.inputContent
+
+      const report = await techReportService.generateReport({
+        prompt: prompt,
+        type: 1  // 1: 技术报告
+      })
 
       // 添加到报告列表
       reports.value.unshift(report)
