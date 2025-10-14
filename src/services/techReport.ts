@@ -55,18 +55,54 @@ const mockReports: TechReport[] = [
 ]
 
 export interface GenerateReportRequest {
-  title: string
-  inputType: 'text' | 'file'
-  inputContent: string
-  technicalField?: string
-  fileId?: string
+  prompt: string
+  type?: number
 }
 
 export const techReportService = {
   // 生成技术方案报告
-  async generateReport(data: GenerateReportRequest): Promise<TechReport> {
-    const response = await request.post<TechReport>('/tech-report/generate', data)
-    return response.data
+  async generateReport(data: GenerateReportRequest): Promise<any> {
+    try {
+      const response = await request.post<any>('/manus/task', {
+        prompt: data.prompt,
+        type: data.type || 1
+      })
+
+      console.log('生成报告响应:', response)
+
+      // 检查后端返回结果 - 修改：code=200即为成功，data可以为null
+      if (response.code === 200) {
+        return {
+          success: true,
+          message: response.msg || '报告已提交生成，请稍后在历史记录中查看',
+          data: response.data || null  // data可能为null，表示异步处理
+        }
+      } else {
+        throw new Error(response.msg || '报告生成失败')
+      }
+    } catch (error: any) {
+      console.error('生成报告失败:', error)
+
+      // 特殊处理超时错误
+      if (error.code === 'ECONNABORTED' && error.message.includes('timeout')) {
+        throw new Error('报告生成时间较长，已提交后台处理，请稍后在历史记录中查看结果')
+      }
+
+      // 处理401认证错误
+      if (error.response && error.response.status === 401) {
+        throw new Error('登录已过期，请重新登录')
+      }
+
+      // 处理其他错误
+      if (error.response && error.response.data) {
+        const backendError = error.response.data
+        throw new Error(backendError.msg || backendError.message || '报告生成失败')
+      } else if (error.message) {
+        throw new Error(error.message)
+      } else {
+        throw new Error('网络错误，请检查网络连接')
+      }
+    }
   },
 
   // 获取报告列表
@@ -168,6 +204,6 @@ export const techReportService = {
     const formData = new FormData()
     formData.append('file', file)
     const response = await request.upload<{ fileId: string; filename: string; url: string }>('/files/upload', formData)
-    return response.data
+    return response
   }
 }

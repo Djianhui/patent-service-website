@@ -85,6 +85,7 @@ import { useRouter } from 'vue-router'
 import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
 import { UploadFilled, Select, Loading } from '@element-plus/icons-vue'
 import { useTechReportStore } from '@/stores/techReport'
+import { techReportService } from '@/services/techReport'
 
 // Composables
 const router = useRouter()
@@ -151,6 +152,32 @@ const formRules: FormRules = {
 const generateReport = async () => {
   if (!formRef.value) return
 
+  // 检查登录状态
+  const tokenStr = localStorage.getItem('token')
+  let token: string | null = null
+  if (tokenStr) {
+    try {
+      token = JSON.parse(tokenStr)
+    } catch {
+      token = tokenStr
+    }
+  }
+
+  console.log('=== 生成报告前检查 ===')
+  console.log('localStorage原始值:', tokenStr?.substring(0, 35))
+  console.log('Token是否存在:', !!token)
+  if (token) {
+    console.log('Token长度:', token.length)
+    console.log('Token前30字符:', token.substring(0, 30))
+  }
+  console.log('=====================')
+
+  if (!token) {
+    ElMessage.error('未登录，请先登录')
+    router.push('/login')
+    return
+  }
+
   try {
     const valid = await formRef.value.validate()
     if (!valid) return
@@ -162,38 +189,91 @@ const generateReport = async () => {
   generateProgress.value = 0
   currentStep.value = 0
 
-  // 模拟生成过程
-  const steps = [20, 40, 60, 80, 100]
-  for (let i = 0; i < steps.length; i++) {
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    generateProgress.value = steps[i] as number
-    currentStep.value = i
-  }
-
   try {
+    console.log('开始生成报告，输入:', formData.technicalField)
+
+    // 模拟生成过程的进度条（异步进行）
+    const progressInterval = setInterval(() => {
+      if (generateProgress.value < 90) {
+        generateProgress.value += 10
+        currentStep.value = Math.floor(generateProgress.value / 20)
+      }
+    }, 500)
+
     // 调用API生成报告
-    const reportData = await techReportStore.generateReport({
-      title: `${formData.technicalField}技术方案报告`,
-      inputType: 'text' as const,
-      inputContent: `基于${formData.technicalField}领域的技术方案分析`,
-      technicalField: formData.technicalField
+    const result = await techReportService.generateReport({
+      prompt: formData.technicalField,
+      type: 1
     })
 
-    ElMessage.success('报告生成成功')
+    // 停止进度条
+    clearInterval(progressInterval)
+    generateProgress.value = 100
+    currentStep.value = 4
 
-    // 设置预览数据
-    previewData.value = {
-      title: `${formData.technicalField}技术方案报告`,
-      sections: [
-        { key: 'summary', title: '技术方案摘要', content: '这是技术方案的摘要内容...' },
-        { key: 'background', title: '技术背景', content: '当前技术背景分析...' },
-        { key: 'innovation', title: '创新点分析', content: '技术创新点详细分析...' },
-        { key: 'advantage', title: '技术优势', content: '相比现有技术的优势...' }
-      ]
+    console.log('报告生成结果:', result)
+    ElMessage.success(result.message || '操作成功')
+
+    // 设置预览数据（如果后端返回了数据）
+    if (result.data) {
+      // 如果后端返回了完整数据
+      previewData.value = {
+        title: `${formData.technicalField}技术方案报告`,
+        sections: [
+          { key: 'summary', title: '技术方案摘要', content: result.data.summary || '报告已生成，请稍候...' },
+          { key: 'background', title: '技术背景', content: result.data.background || '当前技术背景分析...' },
+          { key: 'innovation', title: '创新点分析', content: result.data.innovation || '技术创新点详细分析...' },
+          { key: 'advantage', title: '技术优势', content: result.data.advantage || '相比现有技术的优势...' }
+        ]
+      }
+    } else {
+      // 如果没有返回数据（异步处理），显示友好提示
+      previewData.value = {
+        title: `${formData.technicalField}技术方案报告`,
+        sections: [
+          {
+            key: 'status',
+            title: '提交状态',
+            content: '✅ 报告已成功提交后台处理！'
+          },
+          {
+            key: 'tip',
+            title: '温馨提示',
+            content: 'AI正在生成您的技术方案报告，这可能需要几分钟时间。\n\n您可以：\n1. 稍后到"历史记录"页面查看生成结果\n2. 继续使用系统的其他功能\n3. 系统会在报告生成完成后自动保存'
+          },
+          {
+            key: 'next',
+            title: '后续操作',
+            content: '请前往"技术方案报告 - 历史记录"页面查看已生成的报告。'
+          }
+        ]
+      }
     }
 
   } catch (error: any) {
-    ElMessage.error(error.message || '报告生成失败')
+    console.error('生成报告失败:', error)
+
+    // 特殊处理超时错误
+    if (error.message && error.message.includes('已提交后台处理')) {
+      ElMessage.warning({
+        message: error.message,
+        duration: 5000,
+        showClose: true
+      })
+      // 超时也设置为成功状态，显示提示信息
+      generateProgress.value = 100
+      currentStep.value = 4
+
+      previewData.value = {
+        title: `${formData.technicalField}技术方案报告`,
+        sections: [
+          { key: 'summary', title: '生成状态', content: '报告已提交后台处理，请稍后在"历史记录"中查看生成结果。' },
+          { key: 'tip', title: '温馨提示', content: 'AI生成报告需要一定时间，请耐心等待。您可以在历史记录页面查看生成进度和结果。' }
+        ]
+      }
+    } else {
+      ElMessage.error(error.message || '报告生成失败')
+    }
   } finally {
     generating.value = false
   }

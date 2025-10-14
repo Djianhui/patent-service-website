@@ -25,6 +25,9 @@ export const authService = {
   // 用户登录
   async login(data: LoginRequest): Promise<LoginResponse> {
     try {
+      console.log('=== 登录请求开始 ===')
+      console.log('用户名:', data.username)
+
       // 调用后端登录接口
       const response = await request.post<any>('/login', {
         username: data.username,
@@ -36,8 +39,11 @@ export const authService = {
       // 检查后端返回的是否成功
       // 后端返回的数据结构: {code: 200, msg: "操作成功", token: "..."}
       if (response.code === 200 && response.token) {
+        console.log('Token获取成功:', response.token.substring(0, 30) + '...')
+        console.log('Token长度:', response.token.length)
+
         // 成功情况，返回标准格式
-        return {
+        const loginResponse = {
           token: response.token,
           user: response.user || {
             id: '1',
@@ -49,19 +55,28 @@ export const authService = {
           },
           expiresIn: 7200
         }
+
+        console.log('登录响应数据:', loginResponse)
+        console.log('==================')
+        return loginResponse
       } else {
         // 失败情况，抛出后端返回的错误信息
         const errorMessage = response.msg || response.message || '登录失败'
+        console.error('登录失败:', errorMessage)
         throw new Error(errorMessage)
       }
     } catch (error: any) {
-      console.error('登录失败:', error)
+      console.error('=== 登录异常 ===')
+      console.error('错误类型:', error.constructor.name)
+      console.error('错误信息:', error.message)
+      console.error('完整错误:', error)
 
       // 处理不同类型的错误
       if (error.response && error.response.data) {
         // HTTP 响应错误，获取后端返回的错误信息
         const backendError = error.response.data
         const errorMessage = backendError.msg || backendError.message || '登录失败'
+        console.error('后端错误信息:', errorMessage)
         throw new Error(errorMessage)
       } else if (error.message) {
         // 前端处理过程中的错误

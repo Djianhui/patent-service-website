@@ -19,7 +19,13 @@ export const useAuthStore = defineStore('auth', () => {
   const login = async (credentials: { username: string; password: string; remember?: boolean }) => {
     loading.value = true
     try {
+      console.log('=== Store: 开始登录 ===')
       const response = await authService.login(credentials)
+
+      console.log('=== Store: 登录响应 ===')
+      console.log('Token:', response.token.substring(0, 30) + '...')
+      console.log('Token长度:', response.token.length)
+      console.log('用户信息:', response.user)
 
       // 保存token和用户信息
       token.value = response.token
@@ -29,15 +35,22 @@ export const useAuthStore = defineStore('auth', () => {
       storage.set('token', response.token)
       storage.set('user', response.user)
 
+      console.log('=== Store: 保存到localStorage ===')
+      console.log('localStorage.token:', localStorage.getItem('token')?.substring(0, 30) + '...')
+      console.log('localStorage.user:', localStorage.getItem('user')?.substring(0, 50) + '...')
+
       // 如果选择记住我，设置较长的过期时间
       if (credentials.remember) {
         const expireTime = Date.now() + response.expiresIn * 1000
         storage.set('tokenExpireTime', expireTime)
+        console.log('Token过期时间:', new Date(expireTime).toLocaleString())
       }
 
+      console.log('=====================')
       return response
     } catch (error) {
-      console.error('登录失败:', error)
+      console.error('=== Store: 登录失败 ===')
+      console.error(error)
       throw error
     } finally {
       loading.value = false
