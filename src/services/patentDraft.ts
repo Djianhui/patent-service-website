@@ -2,6 +2,45 @@ import { request } from './http'
 import type { PatentDraft, Claim, Drawing, Template, TemplateContent } from '@/types'
 import { DraftStatus } from '@/types'
 
+// 分页查询请求参数
+export interface PageQueryRequest {
+  keyword?: string
+  pageIndex?: number
+  pageSize?: number
+  pageSorts?: Array<{
+    asc: boolean
+    column: string
+  }>
+  state?: number
+  type: number  // 4: 专利草稿
+}
+
+// 分页查询响应结果
+export interface PageQueryResponse {
+  code: number
+  data: {
+    pageIndex: number
+    pageSize: number
+    records: Array<{
+      createTime: string
+      firstImgUrl: string
+      id: number
+      mdUrl: string
+      params: any
+      pdfUrl: string
+      state: number
+      taskId: string
+      taskJson: string
+      type: number
+      updateTime: string
+      userId: number
+      wordUrl: string
+    }>
+    total: number
+  }
+  msg: string
+}
+
 // 模拟专利草稿数据 - 以组装式食用菌种植棚为例
 const mockPatentDrafts: PatentDraft[] = [
   {
@@ -74,6 +113,53 @@ const mockPatentDrafts: PatentDraft[] = [
 
 // 模拟API接口
 export const patentDraftService = {
+  // 创建专利草稿（提交到后端）
+  async createDraft(data: {
+    title: string
+    technicalField: string
+    technicalSolution: string
+  }): Promise<any> {
+    try {
+      console.log('=== 开始创建专利草稿 ===')
+      console.log('发明名称:', data.title)
+      console.log('技术领域:', data.technicalField)
+      console.log('技术方案:', data.technicalSolution)
+
+      // 拼接 prompt：发明名称 + 技术领域 + 技术方案
+      const prompt = `${data.title}\n${data.technicalField}\n${data.technicalSolution}`
+
+      // 调用API生成专利草稿
+      const response = await request.post<any>('/manus/task', {
+        prompt: prompt,
+        type: 4  // 4: 专利草稿
+      })
+
+      console.log('专利草稿提交响应:', response)
+
+      if (response.code === 200) {
+        return response
+      } else {
+        throw new Error(response.msg || '生成失败')
+      }
+    } catch (error: any) {
+      console.error('=== 专利草稿生成失败 ===')
+      console.error(error)
+
+      if (error.response && error.response.status === 401) {
+        throw new Error('登录已过期，请重新登录')
+      }
+
+      if (error.response && error.response.data) {
+        const backendError = error.response.data
+        throw new Error(backendError.msg || backendError.message || '生成失败')
+      } else if (error.message) {
+        throw new Error(error.message)
+      } else {
+        throw new Error('网络错误，请检查网络连接')
+      }
+    }
+  },
+
   // 获取草稿列表
   async getDraftList(params: {
     page?: number
@@ -81,40 +167,117 @@ export const patentDraftService = {
     keyword?: string
     status?: DraftStatus
   } = {}) {
-    const { page = 1, pageSize = 10, keyword = '', status } = params
+    try {
+      console.log('=== 获取草稿列表 ===')
+      console.log('请求参数:', params)
 
-    await new Promise(resolve => setTimeout(resolve, 800))
+      const requestData: PageQueryRequest = {
+        keyword: params.keyword || '',
+        pageIndex: params.page || 1,
+        pageSize: params.pageSize || 10,
+        type: 4  // 4: 专利草稿
+      }
 
-    let filteredDrafts = [...mockPatentDrafts]
+      // 状态映射
+      if (params.status) {
+        const statusMap: Record<string, number> = {
+          'draft': 0,      // 草稿 = 生成中
+          'reviewing': 1,  // 审查中 = 已完成
+          'completed': 1   // 已完成
+        }
+        requestData.state = statusMap[params.status]
+      }
 
-    // 关键词过滤
-    if (keyword) {
-      const searchKeyword = keyword.toLowerCase()
-      filteredDrafts = filteredDrafts.filter(draft =>
-        draft.title.toLowerCase().includes(searchKeyword) ||
-        draft.abstract.toLowerCase().includes(searchKeyword)
-      )
-    }
+      console.log('最终请求数据:', requestData)
 
-    // 状态过滤
-    if (status) {
-      filteredDrafts = filteredDrafts.filter(draft => draft.status === status)
-    }
+      const response = await request.post<PageQueryResponse>('/task/getPage', requestData)
 
-    // 按更新时间倒序排列
-    filteredDrafts.sort((a, b) => new Date(b.updateTime).getTime() - new Date(a.updateTime).getTime())
+      console.log('后端返回数据:', response)
 
-    // 分页
-    const total = filteredDrafts.length
-    const start = (page - 1) * pageSize
-    const end = start + pageSize
-    const data = filteredDrafts.slice(start, end)
+      if (response.code === 200 && response.data) {
+        // 转换为 PatentDraft 类型
+        const drafts: PatentDraft[] = response.data.records.map(record => {
+          // 解析 taskJson
+          let title = '专利草稿'
+          let technicalField = ''
+          let technicalSolution = ''
+          let abstract = ''
 
-    return {
-      data,
-      total,
-      page,
-      pageSize
+          try {
+            if (record.taskJson) {
+              const taskData = JSON.parse(record.taskJson)
+              const promptLines = taskData.prompt ? taskData.prompt.split('\n') : []
+              if (promptLines.length > 0) {
+                title = promptLines[0] || '专利草稿'
+              }
+              if (promptLines.length > 1) {
+                technicalField = promptLines[1] || ''
+              }
+              if (promptLines.length > 2) {
+                technicalSolution = promptLines.slice(2).join('\n')
+                abstract = technicalSolution.substring(0, 200) + '...'
+              }
+            }
+          } catch (e) {
+            console.warn('解析 taskJson 失败:', e)
+          }
+
+          return {
+            id: String(record.id),
+            title,
+            technicalField: technicalField || '正在生成中...',
+            backgroundTechnology: '',
+            technicalProblem: '',
+            technicalSolution: technicalSolution || '',
+            claims: [],
+            description: '',
+            abstract: abstract || '正在生成中...',
+            status: record.state === 1 ? DraftStatus.COMPLETED : DraftStatus.DRAFT,
+            createTime: record.createTime,
+            updateTime: record.updateTime,
+            userId: String(record.userId),
+            // 扩展字段
+            firstImgUrl: record.firstImgUrl,
+            pdfUrl: record.pdfUrl,
+            wordUrl: record.wordUrl,
+            mdUrl: record.mdUrl,
+            state: record.state
+          } as PatentDraft & {
+            firstImgUrl?: string
+            pdfUrl?: string
+            wordUrl?: string
+            mdUrl?: string
+            state?: number
+          }
+        })
+
+        console.log('转换后的草稿列表:', drafts)
+
+        return {
+          data: drafts,
+          total: response.data.total,
+          page: params.page || 1,
+          pageSize: params.pageSize || 10
+        }
+      } else {
+        throw new Error(response.msg || '获取草稿列表失败')
+      }
+    } catch (error: any) {
+      console.error('=== 获取草稿列表失败 ===')
+      console.error(error)
+
+      if (error.response && error.response.status === 401) {
+        throw new Error('登录已过期，请重新登录')
+      }
+
+      if (error.response && error.response.data) {
+        const backendError = error.response.data
+        throw new Error(backendError.msg || backendError.message || '获取草稿列表失败')
+      } else if (error.message) {
+        throw new Error(error.message)
+      } else {
+        throw new Error('网络错误，请检查网络连接')
+      }
     }
   },
 

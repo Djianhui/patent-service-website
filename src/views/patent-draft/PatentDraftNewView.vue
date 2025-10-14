@@ -51,55 +51,6 @@
         </el-form-item>
       </el-form>
     </el-card>
-
-    <!-- 预览区域 -->
-    <el-card v-if="showPreview" class="preview-card">
-      <template #header>
-        <div class="preview-header">
-          <span>草稿预览</span>
-          <div class="preview-actions">
-            <el-button size="small" @click="saveDraft" :loading="saving">保存草稿</el-button>
-            <el-button size="small" type="primary" @click="downloadDraft">下载</el-button>
-          </div>
-        </div>
-      </template>
-
-      <div class="preview-content">
-        <div class="preview-section">
-          <h4>发明名称</h4>
-          <p>{{ draftData.title }}</p>
-        </div>
-
-        <div class="preview-section">
-          <h4>摘要</h4>
-          <p>{{ draftData.abstract }}</p>
-        </div>
-
-        <div class="preview-section">
-          <h4>权利要求书</h4>
-          <div v-for="(claim, index) in draftData.claims" :key="claim.id" class="claim-preview">
-            <strong>{{ index + 1 }}. </strong>{{ claim.content }}
-          </div>
-        </div>
-
-        <div class="preview-section">
-          <h4>说明书</h4>
-          <div class="description-preview">
-            <h5>技术领域</h5>
-            <p>{{ draftData.technicalField }}</p>
-
-            <h5>背景技术</h5>
-            <p>{{ draftData.backgroundTechnology }}</p>
-
-            <h5>发明内容</h5>
-            <p>{{ draftData.technicalSolution }}</p>
-
-            <h5>具体实施方式</h5>
-            <p>{{ draftData.description }}</p>
-          </div>
-        </div>
-      </div>
-    </el-card>
   </div>
 </template>
 
@@ -118,8 +69,6 @@ const router = useRouter()
 // 响应式数据
 const formRef = ref()
 const generating = ref(false)
-const saving = ref(false)
-const showPreview = ref(false)
 
 // 表单验证规则
 const formRules = {
@@ -129,7 +78,7 @@ const formRules = {
   ],
   technicalField: [
     { required: true, message: '请填写技术领域', trigger: 'blur' },
-    { min: 20, message: '技术领域描述至少20个字符', trigger: 'blur' }
+    { min: 3, message: '技术领域描述至少20个字符', trigger: 'blur' }
   ],
   technicalSolution: [
     { required: true, message: '请填写技术方案', trigger: 'blur' },
@@ -150,6 +99,41 @@ const draftData = reactive({
 })
 
 // 方法
+const generateDraft = async () => {
+  // 表单验证
+  if (!formRef.value) return
+
+  const valid = await formRef.value.validate().catch(() => false)
+  if (!valid) {
+    ElMessage.warning('请正确填写所有必填项')
+    return
+  }
+
+  generating.value = true
+
+  try {
+    ElMessage.info('AI正在分析您的技术方案，生成专利草稿...')
+
+    // 调用后端API生成专利草稿
+    await patentDraftService.createDraft({
+      title: draftData.title,
+      technicalField: draftData.technicalField,
+      technicalSolution: draftData.technicalSolution
+    })
+
+    ElMessage.success('专利草稿任务已提交，请在草稿管理中查看结果')
+
+    // 跳转到草稿管理页面
+    setTimeout(() => {
+      router.push('/app/patent-draft/manage')
+    }, 1500)
+  } catch (error: any) {
+    ElMessage.error(error.message || 'AI生成失败，请重试')
+  } finally {
+    generating.value = false
+  }
+}
+
 const resetForm = () => {
   if (formRef.value) {
     formRef.value.resetFields()
@@ -164,159 +148,7 @@ const resetForm = () => {
     description: '',
     abstract: ''
   })
-  showPreview.value = false
   ElMessage.success('表单已重置')
-}
-
-const generateDraft = async () => {
-  // 表单验证
-  if (!formRef.value) return
-
-  const valid = await formRef.value.validate().catch(() => false)
-  if (!valid) {
-    ElMessage.warning('请正确填写所有必填项')
-    return
-  }
-
-  generating.value = true
-
-  try {
-    ElMessage.info('AI正在分析您的技术方案...')
-
-    // 模拟AI分析和生成过程
-    await new Promise(resolve => setTimeout(resolve, 2000))
-
-    // 模拟AI生成的内容
-    const generatedDraft = {
-      title: draftData.title,
-      technicalField: draftData.technicalField,
-      backgroundTechnology: generateBackgroundTechnology(draftData.technicalField),
-      technicalProblem: generateTechnicalProblem(draftData.technicalSolution),
-      technicalSolution: draftData.technicalSolution,
-      claims: generateClaims(draftData.title, draftData.technicalSolution),
-      description: generateDescription(draftData.technicalSolution),
-      abstract: generateAbstract(draftData.title, draftData.technicalSolution)
-    }
-
-    showPreview.value = true
-    Object.assign(draftData, generatedDraft)
-
-    ElMessage.success('AI生成专利草稿完成！请查看预览内容')
-
-    // 滚动到预览区域
-    setTimeout(() => {
-      const previewEl = document.querySelector('.preview-card')
-      if (previewEl) {
-        previewEl.scrollIntoView({ behavior: 'smooth' })
-      }
-    }, 100)
-  } catch (error) {
-    ElMessage.error('AI生成失败，请重试')
-  } finally {
-    generating.value = false
-  }
-}
-
-const saveDraft = async () => {
-  saving.value = true
-
-  try {
-    // 模拟保存草稿
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    ElMessage.success('草稿保存成功')
-
-    // 跳转到草稿管理页面
-    setTimeout(() => {
-      router.push('/app/patent-draft/manage')
-    }, 1000)
-  } catch (error) {
-    ElMessage.error('保存失败')
-  } finally {
-    saving.value = false
-  }
-}
-
-const downloadDraft = () => {
-  try {
-    const content = generateDraftContent()
-
-    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.href = url
-    link.download = `${draftData.title}_专利草稿.txt`
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    URL.revokeObjectURL(url)
-
-    ElMessage.success('下载成功')
-  } catch (error) {
-    ElMessage.error('下载失败')
-  }
-}
-
-// AI生成辅助方法
-const generateBackgroundTechnology = (technicalField: string): string => {
-  return `${technicalField}中的现有技术存在一些不足之处，需要进一步改进和优化。`
-}
-
-const generateTechnicalProblem = (technicalSolution: string): string => {
-  return `现有技术中存在的问题需要通过创新的技术方案来解决。`
-}
-
-const generateClaims = (title: string, solution: string): any[] => {
-  return [
-    {
-      id: 'claim-1',
-      type: 'independent',
-      content: `一种${title}，其特征在于：包括${solution.substring(0, 50)}...等技术特征。`,
-      order: 1
-    }
-  ]
-}
-
-const generateDescription = (solution: string): string => {
-  return `本发明的具体实施方式如下：
-
-${solution}
-
-本发明的技术方案能够有效解决现有技术中的问题，具有良好的实用性和推广价值。`
-}
-
-const generateAbstract = (title: string, solution: string): string => {
-  const summary = solution.length > 150 ? solution.substring(0, 150) + '...' : solution
-  return `本发明公开了一种${title}。${summary}本发明的技术方案具有良好的实用性和创新性。`
-}
-
-const generateDraftContent = (): string => {
-  const lines = [
-    '专利申请草稿',
-    '',
-    `发明名称：${draftData.title}`,
-    '',
-    '技术领域：',
-    draftData.technicalField,
-    '',
-    '背景技术：',
-    draftData.backgroundTechnology || '由AI生成',
-    '',
-    '发明内容：',
-    draftData.technicalSolution,
-    '',
-    '权利要求书：',
-    ...(draftData.claims?.map((claim: any, index: number) => `${index + 1}. ${claim.content}`) || []),
-    '',
-    '说明书摘要：',
-    draftData.abstract || '由AI生成',
-    '',
-    '说明书：',
-    draftData.description || '由AI生成',
-    '',
-    `生成时间：${new Date().toLocaleString()}`
-  ]
-
-  return lines.join('\n')
 }
 </script>
 
