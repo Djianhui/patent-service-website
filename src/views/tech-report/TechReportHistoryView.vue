@@ -41,9 +41,9 @@
       <div v-loading="loading" class="report-list">
         <div v-for="report in reportList" :key="report.id" class="report-item">
           <!-- 首页图片 -->
-          <div class="report-image" v-if="(report as any).firstImgUrl" @click.stop>
+          <div class="report-image" v-if="(report as any).firstImgUrl">
             <el-image :src="(report as any).firstImgUrl" fit="contain" :alt="report.title" lazy
-              :preview-src-list="[(report as any).firstImgUrl]" :initial-index="0" preview-teleported>
+              :preview-src-list="[(report as any).firstImgUrl]" :initial-index="0" preview-teleported :z-index="3000">
               <template #error>
                 <div class="image-error">
                   <el-icon>
@@ -60,6 +60,7 @@
                 </div>
               </template>
             </el-image>
+            <!-- 蒙层提示 -->
             <div class="image-mask">
               <el-icon>
                 <ZoomIn />
@@ -246,12 +247,54 @@ const downloadReport = async (report: TechReport, format: 'pdf' | 'word' = 'pdf'
       return
     }
 
-    // 直接打开文件链接
-    window.open(fileUrl, '_blank')
-    ElMessage.success('正在打开下载链接...')
+    // 显示下载中提示
+    const loadingMessage = ElMessage({
+      message: '正在准备下载...',
+      type: 'info',
+      duration: 0
+    })
+
+    try {
+      // 创建隐藏的a标签进行下载
+      const link = document.createElement('a')
+      link.style.display = 'none'
+      link.href = fileUrl
+
+      // 设置下载文件名
+      const extension = format === 'pdf' ? 'pdf' : 'docx'
+      const fileName = `${report.title}_技术方案报告.${extension}`
+      link.download = fileName
+
+      // 添加到DOM并触发下载
+      document.body.appendChild(link)
+      link.click()
+
+      // 清理DOM
+      setTimeout(() => {
+        document.body.removeChild(link)
+      }, 100)
+
+      // 关闭加载提示并显示成功消息
+      loadingMessage.close()
+      ElMessage.success('下载已开始，请查看浏览器下载列表')
+    } catch (downloadError) {
+      console.error('下载文件失败:', downloadError)
+      loadingMessage.close()
+
+      // 如果下载失败，尝试在新窗口打开
+      ElMessage({
+        message: '直接下载失败，正在尝试在新窗口打开...',
+        type: 'warning',
+        duration: 2000
+      })
+
+      setTimeout(() => {
+        window.open(fileUrl, '_blank')
+      }, 500)
+    }
   } catch (error) {
     console.error('下载失败:', error)
-    ElMessage.error('下载失败')
+    ElMessage.error('下载失败，请重试')
   }
 }
 

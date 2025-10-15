@@ -280,7 +280,14 @@ const guideSteps = ref([
 ])
 
 // 快捷工具
-const recentActivities = ref([
+const recentActivities = ref<Array<{
+  id: string
+  type: string
+  icon: string
+  title: string
+  description: string
+  time: string
+}>>([
   // {
   //   id: '1',
   //   type: 'report',
@@ -352,7 +359,12 @@ const quickTools = ref([
 ])
 
 // 待办事项
-const todoList = ref([
+const todoList = ref<Array<{
+  id: string
+  title: string
+  completed: boolean
+  deadline: string | null
+}>>([
 
 ])
 

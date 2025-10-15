@@ -127,7 +127,13 @@ const router = useRouter()
 
 // 响应式数据
 const showNotifications = ref(false)
-const notifications = ref([
+const notifications = ref<Array<{
+  id: string
+  title: string
+  message: string
+  time: string
+  read: boolean
+}>>([
   // {
   //   id: '1',
   //   title: '报告生成完成',

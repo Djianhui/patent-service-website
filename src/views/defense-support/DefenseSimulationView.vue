@@ -149,23 +149,33 @@
 
             <!-- 图片展示 -->
             <div class="defense-images" v-if="item.firstImgUrl">
-              <el-image :src="item.firstImgUrl" fit="contain" loading="lazy" :preview-src-list="[item.firstImgUrl]"
-                style="width: 280px; height: 210px; border-radius: 4px; cursor: pointer;">
-                <template #placeholder>
-                  <div
-                    style="display: flex; align-items: center; justify-content: center; height: 100%; background-color: var(--color-bg-light);">
-                    <el-icon :size="30" color="var(--color-text-tertiary)">
-                      <Picture />
-                    </el-icon>
-                  </div>
-                </template>
-                <template #error>
-                  <div
-                    style="display: flex; align-items: center; justify-content: center; height: 100%; background-color: var(--color-bg-light);">
-                    <span style="color: var(--color-text-tertiary); font-size: 12px;">图片加载失败</span>
-                  </div>
-                </template>
-              </el-image>
+              <div class="defense-image-container">
+                <el-image :src="item.firstImgUrl" fit="contain" loading="lazy" :preview-src-list="[item.firstImgUrl]"
+                  :initial-index="0" preview-teleported :z-index="3000"
+                  style="width: 280px; height: 210px; border-radius: 4px; cursor: pointer;">
+                  <template #placeholder>
+                    <div
+                      style="display: flex; align-items: center; justify-content: center; height: 100%; background-color: var(--color-bg-light);">
+                      <el-icon :size="30" color="var(--color-text-tertiary)">
+                        <Picture />
+                      </el-icon>
+                    </div>
+                  </template>
+                  <template #error>
+                    <div
+                      style="display: flex; align-items: center; justify-content: center; height: 100%; background-color: var(--color-bg-light);">
+                      <span style="color: var(--color-text-tertiary); font-size: 12px;">图片加载失败</span>
+                    </div>
+                  </template>
+                </el-image>
+                <!-- 蒙层提示 -->
+                <div class="image-mask">
+                  <el-icon>
+                    <ZoomIn />
+                  </el-icon>
+                  <span>点击放大</span>
+                </div>
+              </div>
             </div>
 
             <!-- 描述信息 -->
@@ -372,8 +382,34 @@ const downloadPDF = (item: any) => {
     ElMessage.warning('该任务暂无PDF文件')
     return
   }
-  window.open(item.pdfUrl, '_blank')
-  ElMessage.success('正在打开下载链接...')
+
+  const loadingMessage = ElMessage({
+    message: '正在准备下载...',
+    type: 'info',
+    duration: 0
+  })
+
+  try {
+    const link = document.createElement('a')
+    link.style.display = 'none'
+    link.href = item.pdfUrl
+    link.download = `${item.taskName || '答辩模拟'}_结果.pdf`
+    document.body.appendChild(link)
+    link.click()
+    setTimeout(() => {
+      document.body.removeChild(link)
+    }, 100)
+
+    loadingMessage.close()
+    ElMessage.success('下载已开始，请查看浏览器下载列表')
+  } catch (error) {
+    console.error('下载失败:', error)
+    loadingMessage.close()
+    ElMessage.warning('直接下载失败，正在尝试在新窗口打开...')
+    setTimeout(() => {
+      window.open(item.pdfUrl, '_blank')
+    }, 500)
+  }
 }
 
 const downloadWord = (item: any) => {
@@ -381,8 +417,34 @@ const downloadWord = (item: any) => {
     ElMessage.warning('该任务暂无Word文件')
     return
   }
-  window.open(item.wordUrl, '_blank')
-  ElMessage.success('正在打开下载链接...')
+
+  const loadingMessage = ElMessage({
+    message: '正在准备下载...',
+    type: 'info',
+    duration: 0
+  })
+
+  try {
+    const link = document.createElement('a')
+    link.style.display = 'none'
+    link.href = item.wordUrl
+    link.download = `${item.taskName || '答辩模拟'}_结果.docx`
+    document.body.appendChild(link)
+    link.click()
+    setTimeout(() => {
+      document.body.removeChild(link)
+    }, 100)
+
+    loadingMessage.close()
+    ElMessage.success('下载已开始，请查看浏览器下载列表')
+  } catch (error) {
+    console.error('下载失败:', error)
+    loadingMessage.close()
+    ElMessage.warning('直接下载失败，正在尝试在新窗口打开...')
+    setTimeout(() => {
+      window.open(item.wordUrl, '_blank')
+    }, 500)
+  }
 }
 
 // 工具方法
@@ -551,6 +613,50 @@ onMounted(() => {
             display: flex;
             gap: var(--spacing-sm);
             flex-wrap: wrap;
+
+            .defense-image-container {
+              position: relative;
+              width: 280px;
+              height: 210px;
+              border-radius: 4px;
+              overflow: hidden;
+              transition: all var(--transition-base);
+
+              &:hover {
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                transform: translateY(-2px);
+
+                .image-mask {
+                  opacity: 1;
+                }
+              }
+
+              .image-mask {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.5);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                color: #fff;
+                opacity: 0;
+                transition: opacity var(--transition-fast);
+                pointer-events: none;
+
+                .el-icon {
+                  font-size: 32px;
+                  margin-bottom: var(--spacing-xs);
+                }
+
+                span {
+                  font-size: var(--font-size-sm);
+                }
+              }
+            }
 
             :deep(.el-image) {
               border: 1px solid var(--color-border-light);
