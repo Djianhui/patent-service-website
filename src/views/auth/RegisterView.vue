@@ -3,9 +3,7 @@
     <div class="register-wrapper">
       <div class="register-header">
         <div class="logo">
-          <el-icon class="logo-icon">
-            <Document />
-          </el-icon>
+          <img src="/favicon.ico" alt="Logo" class="logo-icon" />
           <span class="logo-text">专利服务平台</span>
         </div>
         <h2 class="register-title">用户注册</h2>
@@ -66,7 +64,6 @@ import { ref, reactive, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
 import {
-  Document,
   User,
   Lock,
   CircleCheck
@@ -231,8 +228,8 @@ const handleRegister = async () => {
     margin-bottom: var(--spacing-lg);
 
     .logo-icon {
-      font-size: 32px;
-      color: var(--color-primary);
+      width: 32px;
+      height: 32px;
     }
 
     .logo-text {

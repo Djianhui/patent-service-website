@@ -3,9 +3,7 @@
     <div class="login-wrapper">
       <div class="login-header">
         <div class="logo">
-          <el-icon class="logo-icon">
-            <Document />
-          </el-icon>
+          <img src="/favicon.ico" alt="Logo" class="logo-icon" />
           <span class="logo-text">专利服务平台</span>
         </div>
         <h2 class="login-title">用户登录</h2>
@@ -132,7 +130,6 @@ import { ref, reactive, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
 import {
-  Document,
   User,
   Lock,
   CircleCheck,
@@ -310,8 +307,8 @@ onMounted(async () => {
     margin-bottom: var(--spacing-lg);
 
     .logo-icon {
-      font-size: 32px;
-      color: var(--color-primary);
+      width: 32px;
+      height: 32px;
     }
 
     .logo-text {

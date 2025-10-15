@@ -15,7 +15,7 @@
       <el-form :model="searchForm" @submit.prevent="handleSearch">
         <el-form-item>
           <el-input v-model="searchForm.keyword" type="textarea" :rows="6"
-            placeholder="请输入技术方案，建议只输入一个技术方案，200-500字效果最佳" clearable maxlength="1000" show-word-limit
+            placeholder="请输入技术方案，建议只输入一个技术方案，200-500字效果最佳" clearable maxlength="10000" show-word-limit
             resize="vertical" />
         </el-form-item>
 

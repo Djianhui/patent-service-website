@@ -45,7 +45,7 @@ const routes: RouteRecordRaw[] = [
         name: 'Dashboard',
         component: () => import('@/views/DashboardView.vue'),
         meta: {
-          title: '首页',
+          title: '',
           icon: 'House'
         }
       },

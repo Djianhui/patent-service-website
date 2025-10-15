@@ -4,9 +4,7 @@
       <el-button class="menu-toggle" :icon="collapsed ? 'Expand' : 'Fold'" text @click="$emit('toggle-sidebar')" />
 
       <div class="logo">
-        <el-icon class="logo-icon">
-          <Document />
-        </el-icon>
+        <img src="/favicon.ico" alt="Logo" class="logo-icon" />
         <span class="logo-text">专利服务平台</span>
       </div>
     </div>
@@ -93,7 +91,6 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import {
-  Document,
   Bell,
   UserFilled,
   ArrowDown,
@@ -157,14 +154,6 @@ const breadcrumbItems = computed(() => {
     title: item.meta?.title as string,
     path: item.path
   }))
-
-  // 添加首页作为根路径
-  if (items && items.length > 0 && items[0]?.path !== '/app/dashboard') {
-    items.unshift({
-      title: '首页',
-      path: '/app/dashboard'
-    })
-  }
 
   return items
 })
@@ -235,7 +224,9 @@ onMounted(() => {
       color: var(--color-primary);
 
       .logo-icon {
-        font-size: 24px;
+        width: 24px;
+        height: 24px;
+        object-fit: contain;
       }
 
       .logo-text {
