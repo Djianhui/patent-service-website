@@ -335,8 +335,8 @@ const startDefenseTask = async () => {
     let promptText = defenseDescription.value.trim()
     if (!promptText) {
       promptText = selectedFunction.value === DefenseFunctionType.SIMULATION_REVIEW
-        ? '请对上传的专利文件进行全面的模拟审查'
-        : '请根据专利文件生成答辩意见回复'
+        ? '上传文件'
+        : '上传文件'
     }
 
     await defenseSupportService.createDefenseTask({

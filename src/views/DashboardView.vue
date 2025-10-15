@@ -240,7 +240,7 @@ const guideSteps = ref([
   {
     key: 'tech-report',
     title: '技术方案报告',
-    description: '输入技术方案，系统自动生成专业的技术分析报告',
+    description: '没有方向？让我们帮你定制技术方案，清晰指引、专业方案，一步到位！',
     icon: 'Document',
     color: '#1890ff',
     path: '/app/tech-report/new'
@@ -248,7 +248,7 @@ const guideSteps = ref([
   {
     key: 'patent-draft',
     title: '专利草稿撰写',
-    description: '基于技术方案，AI智能撰写专利申请文件',
+    description: '省时省力，专利草稿一键生成，轻松搞定专利申请！',
     icon: 'Edit',
     color: '#722ed1',
     path: '/app/patent-draft/new'
@@ -256,7 +256,7 @@ const guideSteps = ref([
   {
     key: 'patent-search',
     title: '专利检索',
-    description: '检索相关专利文献，分析技术领域现状',
+    description: '快速精准专利检索，海量专利文件一手掌握，轻松找寻相关技术！',
     icon: 'Search',
     color: '#52c41a',
     path: '/app/patent-search/quick'
@@ -264,7 +264,7 @@ const guideSteps = ref([
   {
     key: 'three-analysis',
     title: '三性分析',
-    description: '分析专利的新颖性、创造性和实用性',
+    description: '三性分析助力专利审查，快速判断新颖性、创造性、实用性，轻松通过专利审核！',
     icon: 'DataAnalysis',
     color: '#faad14',
     path: '/app/three-analysis/new'
@@ -272,7 +272,7 @@ const guideSteps = ref([
   {
     key: 'defense-simulation',
     title: '模拟审查',
-    description: '模拟专利审查过程，提前发现问题并优化',
+    description: '模拟审查提前预判，帮你轻松应对实质审查阶段的挑战！',
     icon: 'DocumentChecked',
     color: '#f5222d',
     path: '/app/defense-support/simulation'
