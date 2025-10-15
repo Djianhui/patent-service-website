@@ -16,7 +16,7 @@ export const useAuthStore = defineStore('auth', () => {
   const userName = computed(() => user.value?.username)
 
   // Actions
-  const login = async (credentials: { username: string; password: string; remember?: boolean }) => {
+  const login = async (credentials: { username: string; password: string; code: string; uuid: string; remember?: boolean }) => {
     loading.value = true
     try {
       console.log('=== Store: 开始登录 ===')
@@ -59,20 +59,29 @@ export const useAuthStore = defineStore('auth', () => {
 
   const register = async (userData: {
     username: string
-    email: string
     password: string
-    confirmPassword: string
-    phone?: string
+    code: string
+    uuid: string
   }) => {
     loading.value = true
     try {
-      const newUser = await authService.register(userData)
-      return newUser
+      const response = await authService.register(userData)
+      return response
     } catch (error) {
       console.error('注册失败:', error)
       throw error
     } finally {
       loading.value = false
+    }
+  }
+
+  const getCaptcha = async () => {
+    try {
+      const response = await authService.getCaptcha()
+      return response
+    } catch (error) {
+      console.error('获取验证码失败:', error)
+      throw error
     }
   }
 
@@ -204,6 +213,7 @@ export const useAuthStore = defineStore('auth', () => {
     // Actions
     login,
     register,
+    getCaptcha,
     logout,
     refreshToken,
     updateProfile,

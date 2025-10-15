@@ -4,15 +4,21 @@ import type { User, AuthState } from '@/types'
 export interface LoginRequest {
   username: string
   password: string
+  code: string
+  uuid: string
   remember?: boolean
 }
 
 export interface RegisterRequest {
   username: string
-  email: string
   password: string
-  confirmPassword: string
-  phone?: string
+  code: string
+  uuid: string
+}
+
+export interface CaptchaResponse {
+  uuid: string
+  img: string
 }
 
 export interface LoginResponse {
@@ -31,7 +37,9 @@ export const authService = {
       // 调用后端登录接口
       const response = await request.post<any>('/login', {
         username: data.username,
-        password: data.password
+        password: data.password,
+        code: data.code,
+        uuid: data.uuid
       })
 
       console.log('后端返回数据:', response)
@@ -88,22 +96,62 @@ export const authService = {
     }
   },
 
+  // 获取验证码
+  async getCaptcha(): Promise<CaptchaResponse> {
+    try {
+      const response = await request.get<any>('/captchaImage')
+
+      if (response.code === 200) {
+        // 后端返回的img是纯Base64字符串，需要添加前缀才能在img标签中显示
+        const imgData = response.img.startsWith('data:')
+          ? response.img
+          : `data:image/jpeg;base64,${response.img}`
+
+        return {
+          uuid: response.uuid,
+          img: imgData
+        }
+      } else {
+        throw new Error(response.msg || '获取验证码失败')
+      }
+    } catch (error: any) {
+      console.error('获取验证码失败:', error)
+      throw new Error(error.message || '获取验证码失败，请重试')
+    }
+  },
+
   // 用户注册
-  async register(data: RegisterRequest): Promise<User> {
-    // 模拟注册请求
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          id: '2',
-          username: data.username,
-          email: data.email,
-          phone: data.phone,
-          role: 'user' as any,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
-        })
-      }, 1000)
-    })
+  async register(data: RegisterRequest): Promise<any> {
+    try {
+      console.log('=== 注册请求开始 ===')
+      console.log('注册数据:', data)
+
+      const response = await request.post<any>('/register', {
+        username: data.username,
+        password: data.password,
+        code: data.code,
+        uuid: data.uuid
+      })
+
+      console.log('注册返回数据:', response)
+
+      if (response.code === 200) {
+        return response
+      } else {
+        throw new Error(response.msg || '注册失败')
+      }
+    } catch (error: any) {
+      console.error('注册失败:', error)
+
+      if (error.response && error.response.data) {
+        const backendError = error.response.data
+        throw new Error(backendError.msg || backendError.message || '注册失败')
+      } else if (error.message) {
+        throw new Error(error.message)
+      } else {
+        throw new Error('注册失败，请重试')
+      }
+    }
   },
 
   // 刷新Token

@@ -21,11 +21,22 @@
 
         <el-form-item prop="password">
           <el-input v-model="loginForm.password" type="password" :prefix-icon="Lock" placeholder="请输入密码" size="large"
-            show-password clearable @keyup.enter="handleLogin" />
+            show-password clearable />
+        </el-form-item>
+
+        <el-form-item prop="code">
+          <div class="captcha-container">
+            <el-input v-model="loginForm.code" :prefix-icon="CircleCheck" placeholder="请输入验证码" size="large" clearable
+              @keyup.enter="handleLogin" />
+            <div class="captcha-image" @click="refreshCaptcha">
+              <img v-if="captchaImg" :src="captchaImg" alt="验证码" />
+              <span v-else>获取验证码</span>
+            </div>
+          </div>
         </el-form-item>
 
         <!-- 默认账号提示 -->
-        <div class="default-account-hint">
+        <!-- <div class="default-account-hint">
           <el-alert title="测试账号" type="info" :closable="false" show-icon>
             <template #default>
               <div class="account-info">
@@ -36,8 +47,8 @@
                 </el-button>
               </div>
             </template>
-          </el-alert>
-        </div>
+</el-alert>
+</div> -->
 
         <el-form-item>
           <div class="form-options">
@@ -124,6 +135,7 @@ import {
   Document,
   User,
   Lock,
+  CircleCheck,
   Platform,
   ChromeFilled,
   Search,
@@ -141,13 +153,25 @@ const authStore = useAuthStore()
 
 // 响应式数据
 const loading = ref(false)
+const captchaImg = ref('')
+const captchaUuid = ref('')
 const loginFormRef = ref<FormInstance>()
 
 const loginForm = reactive({
   username: '',
   password: '',
+  code: '',
   remember: false
 })
+
+// 自定义验证器
+const validateCode = (rule: any, value: any, callback: any) => {
+  if (!value) {
+    callback(new Error('请输入验证码'))
+  } else {
+    callback()
+  }
+}
 
 // 表单验证规则
 const loginRules: FormRules = {
@@ -158,10 +182,28 @@ const loginRules: FormRules = {
   password: [
     { required: true, message: '请输入密码', trigger: 'blur' },
     { min: 6, message: '密码长度不能少于6位', trigger: 'blur' }
+  ],
+  code: [
+    { required: true, message: '请输入验证码', trigger: 'blur' },
+    { validator: validateCode, trigger: 'blur' }
   ]
 }
 
 // 方法
+const getCaptcha = async () => {
+  try {
+    const response = await authStore.getCaptcha()
+    captchaImg.value = response.img
+    captchaUuid.value = response.uuid
+  } catch (error: any) {
+    ElMessage.error(error.message || '获取验证码失败')
+  }
+}
+
+const refreshCaptcha = () => {
+  getCaptcha()
+}
+
 const handleLogin = async () => {
   if (!loginFormRef.value) return
 
@@ -169,6 +211,11 @@ const handleLogin = async () => {
     const valid = await loginFormRef.value.validate()
     if (!valid) return
   } catch (error) {
+    return
+  }
+
+  if (!captchaUuid.value) {
+    ElMessage.error('请先获取验证码')
     return
   }
 
@@ -180,6 +227,8 @@ const handleLogin = async () => {
     await authStore.login({
       username: loginForm.username,
       password: loginForm.password,
+      code: loginForm.code,
+      uuid: captchaUuid.value,
       remember: loginForm.remember
     })
 
@@ -194,6 +243,9 @@ const handleLogin = async () => {
     console.error('登录失败:', error)
     const errorMessage = error.message || '登录失败，请检查用户名和密码'
     ElMessage.error(errorMessage)
+    // 登录失败后刷新验证码
+    refreshCaptcha()
+    loginForm.code = ''
   } finally {
     loading.value = false
   }
@@ -210,7 +262,10 @@ const quickLogin = () => {
 }
 
 // 生命周期
-onMounted(() => {
+onMounted(async () => {
+  // 获取验证码
+  await getCaptcha()
+
   // 如果已经登录，直接跳转到主页
   if (authStore.isLoggedIn) {
     router.push('/app/dashboard')
@@ -280,6 +335,48 @@ onMounted(() => {
 }
 
 .login-form {
+  .captcha-container {
+    display: flex;
+    gap: var(--spacing-sm);
+    width: 100%;
+
+    .el-input {
+      flex: 1;
+    }
+
+    .captcha-image {
+      width: 120px;
+      height: 40px;
+      border: 1px solid var(--el-border-color);
+      border-radius: var(--border-radius-base);
+      cursor: pointer;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--color-bg-secondary);
+      transition: all var(--transition-base);
+
+      &:hover {
+        border-color: var(--color-primary);
+        transform: translateY(-2px);
+      }
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      span {
+        font-size: var(--font-size-xs);
+        color: var(--color-text-secondary);
+        padding: 0 var(--spacing-xs);
+        text-align: center;
+      }
+    }
+  }
+
   .form-options {
     display: flex;
     justify-content: space-between;
@@ -346,7 +443,7 @@ onMounted(() => {
 
 .login-background {
   flex: 1;
-  background: linear-gradient(135deg, var(--color-primary) 0%, #40a9ff 100%);
+  background: linear-gradient(135deg, #667eea 0%, #40a9ff 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -418,6 +515,12 @@ onMounted(() => {
   .login-container {
     .login-wrapper {
       min-height: 100vh;
+    }
+
+    .captcha-container {
+      .captcha-image {
+        width: 100px !important;
+      }
     }
   }
 }
