@@ -100,8 +100,17 @@
             </div>
 
             <div class="report-actions" @click.stop>
-              <el-button size="small" text @click="downloadReport(report)">
-                下载
+              <el-button size="small" text @click="downloadReport(report, 'pdf')" :disabled="!(report as any).pdfUrl">
+                <el-icon>
+                  <Download />
+                </el-icon>
+                下载PDF
+              </el-button>
+              <el-button size="small" text @click="downloadReport(report, 'word')" :disabled="!(report as any).wordUrl">
+                <el-icon>
+                  <Download />
+                </el-icon>
+                下载Word
               </el-button>
               <el-button size="small" text type="danger" @click="deleteReport(report)">
                 删除
@@ -228,10 +237,20 @@ const handleSizeChange = () => {
   loadReports()
 }
 
-const downloadReport = async (report: TechReport) => {
+const downloadReport = async (report: TechReport, format: 'pdf' | 'word' = 'pdf') => {
   try {
-    await techReportStore.exportReport(report.id, 'pdf')
+    // 检查是否有对应的文件URL
+    const fileUrl = format === 'pdf' ? (report as any).pdfUrl : (report as any).wordUrl
+    if (!fileUrl) {
+      ElMessage.warning(`该报告暂无${format === 'pdf' ? 'PDF' : 'Word'}文件`)
+      return
+    }
+
+    // 直接打开文件链接
+    window.open(fileUrl, '_blank')
+    ElMessage.success('正在打开下载链接...')
   } catch (error) {
+    console.error('下载失败:', error)
     ElMessage.error('下载失败')
   }
 }

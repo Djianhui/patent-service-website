@@ -40,7 +40,7 @@ export function formatFileSize(bytes: number): string {
  */
 export function convertImageUrl(url: string | undefined | null): string {
   if (!url) return ''
-  
+
   // 将 http://ccsutest.w1.luyouxia.net 替换为 https://patent.langdetech.cn/img
   return url.replace('http://ccsutest.w1.luyouxia.net', 'https://patent.langdetech.cn/img')
 }

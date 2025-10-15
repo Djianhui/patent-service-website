@@ -119,11 +119,18 @@
               </div>
 
               <div class="patent-actions" @click.stop>
-                <el-button size="small" text @click="downloadReport(patent)" :disabled="!(patent as any).pdfUrl">
+                <el-button size="small" text @click="downloadReport(patent, 'pdf')" :disabled="!(patent as any).pdfUrl">
                   <el-icon>
                     <Download />
                   </el-icon>
                   下载PDF
+                </el-button>
+                <el-button size="small" text @click="downloadReport(patent, 'word')"
+                  :disabled="!(patent as any).wordUrl">
+                  <el-icon>
+                    <Download />
+                  </el-icon>
+                  下载Word
                 </el-button>
               </div>
             </div>
@@ -277,17 +284,17 @@ const getAbstractSummary = (abstract: string): string => {
 }
 
 // 下载报告
-const downloadReport = async (patent: Patent) => {
+const downloadReport = async (patent: Patent, format: 'pdf' | 'word' = 'pdf') => {
   try {
-    // 检查是否有 pdfUrl
-    const pdfUrl = (patent as any).pdfUrl
-    if (!pdfUrl) {
-      ElMessage.warning('该报告暂无PDF文件')
+    // 检查是否有对应的文件URL
+    const fileUrl = format === 'pdf' ? (patent as any).pdfUrl : (patent as any).wordUrl
+    if (!fileUrl) {
+      ElMessage.warning(`该报告暂无${format === 'pdf' ? 'PDF' : 'Word'}文件`)
       return
     }
 
-    // 直接打开PDF链接
-    window.open(pdfUrl, '_blank')
+    // 直接打开文件链接
+    window.open(fileUrl, '_blank')
     ElMessage.success('正在打开下载链接...')
   } catch (error) {
     console.error('下载失败:', error)

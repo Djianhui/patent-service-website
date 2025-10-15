@@ -106,12 +106,19 @@
                 </div>
                 <div class="analysis-actions">
 
-                  <el-button size="small" text @click.stop="downloadReport(analysis)"
+                  <el-button size="small" text @click.stop="downloadReport(analysis, 'pdf')"
                     :disabled="!(analysis as any).pdfUrl">
                     <el-icon>
                       <Download />
                     </el-icon>
                     下载PDF
+                  </el-button>
+                  <el-button size="small" text @click.stop="downloadReport(analysis, 'word')"
+                    :disabled="!(analysis as any).wordUrl">
+                    <el-icon>
+                      <Download />
+                    </el-icon>
+                    下载Word
                   </el-button>
                   <el-button size="small" type="danger" @click.stop="deleteAnalysis(analysis)">
                     <el-icon>
@@ -248,17 +255,17 @@ const deleteAnalysis = async (analysis: ThreeAnalysis) => {
   }
 }
 
-const downloadReport = async (analysis: ThreeAnalysis) => {
+const downloadReport = async (analysis: ThreeAnalysis, format: 'pdf' | 'word' = 'pdf') => {
   try {
-    // 检查是否有 pdfUrl
-    const pdfUrl = (analysis as any).pdfUrl
-    if (!pdfUrl) {
-      ElMessage.warning('该报告暂无PDF文件')
+    // 检查是否有对应的文件URL
+    const fileUrl = format === 'pdf' ? (analysis as any).pdfUrl : (analysis as any).wordUrl
+    if (!fileUrl) {
+      ElMessage.warning(`该报告暂无${format === 'pdf' ? 'PDF' : 'Word'}文件`)
       return
     }
 
-    // 直接打开PDF链接
-    window.open(pdfUrl, '_blank')
+    // 直接打开文件链接
+    window.open(fileUrl, '_blank')
     ElMessage.success('正在打开下载链接...')
   } catch (error) {
     console.error('下载失败:', error)
