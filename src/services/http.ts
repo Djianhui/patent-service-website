@@ -2,6 +2,9 @@ import axios, { type AxiosInstance, type AxiosResponse, type AxiosError } from '
 import { ElMessage } from 'element-plus'
 import type { ApiResponse } from '@/types'
 
+// 用于防止重复提示
+let isTokenExpiredMessageShown = false
+
 // 创建axios实例
 const api: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || 'https://patent.langdetech.cn/api',
@@ -65,6 +68,52 @@ api.interceptors.response.use(
     console.log('响应数据:', response.data)
     console.log('==================')
 
+    // 检查业务code，处理401认证失败
+    const data = response.data
+    if (data && data.code === 401) {
+      console.error('⚠️ 业务code 401认证失败:')
+      console.error('  - 请求URL:', response.config.url)
+      console.error('  - 后端返回消息:', data.msg)
+
+      // 防止重复处理，只执行一次
+      if (!isTokenExpiredMessageShown) {
+        isTokenExpiredMessageShown = true
+
+        // 清除本地存储的认证信息
+        localStorage.removeItem('token')
+        localStorage.removeItem('user')
+        localStorage.removeItem('tokenExpireTime')
+
+        // 显示错误提示
+        ElMessage({
+          type: 'error',
+          message: '登录已过期，请重新登录',
+          duration: 2000,
+          showClose: true
+        })
+
+        // 立即跳转，使用window.location
+        const currentPath = window.location.pathname
+        console.log('即将跳转到登录页，当前路径:', currentPath)
+
+        // 延迟100ms确保消息显示
+        setTimeout(() => {
+          if (currentPath !== '/login' && currentPath !== '/register') {
+            window.location.href = '/login?redirect=' + encodeURIComponent(currentPath)
+          } else {
+            window.location.href = '/login'
+          }
+          // 重置标志
+          setTimeout(() => {
+            isTokenExpiredMessageShown = false
+          }, 1000)
+        }, 100)
+      }
+
+      // 返回一个被拒绝的Promise，阻止后续处理
+      return Promise.reject(new Error('登录已过期'))
+    }
+
     // 直接返回响应，让具体的 service 层处理数据格式
     return response
   },
@@ -104,12 +153,42 @@ api.interceptors.response.use(
           }
           console.error('  - 后端返回消息:', (data as any)?.msg)
 
-          // 未授权，清除token并跳转登录页
-          localStorage.removeItem('token')
-          localStorage.removeItem('user')
-          ElMessage.error('登录已过期，请重新登录')
-          window.location.href = '/login'
-          break
+          // 未授权，清除认证信息并跳转登录页
+          if (!isTokenExpiredMessageShown) {
+            isTokenExpiredMessageShown = true
+
+            // 清除本地存储的认证信息
+            localStorage.removeItem('token')
+            localStorage.removeItem('user')
+            localStorage.removeItem('tokenExpireTime')
+
+            // 显示错误提示
+            ElMessage({
+              type: 'error',
+              message: '登录已过期，请重新登录',
+              duration: 2000,
+              showClose: true
+            })
+
+            // 立即跳转，使用window.location
+            const currentPath = window.location.pathname
+            console.log('即将跳转到登录页，当前路径:', currentPath)
+
+            // 延迟100ms确保消息显示
+            setTimeout(() => {
+              if (currentPath !== '/login' && currentPath !== '/register') {
+                window.location.href = '/login?redirect=' + encodeURIComponent(currentPath)
+              } else {
+                window.location.href = '/login'
+              }
+              // 重置标志
+              setTimeout(() => {
+                isTokenExpiredMessageShown = false
+              }, 1000)
+            }, 100)
+          }
+          // 401错误直接返回，不再向下传递
+          return Promise.reject(new Error('登录已过期'))
         case 403:
           ElMessage.error('没有权限访问此资源')
           break
@@ -136,28 +215,33 @@ api.interceptors.response.use(
 
 // 通用请求方法
 export const request = {
-  get<T = any>(url: string, params?: any): Promise<T> {
-    return api.get(url, { params }).then(res => res.data)
+  async get<T = any>(url: string, params?: any): Promise<T> {
+    const res = await api.get(url, { params })
+    return res.data
   },
 
-  post<T = any>(url: string, data?: any): Promise<T> {
-    return api.post(url, data).then(res => res.data)
+  async post<T = any>(url: string, data?: any): Promise<T> {
+    const res = await api.post(url, data)
+    return res.data
   },
 
-  put<T = any>(url: string, data?: any): Promise<T> {
-    return api.put(url, data).then(res => res.data)
+  async put<T = any>(url: string, data?: any): Promise<T> {
+    const res = await api.put(url, data)
+    return res.data
   },
 
-  delete<T = any>(url: string): Promise<T> {
-    return api.delete(url).then(res => res.data)
+  async delete<T = any>(url: string): Promise<T> {
+    const res = await api.delete(url)
+    return res.data
   },
 
-  upload<T = any>(url: string, formData: FormData): Promise<T> {
-    return api.post(url, formData, {
+  async upload<T = any>(url: string, formData: FormData): Promise<T> {
+    const res = await api.post(url, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
-    }).then(res => res.data)
+    })
+    return res.data
   }
 }
 

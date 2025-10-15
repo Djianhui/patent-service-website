@@ -146,10 +146,12 @@ export const patentDraftService = {
       console.error('=== 专利草稿生成失败 ===')
       console.error(error)
 
-      if (error.response && error.response.status === 401) {
-        throw new Error('登录已过期，请重新登录')
+      // 如果是登录过期错误，直接返回，不再显示错误
+      if (error.message === '登录已过期') {
+        return Promise.reject(error)
       }
 
+      // 处理其他错误
       if (error.response && error.response.data) {
         const backendError = error.response.data
         throw new Error(backendError.msg || backendError.message || '生成失败')
@@ -267,10 +269,12 @@ export const patentDraftService = {
       console.error('=== 获取草稿列表失败 ===')
       console.error(error)
 
-      if (error.response && error.response.status === 401) {
-        throw new Error('登录已过期，请重新登录')
+      // 如果是登录过期错误，直接返回，不再显示错误
+      if (error.message === '登录已过期') {
+        return Promise.reject(error)
       }
 
+      // 处理其他错误
       if (error.response && error.response.data) {
         const backendError = error.response.data
         throw new Error(backendError.msg || backendError.message || '获取草稿列表失败')

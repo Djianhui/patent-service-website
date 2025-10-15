@@ -85,10 +85,12 @@ export const defenseSupportService = {
       console.error('=== 文件上传失败 ===')
       console.error(error)
 
-      if (error.response && error.response.status === 401) {
-        throw new Error('登录已过期，请重新登录')
+      // 如果是登录过期错误，直接返回，不再显示错误
+      if (error.message === '登录已过期') {
+        return Promise.reject(error)
       }
 
+      // 处理其他错误
       if (error.response && error.response.data) {
         const backendError = error.response.data
         throw new Error(backendError.msg || backendError.message || '文件上传失败')
@@ -130,10 +132,12 @@ export const defenseSupportService = {
       console.error('=== 答辩支持任务创建失败 ===')
       console.error(error)
 
-      if (error.response && error.response.status === 401) {
-        throw new Error('登录已过期，请重新登录')
+      // 如果是登录过期错误，直接返回，不再显示错误
+      if (error.message === '登录已过期') {
+        return Promise.reject(error)
       }
 
+      // 处理其他错误
       if (error.response && error.response.data) {
         const backendError = error.response.data
         throw new Error(backendError.msg || backendError.message || '创建任务失败')
@@ -246,10 +250,12 @@ export const defenseSupportService = {
       console.error('=== 获取答辩支持任务列表失败 ===')
       console.error(error)
 
-      if (error.response && error.response.status === 401) {
-        throw new Error('登录已过期，请重新登录')
+      // 如果是登录过期错误，直接返回，不再显示错误
+      if (error.message === '登录已过期') {
+        return Promise.reject(error)
       }
 
+      // 处理其他错误
       if (error.response && error.response.data) {
         const backendError = error.response.data
         throw new Error(backendError.msg || backendError.message || '获取任务列表失败')

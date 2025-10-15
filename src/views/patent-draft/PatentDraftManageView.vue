@@ -223,7 +223,10 @@ const loadData = async () => {
     draftList.value = result.data
     total.value = result.total
   } catch (error: any) {
-    ElMessage.error(error.message || '加载数据失败')
+    // 如果是登录过期错误，不显示额外错误提示
+    if (error?.message !== '登录已过期') {
+      ElMessage.error(error.message || '加载数据失败')
+    }
   } finally {
     loading.value = false
   }

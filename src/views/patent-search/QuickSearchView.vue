@@ -227,7 +227,10 @@ const loadSearchHistory = async () => {
       pageSize: pagination.pageSize
     })
   } catch (error: any) {
-    ElMessage.error(error.message || '加载历史记录失败')
+    // 如果是登录过期错误，不显示额外错误提示
+    if (error?.message !== '登录已过期') {
+      ElMessage.error(error.message || '加载历史记录失败')
+    }
   } finally {
     loading.value = false
   }

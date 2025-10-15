@@ -209,8 +209,11 @@ const loadReports = async () => {
       endDate: filterForm.dateRange?.[1]
     }
     await techReportStore.getReportList(params)
-  } catch (error) {
-    ElMessage.error('加载报告列表失败')
+  } catch (error: any) {
+    // 如果是登录过期错误，不显示额外错误提示
+    if (error?.message !== '登录已过期') {
+      ElMessage.error('加载报告列表失败')
+    }
   } finally {
     loading.value = false
   }

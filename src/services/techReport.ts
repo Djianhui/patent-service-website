@@ -128,9 +128,9 @@ export const techReportService = {
         throw new Error('报告生成时间较长，已提交后台处理，请稍后在历史记录中查看结果')
       }
 
-      // 处理401认证错误
-      if (error.response && error.response.status === 401) {
-        throw new Error('登录已过期，请重新登录')
+      // 如果是登录过期错误，直接返回，不再显示错误
+      if (error.message === '登录已过期') {
+        return Promise.reject(error)
       }
 
       // 处理其他错误
@@ -262,9 +262,9 @@ export const techReportService = {
       console.error('=== 获取报告列表失败 ===')
       console.error(error)
 
-      // 处理401认证错误
-      if (error.response && error.response.status === 401) {
-        throw new Error('登录已过期，请重新登录')
+      // 如果是登录过期错误，直接返回，不再显示错误
+      if (error.message === '登录已过期') {
+        return Promise.reject(error)
       }
 
       // 处理其他错误
