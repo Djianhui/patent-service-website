@@ -281,30 +281,30 @@ const guideSteps = ref([
 
 // 快捷工具
 const recentActivities = ref([
-  {
-    id: '1',
-    type: 'report',
-    icon: 'Document',
-    title: '完成技术方案报告',
-    description: '智能语音识别系统技术方案分析',
-    time: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString()
-  },
-  {
-    id: '2',
-    type: 'search',
-    icon: 'Search',
-    title: '专利检索',
-    description: '检索到25件相关专利文献',
-    time: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString()
-  },
-  {
-    id: '3',
-    type: 'analysis',
-    icon: 'DataAnalysis',
-    title: '三性分析完成',
-    description: '机器学习算法专利新颖性分析',
-    time: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
-  }
+  // {
+  //   id: '1',
+  //   type: 'report',
+  //   icon: 'Document',
+  //   title: '完成技术方案报告',
+  //   description: '智能语音识别系统技术方案分析',
+  //   time: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString()
+  // },
+  // {
+  //   id: '2',
+  //   type: 'search',
+  //   icon: 'Search',
+  //   title: '专利检索',
+  //   description: '检索到25件相关专利文献',
+  //   time: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString()
+  // },
+  // {
+  //   id: '3',
+  //   type: 'analysis',
+  //   icon: 'DataAnalysis',
+  //   title: '三性分析完成',
+  //   description: '机器学习算法专利新颖性分析',
+  //   time: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+  // }
 ])
 
 // 快捷工具
@@ -353,24 +353,7 @@ const quickTools = ref([
 
 // 待办事项
 const todoList = ref([
-  {
-    id: '1',
-    title: '完成AI算法专利申请书撰写',
-    completed: false,
-    deadline: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString()
-  },
-  {
-    id: '2',
-    title: '审查意见答辩材料准备',
-    completed: false,
-    deadline: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString()
-  },
-  {
-    id: '3',
-    title: '技术交底书整理',
-    completed: true,
-    deadline: null
-  }
+
 ])
 
 const newTodo = reactive({

@@ -128,20 +128,20 @@ const router = useRouter()
 // 响应式数据
 const showNotifications = ref(false)
 const notifications = ref([
-  {
-    id: '1',
-    title: '报告生成完成',
-    message: '您的技术方案报告已生成完成，请及时查看。',
-    time: new Date().toISOString(),
-    read: false
-  },
-  {
-    id: '2',
-    title: '检索结果更新',
-    message: '专利检索发现新的相关文献，建议您查看。',
-    time: new Date(Date.now() - 3600000).toISOString(),
-    read: true
-  }
+  // {
+  //   id: '1',
+  //   title: '报告生成完成',
+  //   message: '您的技术方案报告已生成完成，请及时查看。',
+  //   time: new Date().toISOString(),
+  //   read: false
+  // },
+  // {
+  //   id: '2',
+  //   title: '检索结果更新',
+  //   message: '专利检索发现新的相关文献，建议您查看。',
+  //   time: new Date(Date.now() - 3600000).toISOString(),
+  //   read: true
+  // }
 ])
 
 // 计算属性
