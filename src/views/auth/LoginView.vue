@@ -50,7 +50,7 @@
 </el-alert>
 </div> -->
 
-        <el-form-item>
+        <!-- <el-form-item>
           <div class="form-options">
             <el-checkbox v-model="loginForm.remember">
               记住我
@@ -59,7 +59,7 @@
               忘记密码？
             </el-link>
           </div>
-        </el-form-item>
+        </el-form-item> -->
 
         <el-form-item>
           <el-button type="primary" size="large" :loading="loading" @click="handleLogin" class="login-button">
@@ -67,7 +67,7 @@
           </el-button>
         </el-form-item>
 
-        <el-divider>
+        <!-- <el-divider>
           <span class="divider-text">其他登录方式</span>
         </el-divider>
 
@@ -75,7 +75,7 @@
           <el-button circle :icon="Platform" @click="handleSocialLogin('wechat')" />
           <el-button circle :icon="Platform" @click="handleSocialLogin('qq')" />
           <el-button circle :icon="ChromeFilled" @click="handleSocialLogin('google')" />
-        </div>
+        </div> -->
 
         <div class="register-link">
           <span>还没有账户？</span>

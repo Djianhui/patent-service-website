@@ -41,12 +41,12 @@
               </el-icon>
               个人中心
             </el-dropdown-item>
-            <el-dropdown-item command="settings">
+            <!-- <el-dropdown-item command="settings">
               <el-icon>
                 <Setting />
               </el-icon>
               设置
-            </el-dropdown-item>
+            </el-dropdown-item> -->
             <el-dropdown-item divided command="logout">
               <el-icon>
                 <SwitchButton />

@@ -83,11 +83,11 @@ const menuItems = ref([
         title: '快速检索',
         path: '/app/patent-search/quick'
       },
-      {
-        id: 'patent-search-results',
-        title: '检索结果',
-        path: '/app/patent-search/results'
-      }
+      // {
+      //   id: 'patent-search-results',
+      //   title: '检索结果',
+      //   path: '/app/patent-search/results'
+      // }
     ]
   },
   {
