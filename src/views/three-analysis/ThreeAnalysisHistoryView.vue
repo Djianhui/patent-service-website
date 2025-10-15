@@ -106,7 +106,9 @@
                   </div>
                 </div>
                 <div class="analysis-actions">
-
+                  <el-tag :type="getStateType((analysis as any).state)" size="small">
+                    {{ getStateText((analysis as any).state) }}
+                  </el-tag>
                   <el-button size="small" text @click.stop="downloadReport(analysis, 'pdf')"
                     :disabled="!(analysis as any).pdfUrl">
                     <el-icon>
@@ -365,6 +367,24 @@ const getCreativityText = (level: string): string => {
     case 'high': return '高'
     case 'medium': return '中'
     case 'low': return '低'
+    default: return '未知'
+  }
+}
+
+const getStateType = (state: number): string => {
+  switch (state) {
+    case 0: return 'warning'  // 未完成（生成中）
+    case 1: return 'success'  // 已完成
+    case 2: return 'danger'   // 失败
+    default: return 'info'
+  }
+}
+
+const getStateText = (state: number): string => {
+  switch (state) {
+    case 0: return '生成中'
+    case 1: return '已完成'
+    case 2: return '失败'
     default: return '未知'
   }
 }

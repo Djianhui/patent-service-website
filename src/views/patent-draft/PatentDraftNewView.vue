@@ -26,15 +26,9 @@
             show-word-limit />
         </el-form-item>
 
-        <el-form-item label="技术领域" prop="technicalField">
-          <el-input v-model="draftData.technicalField" type="textarea" :rows="6"
-            placeholder="请描述本发明所属的技术领域。例如：本实用新型涉及农业设施技术领域，具体涉及一种用于食用菌种植的组装式种植棚结构。" maxlength="500" show-word-limit
-            resize="vertical" />
-        </el-form-item>
-
         <el-form-item label="技术方案" prop="technicalSolution">
           <el-input v-model="draftData.technicalSolution" type="textarea" :rows="8"
-            placeholder="请详细描述本发明的技术方案，包括结构组成、工作原理、技术特点等。建议300-1000字，内容越详细，生成的专利质量越高。" maxlength="2000" show-word-limit
+            placeholder="请详细描述本发明的技术方案，包括结构组成、工作原理、技术特点等。建议300-1000字，内容越详细，生成的专利质量越高。" maxlength="10000" show-word-limit
             resize="vertical" />
         </el-form-item>
 
@@ -76,10 +70,6 @@ const formRules = {
     { required: true, message: '请输入发明名称', trigger: 'blur' },
     { min: 3, max: 50, message: '发明名称长度应为3-50个字符', trigger: 'blur' }
   ],
-  technicalField: [
-    { required: true, message: '请填写技术领域', trigger: 'blur' },
-    { min: 3, message: '技术领域描述至少20个字符', trigger: 'blur' }
-  ],
   technicalSolution: [
     { required: true, message: '请填写技术方案', trigger: 'blur' },
     { min: 50, message: '技术方案描述至少50个字符', trigger: 'blur' }
@@ -112,12 +102,11 @@ const generateDraft = async () => {
   generating.value = true
 
   try {
-    ElMessage.info('AI正在分析您的技术方案，生成专利草稿...')
+    ElMessage.info('系统正在分析您的技术方案，生成专利草稿...')
 
     // 调用后端API生成专利草稿
     await patentDraftService.createDraft({
       title: draftData.title,
-      technicalField: draftData.technicalField,
       technicalSolution: draftData.technicalSolution
     })
 

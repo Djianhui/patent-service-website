@@ -117,17 +117,15 @@ export const patentDraftService = {
   // 创建专利草稿（提交到后端）
   async createDraft(data: {
     title: string
-    technicalField: string
     technicalSolution: string
   }): Promise<any> {
     try {
       console.log('=== 开始创建专利草稿 ===')
       console.log('发明名称:', data.title)
-      console.log('技术领域:', data.technicalField)
       console.log('技术方案:', data.technicalSolution)
 
-      // 拼接 prompt：发明名称 + 技术领域 + 技术方案
-      const prompt = `${data.title}\n${data.technicalField}\n${data.technicalSolution}`
+      // 拼接 prompt：发明名称 + 技术方案
+      const prompt = `${data.title}\n${data.technicalSolution}`
 
       // 调用API生成专利草稿
       const response = await request.post<any>('/manus/task', {

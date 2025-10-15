@@ -85,12 +85,12 @@
                 <el-tag :type="getStatusType(draft.status)" size="small">
                   {{ getStatusText(draft.status) }}
                 </el-tag>
-                <el-button size="small" text @click.stop="downloadPDF(draft)" :disabled="!(draft as any).pdfUrl">
+                <!-- <el-button size="small" text @click.stop="downloadPDF(draft)" :disabled="!(draft as any).pdfUrl">
                   <el-icon>
                     <Download />
                   </el-icon>
                   下载PDF
-                </el-button>
+                </el-button> -->
                 <el-button size="small" text @click.stop="downloadWord(draft)" :disabled="!(draft as any).wordUrl">
                   <el-icon>
                     <Download />

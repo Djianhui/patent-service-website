@@ -225,27 +225,100 @@ const mockThreeAnalyses: ThreeAnalysis[] = [
   }
 ]
 
+// 文件上传响应
+export interface UploadFileResponse {
+  code: number
+  data: {
+    fileName: string
+    newFileName: string
+    originalFilename: string
+    url: string
+  }
+  msg: string
+}
+
 // 模拟API接口
 export const threeAnalysisService = {
+  // 上传专利文件
+  async uploadFile(file: File): Promise<string> {
+    try {
+      console.log('=== 开始上传文件 ===')
+      console.log('文件名:', file.name)
+      console.log('文件大小:', file.size)
+      console.log('文件类型:', file.type)
+
+      const formData = new FormData()
+      formData.append('file', file)
+
+      const response = await request.upload<UploadFileResponse>('/file/common/upload', formData)
+
+      console.log('文件上传响应:', response)
+
+      if (response.code === 200 && response.data) {
+        return response.data.url
+      } else {
+        throw new Error(response.msg || '文件上传失败')
+      }
+    } catch (error: any) {
+      console.error('=== 文件上传失败 ===')
+      console.error(error)
+
+      // 如果是登录过期错误，直接返回，不再显示错误
+      if (error.message === '登录已过期') {
+        return Promise.reject(error)
+      }
+
+      // 处理其他错误
+      if (error.response && error.response.data) {
+        const backendError = error.response.data
+        throw new Error(backendError.msg || backendError.message || '文件上传失败')
+      } else if (error.message) {
+        throw new Error(error.message)
+      } else {
+        throw new Error('网络错误，请检查网络连接')
+      }
+    }
+  },
   // 创建三性分析（提交到后端）
   async createAnalysis(data: {
-    title: string
-    technicalSolution: string
+    title?: string
+    technicalSolution?: string
     analysisTypes: string[]
+    fileUrls?: string[]
   }): Promise<any> {
     try {
       console.log('=== 开始三性分析 ===')
       console.log('专利标题:', data.title)
       console.log('技术方案:', data.technicalSolution)
+      console.log('文件路径:', data.fileUrls)
 
-      // 拼接 prompt：专利标题 + 技术方案
-      const prompt = `${data.title}\n${data.technicalSolution}`
+      // 构建请求参数
+      const requestData: any = {
+        type: 3  // 3: 三性分析
+      }
+
+      // 如果有文件，优先使用文件
+      if (data.fileUrls && data.fileUrls.length > 0) {
+        requestData.fileUrls = data.fileUrls
+        // 如果同时提供了文本信息，作为 prompt
+        if (data.title || data.technicalSolution) {
+          const prompt = data.title && data.technicalSolution
+            ? `${data.title}\n${data.technicalSolution}`
+            : (data.title || data.technicalSolution || '')
+          if (prompt) {
+            requestData.prompt = prompt
+          }else{
+            requestData.prompt = "无输入"
+          }
+        }
+      } else {
+        // 没有文件，使用文本输入（拼接 prompt：专利标题 + 技术方案）
+        const prompt = `${data.title || ''}\n${data.technicalSolution || ''}`
+        requestData.prompt = prompt.trim()
+      }
 
       // 调用API生成三性分析报告
-      const response = await request.post<any>('/manus/task', {
-        prompt: prompt,
-        type: 3  // 3: 三性分析
-      })
+      const response = await request.post<any>('/manus/task', requestData)
 
       console.log('三性分析提交响应:', response)
 
