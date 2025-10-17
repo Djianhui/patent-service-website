@@ -88,7 +88,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import {
   Bell,
@@ -98,8 +98,10 @@ import {
   Setting,
   SwitchButton
 } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
 import { formatDate } from '@/utils'
 import type { User } from '@/types'
+import { notificationService, type NotificationMessage } from '@/services/notification'
 
 // Props
 interface Props {
@@ -124,28 +126,10 @@ const router = useRouter()
 
 // 响应式数据
 const showNotifications = ref(false)
-const notifications = ref<Array<{
-  id: string
-  title: string
-  message: string
-  time: string
-  read: boolean
-}>>([
-  // {
-  //   id: '1',
-  //   title: '报告生成完成',
-  //   message: '您的技术方案报告已生成完成，请及时查看。',
-  //   time: new Date().toISOString(),
-  //   read: false
-  // },
-  // {
-  //   id: '2',
-  //   title: '检索结果更新',
-  //   message: '专利检索发现新的相关文献，建议您查看。',
-  //   time: new Date(Date.now() - 3600000).toISOString(),
-  //   read: true
-  // }
-])
+const notifications = ref<NotificationMessage[]>([])
+
+// SSE消息处理器取消函数
+let unsubscribe: (() => void) | null = null
 
 // 计算属性
 const breadcrumbItems = computed(() => {
@@ -188,8 +172,117 @@ const markAllAsRead = () => {
 
 // 生命周期
 onMounted(() => {
-  // 这里可以加载用户通知
+  // 如果用户已登录，建立SSE连接
+  if (props.user?.userId) {
+    connectSSE(props.user.userId)
+  }
 })
+
+onUnmounted(() => {
+  // 组件销毁时断开SSE连接
+  if (unsubscribe) {
+    unsubscribe()
+  }
+  notificationService.disconnect()
+})
+
+// 监听用户信息变化，重新建立SSE连接
+watch(() => props.user, (newUser) => {
+  if (newUser?.userId) {
+    connectSSE(newUser.userId)
+  } else {
+    // 用户登出，断开连接
+    if (unsubscribe) {
+      unsubscribe()
+    }
+    notificationService.disconnect()
+    notifications.value = []
+  }
+})
+
+// 建立SSE连接
+const connectSSE = (userId: string | number) => {
+  console.log('=== AppHeader: connectSSE 被调用 ===')
+  console.log('userId:', userId)
+
+  // 先断开旧连接
+  if (unsubscribe) {
+    console.log('=== AppHeader: 取消之前的消息监听 ===')
+    unsubscribe()
+  }
+  console.log('=== AppHeader: 断开旧SSE连接 ===')
+  notificationService.disconnect()
+
+  // 建立新连接
+  console.log('=== AppHeader: 调用 notificationService.connect ===')
+  notificationService.connect(userId)
+
+  // 注册消息处理器
+  console.log('=== AppHeader: 注册消息处理器 ===')
+  unsubscribe = notificationService.onMessage((message) => {
+    console.log('=== AppHeader: 收到新通知 ===')
+    console.log('通知对象:', message)
+    console.log('通知标题:', message.title)
+    console.log('通知内容:', message.message)
+    console.log('通知类型:', message.type)
+
+    // 过滤掉 SSE 连接成功的系统消息
+    const isConnectionMessage = 
+      message.message.includes('连接成功') || 
+      message.message.match(/连接成功[:|：]\s*\d+/) ||
+      (message.title === '系统通知' && message.message.includes('连接'))
+    
+    if (isConnectionMessage) {
+      console.log('=== AppHeader: 过滤掉SSE连接成功消息，不显示 ===')
+      return // 不处理连接成功消息
+    }
+
+    // 添加到通知列表
+    try {
+      notifications.value.unshift(message)
+      console.log('已添加到通知列表，当前通知数:', notifications.value.length)
+      console.log('通知列表:', notifications.value)
+    } catch (error) {
+      console.error('=== AppHeader: 添加到通知列表失败 ===')
+      console.error(error)
+    }
+
+    // 显示消息提示
+    try {
+      console.log('=== AppHeader: 准备显示ElMessage提示 ===')
+      
+      // 确保消息内容不为空
+      const messageText = message.message || message.title || '新消息'
+      const messageType = ['success', 'warning', 'info', 'error'].includes(message.type || '') 
+        ? (message.type as 'success' | 'warning' | 'info' | 'error') 
+        : 'info'
+      
+      console.log('显示文本:', messageText)
+      console.log('显示类型:', messageType)
+      
+      ElMessage({
+        message: messageText,
+        type: messageType,
+        duration: 3000,
+        showClose: true
+      })
+      
+      console.log('=== AppHeader: ElMessage已调用 ===')
+    } catch (error) {
+      console.error('=== AppHeader: 显示ElMessage失败 ===')
+      console.error(error)
+      
+      // 如果ElMessage失败，尝试使用简单提示
+      try {
+        ElMessage(message.message || '收到新消息')
+      } catch (e) {
+        console.error('简单提示也失败:', e)
+      }
+    }
+  })
+
+  console.log('=== AppHeader: SSE连接设置完成 ===')
+}
 </script>
 
 <style scoped lang="scss">

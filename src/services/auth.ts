@@ -168,18 +168,28 @@ export const authService = {
 
   // 获取用户信息
   async getUserInfo(): Promise<User> {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          id: '1',
-          username: 'admin',
-          email: 'admin@example.com',
-          role: 'admin' as any,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
-        })
-      }, 500)
-    })
+    try {
+      const response = await request.get<any>('/getInfo')
+
+      if (response.code === 200 && response.user) {
+        return {
+          id: response.user.userId || response.user.id,
+          username: response.user.userName || response.user.username,
+          email: response.user.email || '',
+          role: response.user.role || 'user',
+          avatar: response.user.avatar,
+          createdAt: response.user.createTime || new Date().toISOString(),
+          updatedAt: response.user.updateTime || new Date().toISOString(),
+          // 保存原始用户数据，包含userId用于SSE连接
+          userId: response.user.userId
+        } as User
+      } else {
+        throw new Error(response.msg || '获取用户信息失败')
+      }
+    } catch (error: any) {
+      console.error('获取用户信息失败:', error)
+      throw new Error(error.message || '获取用户信息失败')
+    }
   },
 
   // 更新用户信息

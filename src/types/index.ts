@@ -16,6 +16,7 @@ export interface User {
   role: UserRole
   createdAt: string
   updatedAt: string
+  userId?: string | number // 用于SSE连接的用户ID
 }
 
 export enum UserRole {

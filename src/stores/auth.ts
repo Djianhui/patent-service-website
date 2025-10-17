@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import { authService } from '@/services/auth'
 import { storage } from '@/utils'
 import type { User, AuthState } from '@/types'
+import { notificationService } from '@/services/notification'
 
 export const useAuthStore = defineStore('auth', () => {
   // State
@@ -44,6 +45,31 @@ export const useAuthStore = defineStore('auth', () => {
         const expireTime = Date.now() + response.expiresIn * 1000
         storage.set('tokenExpireTime', expireTime)
         console.log('Token过期时间:', new Date(expireTime).toLocaleString())
+      }
+
+      // 登录成功后立即获取用户详细信息并建立SSE连接
+      console.log('=== Store: 获取用户详细信息并建立SSE连接 ===')
+      try {
+        const userInfo = await authService.getUserInfo()
+        console.log('用户详细信息:', userInfo)
+
+        // 更新用户信息，确保包含userId
+        user.value = userInfo
+        storage.set('user', userInfo)
+
+        // 建立SSE连接
+        if (userInfo.userId) {
+          console.log('=== SSE: 开始连接 ===')
+          console.log('userId:', userInfo.userId)
+          notificationService.connect(userInfo.userId)
+          console.log('=== SSE: 连接请求已发送 ===')
+        } else {
+          console.warn('=== SSE: userId 为空，无法建立SSE连接 ===')
+        }
+      } catch (error) {
+        console.error('=== 获取用户信息或建立SSE连接失败 ===')
+        console.error(error)
+        // 不抛出错误，不影响登录流程
       }
 
       console.log('=====================')
@@ -92,6 +118,10 @@ export const useAuthStore = defineStore('auth', () => {
     } catch (error) {
       console.error('登出请求失败:', error)
     } finally {
+      // 断开SSE连接
+      console.log('=== SSE: 登出时断开连接 ===')
+      notificationService.disconnect()
+
       // 清除本地数据
       token.value = null
       user.value = null
@@ -159,10 +189,17 @@ export const useAuthStore = defineStore('auth', () => {
       }
 
       // 获取最新用户信息
-      if (!user.value) {
+      if (!user.value || !user.value.userId) {
+        console.log('=== checkAuth: 获取用户信息 ===')
         const userInfo = await authService.getUserInfo()
         user.value = userInfo
         storage.set('user', userInfo)
+
+        // 如果有userId且SSE未连接，则建立连接
+        if (userInfo.userId && !notificationService.isConnected()) {
+          console.log('=== checkAuth: 建立SSE连接 ===')
+          notificationService.connect(userInfo.userId)
+        }
       }
 
       return true
