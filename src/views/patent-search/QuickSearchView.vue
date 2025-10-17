@@ -13,16 +13,21 @@
       </template>
 
       <el-form :model="searchForm" @submit.prevent="handleSearch">
-        <el-form-item>
+        <el-form-item label="专利标题">
+          <el-input v-model="searchForm.title" type="text" placeholder="请输入专利标题（选填，与技术方案至少填写一个）" clearable
+            maxlength="200" show-word-limit />
+        </el-form-item>
+
+        <el-form-item label="技术方案">
           <el-input v-model="searchForm.keyword" type="textarea" :rows="6"
-            placeholder="请输入技术方案，建议只输入一个技术方案，200-500字效果最佳" clearable maxlength="10000" show-word-limit
+            placeholder="请输入技术方案（选填，与专利标题至少填写一个），建议300-1000字效果最佳" clearable maxlength="10000" show-word-limit
             resize="vertical" />
         </el-form-item>
 
         <el-form-item>
           <div class="search-actions">
             <el-button type="primary" size="large" :loading="searching" @click="handleSearch"
-              :disabled="!searchForm.keyword.trim()">
+              :disabled="!searchForm.title.trim() && !searchForm.keyword.trim()">
               {{ searching ? '检索中...' : '开始检索' }}
             </el-button>
           </div>
@@ -177,6 +182,7 @@ const loading = ref(false)
 const hasSearched = ref(false)
 
 const searchForm = reactive({
+  title: '',
   keyword: ''
 })
 
@@ -198,8 +204,12 @@ const patentList = computed(() => patentSearchStore.searchResults)
 
 // 方法
 const handleSearch = async () => {
-  if (!searchForm.keyword.trim()) {
-    ElMessage.warning('请输入检索关键词')
+  // 验证至少填写一个字段
+  const titleText = searchForm.title.trim()
+  const keywordText = searchForm.keyword.trim()
+
+  if (!titleText && !keywordText) {
+    ElMessage.warning('请至少输入专利标题或技术方案之一')
     return
   }
 
@@ -207,7 +217,17 @@ const handleSearch = async () => {
   pagination.page = 1
 
   try {
-    await patentSearchStore.quickSearch(searchForm.keyword, {
+    // 合并专利标题和技术方案
+    let combinedContent = ''
+    if (titleText && keywordText) {
+      combinedContent = `${titleText}\n${keywordText}`
+    } else if (titleText) {
+      combinedContent = titleText
+    } else {
+      combinedContent = keywordText
+    }
+
+    await patentSearchStore.quickSearch(combinedContent, {
       page: pagination.page,
       pageSize: pagination.pageSize
     })
@@ -265,10 +285,23 @@ const getStatusText = (state: number): string => {
 }
 
 const handlePageChange = async () => {
-  if (!searchForm.keyword.trim()) return
+  const titleText = searchForm.title.trim()
+  const keywordText = searchForm.keyword.trim()
+
+  if (!titleText && !keywordText) return
 
   try {
-    await patentSearchStore.quickSearch(searchForm.keyword, {
+    // 合并专利标题和技术方案
+    let combinedContent = ''
+    if (titleText && keywordText) {
+      combinedContent = `${titleText}\n${keywordText}`
+    } else if (titleText) {
+      combinedContent = titleText
+    } else {
+      combinedContent = keywordText
+    }
+
+    await patentSearchStore.quickSearch(combinedContent, {
       page: pagination.page,
       pageSize: pagination.pageSize
     })

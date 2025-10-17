@@ -227,11 +227,11 @@ const connectSSE = (userId: string | number) => {
     console.log('通知类型:', message.type)
 
     // 过滤掉 SSE 连接成功的系统消息
-    const isConnectionMessage = 
-      message.message.includes('连接成功') || 
+    const isConnectionMessage =
+      message.message.includes('连接成功') ||
       message.message.match(/连接成功[:|：]\s*\d+/) ||
       (message.title === '系统通知' && message.message.includes('连接'))
-    
+
     if (isConnectionMessage) {
       console.log('=== AppHeader: 过滤掉SSE连接成功消息，不显示 ===')
       return // 不处理连接成功消息
@@ -250,28 +250,28 @@ const connectSSE = (userId: string | number) => {
     // 显示消息提示
     try {
       console.log('=== AppHeader: 准备显示ElMessage提示 ===')
-      
+
       // 确保消息内容不为空
       const messageText = message.message || message.title || '新消息'
-      const messageType = ['success', 'warning', 'info', 'error'].includes(message.type || '') 
-        ? (message.type as 'success' | 'warning' | 'info' | 'error') 
+      const messageType = ['success', 'warning', 'info', 'error'].includes(message.type || '')
+        ? (message.type as 'success' | 'warning' | 'info' | 'error')
         : 'info'
-      
+
       console.log('显示文本:', messageText)
       console.log('显示类型:', messageType)
-      
+
       ElMessage({
         message: messageText,
         type: messageType,
         duration: 3000,
         showClose: true
       })
-      
+
       console.log('=== AppHeader: ElMessage已调用 ===')
     } catch (error) {
       console.error('=== AppHeader: 显示ElMessage失败 ===')
       console.error(error)
-      
+
       // 如果ElMessage失败，尝试使用简单提示
       try {
         ElMessage(message.message || '收到新消息')
