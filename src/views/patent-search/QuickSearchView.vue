@@ -13,21 +13,20 @@
       </template>
 
       <el-form :model="searchForm" @submit.prevent="handleSearch">
-        <el-form-item label="专利标题">
-          <el-input v-model="searchForm.title" type="text" placeholder="请输入专利标题（选填，与技术方案至少填写一个）" clearable
-            maxlength="200" show-word-limit />
+        <el-form-item label="专利标题" required>
+          <el-input v-model="searchForm.title" type="text" placeholder="请输入专利标题" clearable maxlength="200"
+            show-word-limit />
         </el-form-item>
 
-        <el-form-item label="技术方案">
-          <el-input v-model="searchForm.keyword" type="textarea" :rows="6"
-            placeholder="请输入技术方案（选填，与专利标题至少填写一个），建议300-1000字效果最佳" clearable maxlength="10000" show-word-limit
-            resize="vertical" />
+        <el-form-item label="技术方案" required>
+          <el-input v-model="searchForm.keyword" type="textarea" :rows="6" placeholder="请输入技术方案，建议300-1000字效果最佳"
+            clearable maxlength="10000" show-word-limit resize="vertical" />
         </el-form-item>
 
         <el-form-item>
           <div class="search-actions">
             <el-button type="primary" size="large" :loading="searching" @click="handleSearch"
-              :disabled="!searchForm.title.trim() && !searchForm.keyword.trim()">
+              :disabled="!searchForm.title.trim() || !searchForm.keyword.trim()">
               {{ searching ? '检索中...' : '开始检索' }}
             </el-button>
           </div>
@@ -204,12 +203,17 @@ const patentList = computed(() => patentSearchStore.searchResults)
 
 // 方法
 const handleSearch = async () => {
-  // 验证至少填写一个字段
+  // 验证两个字段都必填
   const titleText = searchForm.title.trim()
   const keywordText = searchForm.keyword.trim()
 
-  if (!titleText && !keywordText) {
-    ElMessage.warning('请至少输入专利标题或技术方案之一')
+  if (!titleText) {
+    ElMessage.warning('请输入专利标题')
+    return
+  }
+
+  if (!keywordText) {
+    ElMessage.warning('请输入技术方案')
     return
   }
 
@@ -288,7 +292,7 @@ const handlePageChange = async () => {
   const titleText = searchForm.title.trim()
   const keywordText = searchForm.keyword.trim()
 
-  if (!titleText && !keywordText) return
+  if (!titleText || !keywordText) return
 
   try {
     // 合并专利标题和技术方案
