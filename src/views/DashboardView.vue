@@ -5,15 +5,15 @@
       <div class="header-content">
         <div class="welcome-info">
           <h1 class="welcome-title">
-            欢迎回来，{{ authStore.userName || '用户' }}！
+            Welcome back, {{ authStore.userName || 'User' }}!
           </h1>
           <p class="welcome-subtitle">
-            今天是 {{ formatDate(new Date(), 'YYYY年MM月DD日') }}，让我们开始今天的工作吧
+            Today is {{ formatDate(new Date(), 'MMMM DD, YYYY') }}, let's start today's work
           </p>
         </div>
         <div class="quick-actions">
           <el-button type="primary" :icon="Plus" @click="$router.push('/app/tech-report/new')">
-            新建技术方案报告
+            New Technical Report
           </el-button>
         </div>
       </div>
@@ -27,13 +27,15 @@
             <el-icon class="guide-icon">
               <InfoFilled />
             </el-icon>
-            <span>系统使用引导</span>
+            <span>System Usage Guide</span>
           </div>
         </template>
 
         <div class="guide-content">
           <p class="guide-description">
-            智能专利服务系统为您提供一站式专利申请解决方案，请按照以下步骤使用系统：
+            The intelligent patent service system provides you with a one-stop patent application solution. Please
+            follow these
+            steps to use the system:
           </p>
 
           <div class="steps-container">
@@ -57,8 +59,9 @@
           </div>
 
           <div class="guide-tips">
-            <el-alert title="温馨提示" description="您可以从任何步骤开始使用系统，系统会根据您的需求提供相应的服务支持" type="info" show-icon
-              :closable="false" />
+            <el-alert title="Tips"
+              description="You can start using the system from any step. The system will provide corresponding service support based on your needs."
+              type="info" show-icon :closable="false" />
           </div>
         </div>
       </el-card>
@@ -66,7 +69,7 @@
 
     <!-- 快捷工具 -->
     <div class="quick-tools-section">
-      <h2 class="section-title">快捷工具</h2>
+      <h2 class="section-title">Quick Tools</h2>
       <div class="tools-grid">
         <div v-for="tool in quickTools" :key="tool.key" class="tool-card" @click="$router.push(tool.path)">
           <div class="tool-icon" :style="{ backgroundColor: tool.color }">
@@ -94,9 +97,9 @@
         <el-card class="activity-card">
           <template #header>
             <div class="card-header">
-              <span>最近活动</span>
+              <span>Recent Activities</span>
               <el-link type="primary" @click="$router.push('/app/tech-report/history')">
-                查看全部
+                View All
               </el-link>
             </div>
           </template>
@@ -114,37 +117,15 @@
                 <div class="activity-time">{{ formatDate(activity.time) }}</div>
               </div>
               <el-button size="small" text @click="viewActivity(activity)">
-                查看
+                View
               </el-button>
             </div>
           </div>
 
           <div v-if="recentActivities.length === 0" class="empty-state">
-            <el-empty description="暂无活动记录" />
+            <el-empty description="No activity records" />
           </div>
         </el-card>
-
-        <!-- 快捷工具 -->
-        <!-- <el-card class="tools-card">
-          <template #header>
-            <span>常用功能</span>
-          </template>
-
-          <div class="tools-grid">
-            <div v-for="tool in quickTools.slice(0, 4)" :key="tool.key" class="tool-item"
-              @click="$router.push(tool.path)">
-              <div class="tool-icon" :style="{ backgroundColor: tool.color }">
-                <el-icon>
-                  <component :is="tool.icon" />
-                </el-icon>
-              </div>
-              <div class="tool-info">
-                <div class="tool-title">{{ tool.title }}</div>
-                <div class="tool-desc">{{ tool.description }}</div>
-              </div>
-            </div>
-          </div>
-        </el-card> -->
       </div>
 
       <div class="right-column">
@@ -152,12 +133,12 @@
         <el-card class="todo-card">
           <template #header>
             <div class="card-header">
-              <span>待办事项</span>
+              <span>To-Do List</span>
               <el-button size="small" text @click="showAddTodo = true">
                 <el-icon>
                   <Plus />
                 </el-icon>
-                添加
+                Add
               </el-button>
             </div>
           </template>
@@ -168,7 +149,7 @@
               <div class="todo-content">
                 <div class="todo-title">{{ todo.title }}</div>
                 <div class="todo-deadline" v-if="todo.deadline">
-                  截止时间：{{ formatDate(todo.deadline, 'MM-DD HH:mm') }}
+                  Due: {{ formatDate(todo.deadline, 'MM-DD HH:mm') }}
                 </div>
               </div>
               <el-button size="small" text @click="deleteTodo(todo.id)">
@@ -180,26 +161,27 @@
           </div>
 
           <div v-if="todoList.length === 0" class="empty-state">
-            <el-empty description="暂无待办事项" />
+            <el-empty description="No to-do items" />
           </div>
         </el-card>
       </div>
     </div>
 
     <!-- 添加待办事项对话框 -->
-    <el-dialog v-model="showAddTodo" title="添加待办事项" width="400px">
+    <el-dialog v-model="showAddTodo" title="Add To-Do Item" width="400px">
       <el-form :model="newTodo" label-width="80px">
-        <el-form-item label="标题" required>
-          <el-input v-model="newTodo.title" placeholder="请输入待办事项标题" />
+        <el-form-item label="Title" required>
+          <el-input v-model="newTodo.title" placeholder="Please enter to-do item title" />
         </el-form-item>
-        <el-form-item label="截止时间">
-          <el-date-picker v-model="newTodo.deadline" type="datetime" placeholder="选择截止时间" style="width: 100%" />
+        <el-form-item label="Deadline">
+          <el-date-picker v-model="newTodo.deadline" type="datetime" placeholder="Select deadline"
+            style="width: 100%" />
         </el-form-item>
       </el-form>
 
       <template #footer>
-        <el-button @click="showAddTodo = false">取消</el-button>
-        <el-button type="primary" @click="addTodo">确定</el-button>
+        <el-button @click="showAddTodo = false">Cancel</el-button>
+        <el-button type="primary" @click="addTodo">Confirm</el-button>
       </template>
     </el-dialog>
   </div>
@@ -236,44 +218,20 @@ const showAddTodo = ref(false)
 const guideSteps = ref([
   {
     key: 'tech-report',
-    title: '技术方案报告',
-    description: '没有方向？让我们帮你定制技术方案，清晰指引、专业方案，一步到位！',
+    title: 'Technical Report',
+    description: 'Need direction? Let us help you customize a technical solution with clear guidance and professional approach.',
     icon: 'Document',
     color: '#1890ff',
     path: '/app/tech-report/new'
   },
   {
     key: 'patent-draft',
-    title: '专利草稿撰写',
-    description: '省时省力，专利草稿一键生成，轻松搞定专利申请！',
+    title: 'Patent Draft',
+    description: 'Save time and effort. Generate patent drafts with one click and easily complete your patent application.',
     icon: 'Edit',
     color: '#722ed1',
     path: '/app/patent-draft/new'
-  },
-  // {
-  //   key: 'patent-search',
-  //   title: '专利检索',
-  //   description: '快速精准专利检索，海量专利文件一手掌握，轻松找寻相关技术！',
-  //   icon: 'Search',
-  //   color: '#52c41a',
-  //   path: '/app/patent-search/quick'
-  // },
-  // {
-  //   key: 'three-analysis',
-  //   title: '三性分析',
-  //   description: '三性分析助力专利审查，快速判断新颖性、创造性、实用性，轻松通过专利审核！',
-  //   icon: 'DataAnalysis',
-  //   color: '#faad14',
-  //   path: '/app/three-analysis/new'
-  // },
-  // {
-  //   key: 'defense-simulation',
-  //   title: '模拟审查',
-  //   description: '模拟审查提前预判，帮你轻松应对实质审查阶段的挑战！',
-  //   icon: 'DocumentChecked',
-  //   color: '#f5222d',
-  //   path: '/app/defense-support/simulation'
-  // }
+  }
 ])
 
 // 快捷工具
@@ -289,24 +247,24 @@ const recentActivities = ref<Array<{
   //   id: '1',
   //   type: 'report',
   //   icon: 'Document',
-  //   title: '完成技术方案报告',
-  //   description: '智能语音识别系统技术方案分析',
+  //   title: 'Complete Technical Report',
+  //   description: 'Intelligent voice recognition system technical analysis',
   //   time: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString()
   // },
   // {
   //   id: '2',
   //   type: 'search',
   //   icon: 'Search',
-  //   title: '专利检索',
-  //   description: '检索到25件相关专利文献',
+  //   title: 'Patent Search',
+  //   description: 'Found 25 related patent documents',
   //   time: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString()
   // },
   // {
   //   id: '3',
   //   type: 'analysis',
   //   icon: 'DataAnalysis',
-  //   title: '三性分析完成',
-  //   description: '机器学习算法专利新颖性分析',
+  //   title: 'Three Analysis Completed',
+  //   description: 'Machine learning algorithm patent novelty analysis',
   //   time: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
   // }
 ])
@@ -315,44 +273,20 @@ const recentActivities = ref<Array<{
 const quickTools = ref([
   {
     key: 'tech-report',
-    title: '技术方案报告',
-    description: '快速生成技术方案分析报告',
+    title: 'Technical Report',
+    description: 'Quickly generate technical solution analysis reports',
     icon: 'Document',
     color: '#1890ff',
     path: '/app/tech-report/new'
   },
   {
     key: 'patent-draft',
-    title: '专利撰写',
-    description: '撰写专利申请文件',
+    title: 'Patent Writing',
+    description: 'Write patent application documents',
     icon: 'Edit',
     color: '#722ed1',
     path: '/app/patent-draft/new'
-  },
-  // {
-  //   key: 'patent-search',
-  //   title: '专利检索',
-  //   description: '检索相关专利文献',
-  //   icon: 'Search',
-  //   color: '#52c41a',
-  //   path: '/app/patent-search/quick'
-  // },
-  // {
-  //   key: 'three-analysis',
-  //   title: '三性分析',
-  //   description: '分析专利新颖性创造性',
-  //   icon: 'DataAnalysis',
-  //   color: '#faad14',
-  //   path: '/app/three-analysis/new'
-  // },
-  // {
-  //   key: 'defense-support',
-  //   title: '答辩支持',
-  //   description: '模拟审查意见通知书',
-  //   icon: 'DocumentChecked',
-  //   color: '#f5222d',
-  //   path: '/app/defense-support/simulation'
-  // }
+  }
 ])
 
 // 待办事项
@@ -406,7 +340,7 @@ const addTodo = () => {
 
 const updateTodo = (todo: any) => {
   // 这里可以调用API更新待办事项状态
-  console.log('更新待办事项:', todo)
+  console.log('Update to-do item:', todo)
 }
 
 const deleteTodo = (id: string) => {
@@ -424,8 +358,12 @@ onMounted(async () => {
 
 <style scoped lang="scss">
 .dashboard-container {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background-color: #f8f9fa;
+  padding: 24px;
+
   .page-header {
-    margin-bottom: var(--spacing-lg);
+    margin-bottom: 32px;
 
     .header-content {
       display: flex;
@@ -435,26 +373,28 @@ onMounted(async () => {
       @media (max-width: 768px) {
         flex-direction: column;
         align-items: flex-start;
-        gap: var(--spacing-md);
+        gap: 16px;
       }
 
       .welcome-info {
         .welcome-title {
-          font-size: var(--font-size-2xl);
-          font-weight: var(--font-weight-semibold);
-          color: var(--color-text-primary);
-          margin-bottom: var(--spacing-xs);
+          font-size: 28px;
+          font-weight: 700;
+          color: #2c3e50;
+          margin-bottom: 8px;
+          line-height: 1.3;
         }
 
         .welcome-subtitle {
-          color: var(--color-text-secondary);
-          font-size: var(--font-size-sm);
+          color: #6c757d;
+          font-size: 16px;
+          line-height: 1.5;
         }
       }
 
       .quick-actions {
         display: flex;
-        gap: var(--spacing-sm);
+        gap: 12px;
 
         @media (max-width: 768px) {
           width: 100%;
@@ -463,40 +403,71 @@ onMounted(async () => {
             flex: 1;
           }
         }
+
+        .el-button {
+          height: 44px;
+          padding: 0 20px;
+          font-weight: 600;
+          border-radius: 8px;
+          background-color: #3b82f6;
+          border-color: #3b82f6;
+
+          &:hover {
+            background-color: #2563eb;
+            border-color: #2563eb;
+          }
+        }
       }
     }
   }
 
   .guide-section {
-    margin-bottom: var(--spacing-2xl);
+    margin-bottom: 32px;
 
     .guide-card {
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      border: 1px solid #e9ecef;
+      background: #ffffff;
+
+      :deep(.el-card__header) {
+        padding: 20px 24px;
+        border-bottom: 1px solid #e9ecef;
+        font-weight: 600;
+        color: #2c3e50;
+      }
+
+      :deep(.el-card__body) {
+        padding: 24px;
+      }
+
       .guide-header {
         display: flex;
         align-items: center;
-        gap: var(--spacing-sm);
-        font-weight: var(--font-weight-medium);
-        color: var(--color-text-primary);
+        gap: 12px;
+        font-weight: 600;
+        color: #2c3e50;
+        font-size: 18px;
 
         .guide-icon {
-          color: var(--color-primary);
-          font-size: 18px;
+          color: #3b82f6;
+          font-size: 20px;
         }
       }
 
       .guide-content {
         .guide-description {
-          color: var(--color-text-secondary);
-          font-size: var(--font-size-sm);
-          margin-bottom: var(--spacing-lg);
-          line-height: var(--line-height-relaxed);
+          color: #6c757d;
+          font-size: 15px;
+          margin-bottom: 24px;
+          line-height: 1.6;
         }
 
         .steps-container {
           display: flex;
           flex-wrap: wrap;
-          gap: var(--spacing-md);
-          margin-bottom: var(--spacing-lg);
+          gap: 20px;
+          margin-bottom: 24px;
 
           @media (max-width: 1200px) {
             flex-direction: column;
@@ -504,35 +475,36 @@ onMounted(async () => {
 
           .step-item {
             flex: 1;
-            min-width: 200px;
+            min-width: 280px;
             display: flex;
             align-items: center;
-            padding: var(--spacing-md);
-            border: 2px solid var(--color-border-light);
-            border-radius: var(--border-radius-base);
-            background: var(--color-bg-light);
+            padding: 20px;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            background: #ffffff;
             cursor: pointer;
-            transition: all var(--transition-base);
+            transition: all 0.3s ease;
             position: relative;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
 
             &:hover {
-              border-color: var(--color-primary);
-              box-shadow: var(--shadow-light);
-              transform: translateY(-2px);
+              border-color: #3b82f6;
+              box-shadow: 0 6px 12px rgba(59, 130, 246, 0.15);
+              transform: translateY(-3px);
             }
 
             .step-number {
-              width: 32px;
-              height: 32px;
-              background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+              width: 36px;
+              height: 36px;
+              background: linear-gradient(135deg, #3b82f6, #1d4ed8);
               color: white;
-              border-radius: var(--border-radius-round);
+              border-radius: 50%;
               display: flex;
               align-items: center;
               justify-content: center;
-              font-weight: var(--font-weight-bold);
-              font-size: var(--font-size-sm);
-              margin-right: var(--spacing-md);
+              font-weight: 700;
+              font-size: 16px;
+              margin-right: 16px;
               flex-shrink: 0;
             }
 
@@ -542,29 +514,29 @@ onMounted(async () => {
               .step-title {
                 display: flex;
                 align-items: center;
-                gap: var(--spacing-xs);
-                font-weight: var(--font-weight-medium);
-                color: var(--color-text-primary);
-                margin-bottom: var(--spacing-xs);
-                font-size: var(--font-size-base);
+                gap: 10px;
+                font-weight: 600;
+                color: #2c3e50;
+                margin-bottom: 10px;
+                font-size: 16px;
 
                 .step-icon {
-                  font-size: 16px;
+                  font-size: 18px;
                 }
               }
 
               .step-description {
-                color: var(--color-text-secondary);
-                font-size: var(--font-size-xs);
-                line-height: var(--line-height-base);
+                color: #6c757d;
+                font-size: 14px;
+                line-height: 1.5;
               }
             }
 
             .step-arrow {
               position: absolute;
               right: -15px;
-              color: var(--color-text-placeholder);
-              font-size: 18px;
+              color: #adb5bd;
+              font-size: 20px;
               z-index: 1;
 
               @media (max-width: 1200px) {
@@ -576,73 +548,89 @@ onMounted(async () => {
               &:not(:last-child)::after {
                 content: '';
                 position: absolute;
-                bottom: -8px;
+                bottom: -12px;
                 left: 50%;
                 transform: translateX(-50%);
                 width: 0;
                 height: 0;
-                border-left: 6px solid transparent;
-                border-right: 6px solid transparent;
-                border-top: 8px solid var(--color-text-placeholder);
+                border-left: 8px solid transparent;
+                border-right: 8px solid transparent;
+                border-top: 12px solid #adb5bd;
               }
             }
           }
         }
 
         .guide-tips {
-          margin-top: var(--spacing-lg);
+          margin-top: 24px;
+
+          :deep(.el-alert) {
+            border-radius: 8px;
+            background-color: #e7f4ff;
+            border: 1px solid #d0e8ff;
+          }
+
+          :deep(.el-alert__title) {
+            font-weight: 600;
+            color: #2c3e50;
+          }
+
+          :deep(.el-alert__description) {
+            color: #6c757d;
+          }
         }
       }
     }
   }
 
   .quick-tools-section {
-    margin-bottom: var(--spacing-2xl);
+    margin-bottom: 32px;
 
     .section-title {
-      font-size: var(--font-size-xl);
-      font-weight: var(--font-weight-semibold);
-      color: var(--color-text-primary);
-      margin-bottom: var(--spacing-lg);
+      font-size: 24px;
+      font-weight: 700;
+      color: #2c3e50;
+      margin-bottom: 24px;
       text-align: center;
     }
 
     .tools-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: var(--spacing-lg);
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
 
       @media (max-width: 768px) {
         grid-template-columns: 1fr;
+        gap: 16px;
       }
 
       .tool-card {
         display: flex;
         align-items: center;
-        padding: var(--spacing-lg);
-        background: var(--color-bg-primary);
-        border-radius: var(--border-radius-large);
-        box-shadow: var(--shadow-light);
+        padding: 24px;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         cursor: pointer;
-        transition: all var(--transition-base);
-        border: 2px solid transparent;
+        transition: all 0.3s ease;
+        border: 1px solid #e9ecef;
 
         &:hover {
           transform: translateY(-4px);
-          box-shadow: var(--shadow-base);
-          border-color: var(--color-primary);
+          box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+          border-color: #3b82f6;
         }
 
         .tool-icon {
-          width: 60px;
-          height: 60px;
-          border-radius: var(--border-radius-base);
+          width: 64px;
+          height: 64px;
+          border-radius: 12px;
           display: flex;
           align-items: center;
           justify-content: center;
           color: white;
-          font-size: 24px;
-          margin-right: var(--spacing-lg);
+          font-size: 28px;
+          margin-right: 20px;
           flex-shrink: 0;
         }
 
@@ -650,89 +638,23 @@ onMounted(async () => {
           flex: 1;
 
           .tool-title {
-            font-size: var(--font-size-lg);
-            font-weight: var(--font-weight-semibold);
-            color: var(--color-text-primary);
-            margin-bottom: var(--spacing-xs);
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
           }
 
           .tool-description {
-            color: var(--color-text-secondary);
-            font-size: var(--font-size-sm);
-            line-height: var(--line-height-relaxed);
+            color: #6c757d;
+            font-size: 14px;
+            line-height: 1.6;
           }
         }
 
         .tool-arrow {
-          color: var(--color-text-placeholder);
-          font-size: 18px;
-          margin-left: var(--spacing-md);
-        }
-      }
-    }
-  }
-
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: var(--spacing-lg);
-    margin-bottom: var(--spacing-2xl);
-
-    .stat-card {
-      background: var(--color-bg-primary);
-      border-radius: var(--border-radius-large);
-      padding: var(--spacing-lg);
-      box-shadow: var(--shadow-light);
-      transition: box-shadow var(--transition-base);
-
-      &:hover {
-        box-shadow: var(--shadow-base);
-      }
-
-      .stat-content {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-
-        .stat-info {
-          .stat-title {
-            color: var(--color-text-secondary);
-            font-size: var(--font-size-sm);
-            margin-bottom: var(--spacing-xs);
-          }
-
-          .stat-value {
-            font-size: var(--font-size-2xl);
-            font-weight: var(--font-weight-bold);
-            color: var(--color-text-primary);
-            margin-bottom: var(--spacing-xs);
-          }
-
-          .stat-change {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-xs);
-            font-size: var(--font-size-xs);
-
-            &.increase {
-              color: var(--color-success);
-            }
-
-            &.decrease {
-              color: var(--color-error);
-            }
-          }
-        }
-
-        .stat-icon {
-          width: 60px;
-          height: 60px;
-          border-radius: var(--border-radius-base);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: white;
-          font-size: 24px;
+          color: #adb5bd;
+          font-size: 20px;
+          margin-left: 16px;
         }
       }
     }
@@ -740,8 +662,8 @@ onMounted(async () => {
 
   .dashboard-content {
     display: grid;
-    grid-template-columns: 1fr 400px;
-    gap: var(--spacing-lg);
+    grid-template-columns: 1fr 420px;
+    gap: 24px;
 
     @media (max-width: 1200px) {
       grid-template-columns: 1fr;
@@ -751,13 +673,40 @@ onMounted(async () => {
     .right-column {
       display: flex;
       flex-direction: column;
-      gap: var(--spacing-lg);
+      gap: 24px;
+    }
+
+    .el-card {
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      border: 1px solid #e9ecef;
+      background: #ffffff;
+
+      :deep(.el-card__header) {
+        padding: 20px 24px;
+        border-bottom: 1px solid #e9ecef;
+        font-weight: 600;
+        color: #2c3e50;
+      }
+
+      :deep(.el-card__body) {
+        padding: 24px;
+      }
     }
 
     .card-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
+
+      :deep(.el-link) {
+        font-weight: 500;
+      }
+
+      :deep(.el-button) {
+        font-weight: 500;
+        color: #6c757d;
+      }
     }
 
     .activity-card {
@@ -765,33 +714,34 @@ onMounted(async () => {
         .activity-item {
           display: flex;
           align-items: center;
-          gap: var(--spacing-md);
-          padding: var(--spacing-md) 0;
-          border-bottom: 1px solid var(--color-border-light);
+          gap: 16px;
+          padding: 16px 0;
+          border-bottom: 1px solid #e9ecef;
 
           &:last-child {
             border-bottom: none;
           }
 
           .activity-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: var(--border-radius-round);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
+            flex-shrink: 0;
 
             &.report {
-              background-color: #1890ff;
+              background-color: #3b82f6;
             }
 
             &.search {
-              background-color: #52c41a;
+              background-color: #10b981;
             }
 
             &.analysis {
-              background-color: #faad14;
+              background-color: #f59e0b;
             }
           }
 
@@ -799,85 +749,30 @@ onMounted(async () => {
             flex: 1;
 
             .activity-title {
-              font-weight: var(--font-weight-medium);
-              color: var(--color-text-primary);
-              margin-bottom: var(--spacing-xs);
+              font-weight: 600;
+              color: #2c3e50;
+              margin-bottom: 6px;
+              font-size: 15px;
             }
 
             .activity-desc {
-              color: var(--color-text-secondary);
-              font-size: var(--font-size-sm);
-              margin-bottom: var(--spacing-xs);
+              color: #6c757d;
+              font-size: 14px;
+              margin-bottom: 6px;
+              line-height: 1.5;
             }
 
             .activity-time {
-              color: var(--color-text-placeholder);
-              font-size: var(--font-size-xs);
+              color: #adb5bd;
+              font-size: 13px;
             }
+          }
+
+          :deep(.el-button) {
+            color: #6c757d;
+            font-weight: 500;
           }
         }
-      }
-    }
-
-    .tools-card {
-      .tools-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: var(--spacing-md);
-
-        .tool-item {
-          display: flex;
-          align-items: center;
-          gap: var(--spacing-md);
-          padding: var(--spacing-md);
-          border-radius: var(--border-radius-base);
-          border: 1px solid var(--color-border-light);
-          cursor: pointer;
-          transition: all var(--transition-fast);
-
-          &:hover {
-            border-color: var(--color-primary);
-            box-shadow: var(--shadow-light);
-          }
-
-          .tool-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: var(--border-radius-base);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 20px;
-          }
-
-          .tool-info {
-            .tool-title {
-              font-weight: var(--font-weight-medium);
-              color: var(--color-text-primary);
-              margin-bottom: var(--spacing-xs);
-            }
-
-            .tool-desc {
-              color: var(--color-text-secondary);
-              font-size: var(--font-size-xs);
-            }
-          }
-        }
-      }
-    }
-
-    .chart-card {
-      .chart-container {
-        height: 300px;
-        width: 100%;
-      }
-    }
-
-    .chart-card {
-      .chart-container {
-        height: 300px;
-        width: 100%;
       }
     }
 
@@ -886,42 +781,100 @@ onMounted(async () => {
         .todo-item {
           display: flex;
           align-items: flex-start;
-          gap: var(--spacing-sm);
-          padding: var(--spacing-md) 0;
-          border-bottom: 1px solid var(--color-border-light);
+          gap: 12px;
+          padding: 16px 0;
+          border-bottom: 1px solid #e9ecef;
 
           &:last-child {
             border-bottom: none;
           }
 
           &.completed {
-            opacity: 0.6;
+            opacity: 0.7;
 
             .todo-title {
               text-decoration: line-through;
             }
           }
 
+          :deep(.el-checkbox) {
+            margin-top: 2px;
+          }
+
           .todo-content {
             flex: 1;
 
             .todo-title {
-              font-weight: var(--font-weight-medium);
-              color: var(--color-text-primary);
-              margin-bottom: var(--spacing-xs);
+              font-weight: 500;
+              color: #2c3e50;
+              margin-bottom: 6px;
+              font-size: 15px;
             }
 
             .todo-deadline {
-              color: var(--color-text-secondary);
-              font-size: var(--font-size-xs);
+              color: #6c757d;
+              font-size: 13px;
+              background-color: #f1f3f4;
+              padding: 4px 8px;
+              border-radius: 4px;
+              display: inline-block;
             }
+          }
+
+          :deep(.el-button) {
+            color: #6c757d;
+            margin-top: 2px;
           }
         }
       }
     }
 
     .empty-state {
-      padding: var(--spacing-xl) 0;
+      padding: 40px 0;
+      text-align: center;
+
+      :deep(.el-empty) {
+        padding: 0;
+      }
+
+      :deep(.el-empty__description) {
+        color: #6c757d;
+      }
+    }
+  }
+
+  // 对话框样式
+  :deep(.el-dialog) {
+    border-radius: 12px;
+
+    .el-dialog__header {
+      padding: 20px 24px;
+      border-bottom: 1px solid #e9ecef;
+      font-weight: 600;
+      color: #2c3e50;
+    }
+
+    .el-dialog__body {
+      padding: 24px;
+    }
+
+    .el-dialog__footer {
+      padding: 20px 24px;
+      border-top: 1px solid #e9ecef;
+    }
+
+    .el-form-item {
+      margin-bottom: 20px;
+
+      .el-form-item__label {
+        font-weight: 500;
+        color: #2c3e50;
+      }
+    }
+
+    .el-button {
+      border-radius: 6px;
+      font-weight: 500;
     }
   }
 }
