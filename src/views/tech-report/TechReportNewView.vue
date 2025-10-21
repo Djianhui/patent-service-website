@@ -202,7 +202,7 @@ const generateReport = async () => {
 
     // 调用API生成报告
     const result = await techReportService.generateReport({
-      prompt: formData.technicalField,
+      prompt: "技术领域:" + formData.technicalField,
       type: 1
     })
 

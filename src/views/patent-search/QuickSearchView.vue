@@ -222,14 +222,7 @@ const handleSearch = async () => {
 
   try {
     // 合并专利标题和技术方案
-    let combinedContent = ''
-    if (titleText && keywordText) {
-      combinedContent = `${titleText}\n${keywordText}`
-    } else if (titleText) {
-      combinedContent = titleText
-    } else {
-      combinedContent = keywordText
-    }
+    let combinedContent = "专利标题：" + titleText + "\n" + "技术方案：" + keywordText
 
     await patentSearchStore.quickSearch(combinedContent, {
       page: pagination.page,
