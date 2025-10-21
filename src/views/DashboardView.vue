@@ -15,9 +15,6 @@
           <el-button type="primary" :icon="Plus" @click="$router.push('/app/tech-report/new')">
             新建技术方案报告
           </el-button>
-          <el-button :icon="Search" @click="$router.push('/app/patent-search/quick')">
-            专利检索
-          </el-button>
         </div>
       </div>
     </div>
@@ -253,30 +250,30 @@ const guideSteps = ref([
     color: '#722ed1',
     path: '/app/patent-draft/new'
   },
-  {
-    key: 'patent-search',
-    title: '专利检索',
-    description: '快速精准专利检索，海量专利文件一手掌握，轻松找寻相关技术！',
-    icon: 'Search',
-    color: '#52c41a',
-    path: '/app/patent-search/quick'
-  },
-  {
-    key: 'three-analysis',
-    title: '三性分析',
-    description: '三性分析助力专利审查，快速判断新颖性、创造性、实用性，轻松通过专利审核！',
-    icon: 'DataAnalysis',
-    color: '#faad14',
-    path: '/app/three-analysis/new'
-  },
-  {
-    key: 'defense-simulation',
-    title: '模拟审查',
-    description: '模拟审查提前预判，帮你轻松应对实质审查阶段的挑战！',
-    icon: 'DocumentChecked',
-    color: '#f5222d',
-    path: '/app/defense-support/simulation'
-  }
+  // {
+  //   key: 'patent-search',
+  //   title: '专利检索',
+  //   description: '快速精准专利检索，海量专利文件一手掌握，轻松找寻相关技术！',
+  //   icon: 'Search',
+  //   color: '#52c41a',
+  //   path: '/app/patent-search/quick'
+  // },
+  // {
+  //   key: 'three-analysis',
+  //   title: '三性分析',
+  //   description: '三性分析助力专利审查，快速判断新颖性、创造性、实用性，轻松通过专利审核！',
+  //   icon: 'DataAnalysis',
+  //   color: '#faad14',
+  //   path: '/app/three-analysis/new'
+  // },
+  // {
+  //   key: 'defense-simulation',
+  //   title: '模拟审查',
+  //   description: '模拟审查提前预判，帮你轻松应对实质审查阶段的挑战！',
+  //   icon: 'DocumentChecked',
+  //   color: '#f5222d',
+  //   path: '/app/defense-support/simulation'
+  // }
 ])
 
 // 快捷工具
@@ -332,30 +329,30 @@ const quickTools = ref([
     color: '#722ed1',
     path: '/app/patent-draft/new'
   },
-  {
-    key: 'patent-search',
-    title: '专利检索',
-    description: '检索相关专利文献',
-    icon: 'Search',
-    color: '#52c41a',
-    path: '/app/patent-search/quick'
-  },
-  {
-    key: 'three-analysis',
-    title: '三性分析',
-    description: '分析专利新颖性创造性',
-    icon: 'DataAnalysis',
-    color: '#faad14',
-    path: '/app/three-analysis/new'
-  },
-  {
-    key: 'defense-support',
-    title: '答辩支持',
-    description: '模拟审查意见通知书',
-    icon: 'DocumentChecked',
-    color: '#f5222d',
-    path: '/app/defense-support/simulation'
-  }
+  // {
+  //   key: 'patent-search',
+  //   title: '专利检索',
+  //   description: '检索相关专利文献',
+  //   icon: 'Search',
+  //   color: '#52c41a',
+  //   path: '/app/patent-search/quick'
+  // },
+  // {
+  //   key: 'three-analysis',
+  //   title: '三性分析',
+  //   description: '分析专利新颖性创造性',
+  //   icon: 'DataAnalysis',
+  //   color: '#faad14',
+  //   path: '/app/three-analysis/new'
+  // },
+  // {
+  //   key: 'defense-support',
+  //   title: '答辩支持',
+  //   description: '模拟审查意见通知书',
+  //   icon: 'DocumentChecked',
+  //   color: '#f5222d',
+  //   path: '/app/defense-support/simulation'
+  // }
 ])
 
 // 待办事项
