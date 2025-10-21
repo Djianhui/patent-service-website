@@ -4,37 +4,56 @@
       <div class="register-header">
         <div class="logo">
           <img src="/favicon.ico" alt="Logo" class="logo-icon" />
-          <span class="logo-text">专利服务平台</span>
+          <span class="logo-text">{{ $t('auth.loginTitle') }}</span>
         </div>
-        <h2 class="register-title">用户注册</h2>
-        <p class="register-subtitle">创建您的账户，开始使用专利服务</p>
+        <div class="language-selector">
+          <el-dropdown @command="handleLanguageChange">
+            <el-button class="language-button" text>
+              {{ currentLocaleName }}
+              <el-icon class="el-icon--right">
+                <arrow-down />
+              </el-icon>
+            </el-button>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item v-for="lang in SUPPORT_LOCALES" :key="lang" :command="lang"
+                  :disabled="currentLocale === lang">
+                  {{ getLocaleDisplayText(lang) }}
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+        </div>
+        <h2 class="register-title">{{ $t('auth.userRegister') }}</h2>
+        <p class="register-subtitle">{{ $t('auth.registerPrompt') }}</p>
       </div>
 
       <el-form ref="registerFormRef" :model="registerForm" :rules="registerRules" class="register-form"
         @submit.prevent="handleRegister">
         <el-form-item prop="username">
-          <el-input v-model="registerForm.username" :prefix-icon="User" placeholder="请输入用户名" size="large" clearable />
+          <el-input v-model="registerForm.username" :prefix-icon="User" :placeholder="$t('auth.pleaseEnterUsername')"
+            size="large" clearable />
         </el-form-item>
 
         <el-form-item prop="password">
-          <el-input v-model="registerForm.password" type="password" :prefix-icon="Lock" placeholder="请设置密码" size="large"
-            show-password clearable />
+          <el-input v-model="registerForm.password" type="password" :prefix-icon="Lock"
+            :placeholder="$t('auth.setPassword')" size="large" show-password clearable />
         </el-form-item>
 
         <el-form-item prop="code">
           <div class="captcha-container">
-            <el-input v-model="registerForm.code" :prefix-icon="CircleCheck" placeholder="请输入验证码" size="large" clearable
-              @keyup.enter="handleRegister" />
+            <el-input v-model="registerForm.code" :prefix-icon="CircleCheck"
+              :placeholder="$t('auth.pleaseEnterCaptcha')" size="large" clearable @keyup.enter="handleRegister" />
             <div class="captcha-image" @click="refreshCaptcha">
               <img v-if="captchaImg" :src="captchaImg" alt="验证码" />
-              <span v-else>获取验证码</span>
+              <span v-else>{{ $t('auth.getCaptcha') }}</span>
             </div>
           </div>
         </el-form-item>
 
         <!-- 密码强度指示器 -->
         <div class="password-strength" v-if="registerForm.password">
-          <div class="strength-label">密码强度：</div>
+          <div class="strength-label">{{ $t('auth.passwordStrength') }}</div>
           <div class="strength-bar">
             <div class="strength-fill" :class="`strength-${passwordStrength.level}`"
               :style="{ width: `${(passwordStrength.score / 5) * 100}%` }"></div>
@@ -44,14 +63,14 @@
 
         <el-form-item>
           <el-button type="primary" size="large" :loading="loading" @click="handleRegister" class="register-button">
-            {{ loading ? '注册中...' : '注册账户' }}
+            {{ loading ? $t('auth.registering') : $t('auth.registerButton') }}
           </el-button>
         </el-form-item>
 
         <div class="login-link">
-          <span>已有账户？</span>
+          <span>{{ $t('auth.hasAccountPrompt') }}</span>
           <el-link type="primary" @click="$router.push('/login')">
-            立即登录
+            {{ $t('auth.goToLogin') }}
           </el-link>
         </div>
       </el-form>
@@ -66,14 +85,18 @@ import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
 import {
   User,
   Lock,
-  CircleCheck
+  CircleCheck,
+  ArrowDown
 } from '@element-plus/icons-vue'
 import { useAuthStore } from '@/stores/auth'
 import { validatePasswordStrength } from '@/utils'
+import { useI18n } from 'vue-i18n'
+import { setLocale, type SupportLocale, getLocaleName, SUPPORT_LOCALES } from '@/i18n'
 
 // Composables
 const router = useRouter()
 const authStore = useAuthStore()
+const { t, locale } = useI18n()
 
 // 响应式数据
 const loading = ref(false)
@@ -121,11 +144,11 @@ const registerRules: FormRules = {
 // 方法
 const getStrengthText = (level: string) => {
   const texts = {
-    weak: '弱',
-    medium: '中等',
-    strong: '强'
+    weak: t('auth.weak'),
+    medium: t('auth.medium'),
+    strong: t('auth.strong')
   }
-  return texts[level as keyof typeof texts] || '弱'
+  return texts[level as keyof typeof texts] || t('auth.weak')
 }
 
 // 获取验证码
@@ -188,6 +211,21 @@ const handleRegister = async () => {
     loading.value = false
   }
 }
+
+const currentLocale = computed(() => locale.value)
+
+const currentLocaleName = computed(() => {
+  return getLocaleName(currentLocale.value as SupportLocale)
+})
+
+const getLocaleDisplayText = (lang: string) => {
+  return getLocaleName(lang as SupportLocale)
+}
+
+const handleLanguageChange = (lang: string) => {
+  setLocale(lang as SupportLocale)
+}
+
 </script>
 
 <style scoped lang="scss">
@@ -236,6 +274,17 @@ const handleRegister = async () => {
       font-size: var(--font-size-xl);
       font-weight: var(--font-weight-bold);
       color: var(--color-primary);
+    }
+  }
+
+  .language-selector {
+    position: absolute;
+    top: var(--spacing-sm);
+    right: var(--spacing-sm);
+
+    .language-button {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
     }
   }
 

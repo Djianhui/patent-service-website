@@ -2,15 +2,16 @@
   <div class="patent-draft-manage-container">
     <!-- 页面头部 -->
     <div class="page-header">
-      <h1 class="page-title">草稿管理</h1>
-      <p class="page-subtitle">管理您的专利申请草稿，支持编辑、下载和删除</p>
+      <h1 class="page-title">{{ $t('patentDraft.draftManagement') }}</h1>
+      <p class="page-subtitle">{{ $t('patentDraft.manageDescription') }}</p>
     </div>
 
     <!-- 操作栏 -->
     <el-card class="action-bar">
       <div class="action-content">
         <div class="search-box">
-          <el-input v-model="searchKeyword" placeholder="搜索草稿标题..." clearable @input="handleSearch">
+          <el-input v-model="searchKeyword" :placeholder="$t('patentDraft.searchPlaceholder')" clearable
+            @input="handleSearch">
             <template #prefix>
               <el-icon>
                 <Search />
@@ -19,24 +20,24 @@
           </el-input>
         </div>
         <div class="action-buttons">
-          <el-select v-model="statusFilter" placeholder="状态筛选" clearable @change="handleStatusChange"
-            style="width: 150px; margin-right: 16px">
-            <el-option label="全部" value="" />
-            <el-option label="草稿" value="draft" />
-            <el-option label="审查中" value="reviewing" />
-            <el-option label="已完成" value="completed" />
+          <el-select v-model="statusFilter" :placeholder="$t('patentDraft.statusFilter')" clearable
+            @change="handleStatusChange" style="width: 150px; margin-right: 16px">
+            <el-option :label="$t('patentDraft.allStatus')" value="" />
+            <el-option :label="$t('patentDraft.statusDraft')" value="draft" />
+            <el-option :label="$t('patentDraft.statusReviewing')" value="reviewing" />
+            <el-option :label="$t('patentDraft.statusCompleted')" value="completed" />
           </el-select>
           <el-button @click="refreshData">
             <el-icon>
               <Refresh />
             </el-icon>
-            刷新
+            {{ $t('common.refresh') }}
           </el-button>
           <el-button type="primary" @click="$router.push('/app/patent-draft/new')">
             <el-icon>
               <Plus />
             </el-icon>
-            新建草稿
+            {{ $t('patentDraft.newDraft') }}
           </el-button>
         </div>
       </div>
@@ -46,9 +47,9 @@
     <el-card class="draft-list-card">
       <template #header>
         <div class="list-header">
-          <span>草稿列表</span>
+          <span>{{ $t('patentDraft.draftList') }}</span>
           <div class="list-info">
-            <span class="count">共 {{ total }} 个草稿</span>
+            <span class="count">{{ $t('patentDraft.totalDrafts', { count: total }) }}</span>
           </div>
         </div>
       </template>
@@ -59,26 +60,20 @@
           <div v-for="draft in draftList" :key="draft.id" class="draft-item">
             <div class="draft-header">
               <div class="draft-info">
-                <h3 class="draft-title">{{ draft.title }}</h3>
+                <h3 class="draft-title">{{ $t('patentDraft.patentDraftTitle') }}</h3>
                 <div class="draft-meta">
                   <span class="meta-item">
                     <el-icon>
                       <Calendar />
                     </el-icon>
-                    创建时间：{{ formatDate(draft.createTime) }}
+                    {{ $t('patentDraft.createTime') }}：{{ formatDate(draft.createTime) }}
                   </span>
                   <span class="meta-item">
                     <el-icon>
                       <Edit />
                     </el-icon>
-                    更新时间：{{ formatDate(draft.updateTime) }}
+                    {{ $t('patentDraft.updateTime') }}：{{ formatDate(draft.updateTime) }}
                   </span>
-                  <!-- <span class="meta-item">
-                    <el-icon>
-                      <User />
-                    </el-icon>
-                    技术领域：{{ getTechnicalFieldSummary(draft.technicalField) }}
-                  </span> -->
                 </div>
               </div>
               <div class="draft-actions">
@@ -89,19 +84,19 @@
                   <el-icon>
                     <Download />
                   </el-icon>
-                  下载PDF
+                  {{ $t('patentDraft.downloadPDF') }}
                 </el-button> -->
                 <el-button size="small" text @click.stop="downloadWord(draft)" :disabled="!(draft as any).wordUrl">
                   <el-icon>
                     <Download />
                   </el-icon>
-                  下载Word
+                  {{ $t('patentDraft.downloadWord') }}
                 </el-button>
                 <el-button size="small" type="danger" @click.stop="deleteDraft(draft)">
                   <el-icon>
                     <Delete />
                   </el-icon>
-                  删除
+                  {{ $t('common.delete') }}
                 </el-button>
               </div>
             </div>
@@ -123,7 +118,8 @@
                   <template #error>
                     <div
                       style="display: flex; align-items: center; justify-content: center; height: 100%; background-color: var(--color-bg-light);">
-                      <span style="color: var(--color-text-tertiary); font-size: 12px;">图片加载失败</span>
+                      <span style="color: var(--color-text-tertiary); font-size: 12px;">{{
+                        $t('patentDraft.imageLoadFailed') }}</span>
                     </div>
                   </template>
                 </el-image>
@@ -132,7 +128,7 @@
                   <el-icon>
                     <ZoomIn />
                   </el-icon>
-                  <span>点击放大</span>
+                  <span>{{ $t('patentDraft.clickToEnlarge') }}</span>
                 </div>
               </div>
             </div>
@@ -154,9 +150,9 @@
 
         <!-- 空状态 -->
         <div v-if="!loading && draftList.length === 0" class="empty-state">
-          <el-empty description="暂无草稿">
+          <el-empty :description="$t('patentDraft.noDrafts')">
             <el-button type="primary" @click="$router.push('/app/patent-draft/new')">
-              创建第一个草稿
+              {{ $t('patentDraft.createFirstDraft') }}
             </el-button>
           </el-empty>
         </div>
@@ -193,9 +189,11 @@ import { patentDraftService } from '@/services/patentDraft'
 import { formatDate } from '@/utils'
 import type { PatentDraft, Claim } from '@/types'
 import { DraftStatus } from '@/types'
+import { useI18n } from 'vue-i18n'
 
 // Composables
 const router = useRouter()
+const { t } = useI18n()
 
 // 响应式数据
 const loading = ref(false)
@@ -258,12 +256,12 @@ const handleSizeChange = () => {
 const downloadPDF = async (draft: PatentDraft) => {
   const pdfUrl = (draft as any).pdfUrl
   if (!pdfUrl) {
-    ElMessage.warning('该草稿暂无PDF文件')
+    ElMessage.warning(t('patentDraft.noPDFAvailable'))
     return
   }
 
   const loadingMessage = ElMessage({
-    message: '正在准备下载...',
+    message: t('common.preparingDownload'),
     type: 'info',
     duration: 0
   })
@@ -272,7 +270,7 @@ const downloadPDF = async (draft: PatentDraft) => {
     const link = document.createElement('a')
     link.style.display = 'none'
     link.href = pdfUrl
-    link.download = `${draft.title}_专利草稿.pdf`
+    link.download = `${draft.title}_${t('patentDraft.title')}.pdf`
     document.body.appendChild(link)
     link.click()
     setTimeout(() => {
@@ -280,11 +278,11 @@ const downloadPDF = async (draft: PatentDraft) => {
     }, 100)
 
     loadingMessage.close()
-    ElMessage.success('下载已开始，请查看浏览器下载列表')
+    ElMessage.success(t('common.downloadStarted'))
   } catch (error) {
     console.error('下载失败:', error)
     loadingMessage.close()
-    ElMessage.warning('直接下载失败，正在尝试在新窗口打开...')
+    ElMessage.warning(t('common.downloadFailed'))
     setTimeout(() => {
       window.open(pdfUrl, '_blank')
     }, 500)
@@ -294,12 +292,12 @@ const downloadPDF = async (draft: PatentDraft) => {
 const downloadWord = async (draft: PatentDraft) => {
   const wordUrl = (draft as any).wordUrl
   if (!wordUrl) {
-    ElMessage.warning('该草稿暂无Word文件')
+    ElMessage.warning(t('patentDraft.noWordAvailable'))
     return
   }
 
   const loadingMessage = ElMessage({
-    message: '正在准备下载...',
+    message: t('common.preparingDownload'),
     type: 'info',
     duration: 0
   })
@@ -308,7 +306,7 @@ const downloadWord = async (draft: PatentDraft) => {
     const link = document.createElement('a')
     link.style.display = 'none'
     link.href = wordUrl
-    link.download = `${draft.title}_专利草稿.docx`
+    link.download = `${draft.title}_${t('patentDraft.title')}.docx`
     document.body.appendChild(link)
     link.click()
     setTimeout(() => {
@@ -316,11 +314,11 @@ const downloadWord = async (draft: PatentDraft) => {
     }, 100)
 
     loadingMessage.close()
-    ElMessage.success('下载已开始，请查看浏览器下载列表')
+    ElMessage.success(t('common.downloadStarted'))
   } catch (error) {
     console.error('下载失败:', error)
     loadingMessage.close()
-    ElMessage.warning('直接下载失败，正在尝试在新窗口打开...')
+    ElMessage.warning(t('common.downloadFailed'))
     setTimeout(() => {
       window.open(wordUrl, '_blank')
     }, 500)
@@ -330,23 +328,23 @@ const downloadWord = async (draft: PatentDraft) => {
 const deleteDraft = async (draft: PatentDraft) => {
   try {
     await ElMessageBox.confirm(
-      `确定要删除"${draft.title}"吗？`,
-      '确认删除',
+      t('patentDraft.confirmDelete', { title: draft.title }),
+      t('patentDraft.confirmDeleteTitle'),
       {
-        confirmButtonText: '删除',
-        cancelButtonText: '取消',
+        confirmButtonText: t('common.confirm'),
+        cancelButtonText: t('common.cancel'),
         type: 'warning'
       }
     )
 
     await patentDraftService.deleteDraft(draft.id)
-    ElMessage.success('删除成功')
+    ElMessage.success(t('common.deleteSuccess'))
 
     // 刷新列表
     loadData()
   } catch (error: any) {
     if (error !== 'cancel') {
-      ElMessage.error('删除失败')
+      ElMessage.error(t('common.deleteFailed'))
     }
   }
 }
@@ -373,10 +371,10 @@ const getStatusType = (status: DraftStatus): string => {
 
 const getStatusText = (status: DraftStatus): string => {
   switch (status) {
-    case DraftStatus.DRAFT: return '草稿'
-    case DraftStatus.REVIEWING: return '审查中'
-    case DraftStatus.COMPLETED: return '已完成'
-    default: return '未知'
+    case DraftStatus.DRAFT: return t('patentDraft.statusDraft')
+    case DraftStatus.REVIEWING: return t('patentDraft.statusReviewing')
+    case DraftStatus.COMPLETED: return t('patentDraft.statusCompleted')
+    default: return t('patentDraft.allStatus')
   }
 }
 

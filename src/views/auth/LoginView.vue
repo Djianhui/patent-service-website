@@ -4,31 +4,49 @@
       <div class="login-header">
         <div class="logo">
           <img src="/favicon.ico" alt="Logo" class="logo-icon" />
-          <span class="logo-text">专利服务平台</span>
+          <span class="logo-text">{{ $t('auth.loginTitle') }}</span>
         </div>
-        <h2 class="login-title">用户登录</h2>
-        <p class="login-subtitle">登录您的账户以使用专利服务</p>
+        <div class="language-selector">
+          <el-dropdown @command="handleLanguageChange">
+            <el-button class="language-button" text>
+              {{ currentLocaleName }}
+              <el-icon class="el-icon--right">
+                <arrow-down />
+              </el-icon>
+            </el-button>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item v-for="lang in SUPPORT_LOCALES" :key="lang" :command="lang"
+                  :disabled="currentLocale === lang">
+                  {{ getLocaleDisplayText(lang) }}
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+        </div>
+        <h2 class="login-title">{{ $t('auth.userLogin') }}</h2>
+        <p class="login-subtitle">{{ $t('auth.loginPrompt') }}</p>
       </div>
 
       <el-form ref="loginFormRef" :model="loginForm" :rules="loginRules" class="login-form"
         @submit.prevent="handleLogin">
         <el-form-item prop="username">
-          <el-input v-model="loginForm.username" :prefix-icon="User" placeholder="请输入用户名/手机号" size="large" clearable
-            @keyup.enter="handleLogin" />
+          <el-input v-model="loginForm.username" :prefix-icon="User"
+            :placeholder="$t('auth.pleaseEnterUsernameOrPhone')" size="large" clearable @keyup.enter="handleLogin" />
         </el-form-item>
 
         <el-form-item prop="password">
-          <el-input v-model="loginForm.password" type="password" :prefix-icon="Lock" placeholder="请输入密码" size="large"
-            show-password clearable />
+          <el-input v-model="loginForm.password" type="password" :prefix-icon="Lock"
+            :placeholder="$t('auth.pleaseEnterPassword')" size="large" show-password clearable />
         </el-form-item>
 
         <el-form-item prop="code">
           <div class="captcha-container">
-            <el-input v-model="loginForm.code" :prefix-icon="CircleCheck" placeholder="请输入验证码" size="large" clearable
-              @keyup.enter="handleLogin" />
+            <el-input v-model="loginForm.code" :prefix-icon="CircleCheck" :placeholder="$t('auth.pleaseEnterCaptcha')"
+              size="large" clearable @keyup.enter="handleLogin" />
             <div class="captcha-image" @click="refreshCaptcha">
               <img v-if="captchaImg" :src="captchaImg" alt="验证码" />
-              <span v-else>获取验证码</span>
+              <span v-else>{{ $t('auth.getCaptcha') }}</span>
             </div>
           </div>
         </el-form-item>
@@ -51,17 +69,17 @@
         <!-- <el-form-item>
           <div class="form-options">
             <el-checkbox v-model="loginForm.remember">
-              记住我
+              {{ $t('auth.rememberMe') }}
             </el-checkbox>
             <el-link type="primary" @click="$router.push('/forgot-password')">
-              忘记密码？
+              {{ $t('auth.forgotPassword') }}
             </el-link>
           </div>
         </el-form-item> -->
 
         <el-form-item>
           <el-button type="primary" size="large" :loading="loading" @click="handleLogin" class="login-button">
-            {{ loading ? '登录中...' : '登录' }}
+            {{ loading ? $t('auth.loginLoading') : $t('auth.loginButton') }}
           </el-button>
         </el-form-item>
 
@@ -76,9 +94,9 @@
         </div> -->
 
         <div class="register-link">
-          <span>还没有账户？</span>
+          <span>{{ $t('auth.noAccountPrompt') }}</span>
           <el-link type="primary" @click="$router.push('/register')">
-            立即注册
+            {{ $t('auth.goToRegister') }}
           </el-link>
         </div>
       </el-form>
@@ -86,38 +104,38 @@
 
     <div class="login-background">
       <div class="background-content">
-        <h3>专业的专利服务平台</h3>
-        <p>为您提供专利检索、分析、撰写、答辩等一站式服务</p>
+        <h3>{{ $t('auth.professionalPlatform') }}</h3>
+        <p>{{ $t('auth.oneStopService') }}</p>
         <div class="features">
           <div class="feature-item">
             <el-icon>
               <Search />
             </el-icon>
-            <span>智能检索</span>
+            <span>{{ $t('auth.smartSearch') }}</span>
           </div>
           <div class="feature-item">
             <el-icon>
               <DataAnalysis />
             </el-icon>
-            <span>三性分析</span>
+            <span>{{ $t('menu.threeAnalysis') }}</span>
           </div>
           <div class="feature-item">
             <el-icon>
               <Edit />
             </el-icon>
-            <span>专利撰写</span>
+            <span>{{ $t('menu.patentDraft') }}</span>
           </div>
           <div class="feature-item">
             <el-icon>
               <Edit />
             </el-icon>
-            <span>技术方案报告</span>
+            <span>{{ $t('menu.techReport') }}</span>
           </div>
           <div class="feature-item">
             <el-icon>
               <ChatDotSquare />
             </el-icon>
-            <span>答辩支持</span>
+            <span>{{ $t('menu.defenseSupport') }}</span>
           </div>
         </div>
       </div>
@@ -126,7 +144,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
 import {
@@ -138,15 +156,23 @@ import {
   Search,
   DataAnalysis,
   Edit,
-  ChatDotSquare
+  ChatDotSquare,
+  ArrowDown
 } from '@element-plus/icons-vue'
 import { useAuthStore } from '@/stores/auth'
 import { validateEmail } from '@/utils'
+import { useI18n } from 'vue-i18n'
+import { setLocale, type SupportLocale, getLocaleName, SUPPORT_LOCALES } from '@/i18n'
 
 // Composables
 const router = useRouter()
 const route = useRoute()
 const authStore = useAuthStore()
+const { locale } = useI18n()
+
+// 计算属性
+const currentLocale = computed(() => locale.value)
+const currentLocaleName = computed(() => getLocaleDisplayText(currentLocale.value))
 
 // 响应式数据
 const loading = ref(false)
@@ -258,6 +284,14 @@ const quickLogin = () => {
   handleLogin()
 }
 
+const handleLanguageChange = (lang: string) => {
+  setLocale(lang as SupportLocale)
+}
+
+const getLocaleDisplayText = (lang: string) => {
+  return getLocaleName(lang as SupportLocale)
+}
+
 // 生命周期
 onMounted(async () => {
   // 获取验证码
@@ -315,6 +349,21 @@ onMounted(async () => {
       font-size: var(--font-size-xl);
       font-weight: var(--font-weight-bold);
       color: var(--color-primary);
+    }
+  }
+
+  .language-selector {
+    position: absolute;
+    top: var(--spacing-sm);
+    right: var(--spacing-sm);
+
+    .language-button {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+
+      &:hover {
+        color: var(--color-primary);
+      }
     }
   }
 
@@ -454,7 +503,6 @@ onMounted(async () => {
     left: 0;
     right: 0;
     bottom: 0;
-    background: url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\"><defs><pattern id=\"grain\" width=\"100\" height=\"100\" patternUnits=\"userSpaceOnUse\"><circle cx=\"50\" cy=\"50\" r=\"1\" fill=\"%23ffffff\" opacity=\"0.1\"/></pattern></defs><rect width=\"100\" height=\"100\" fill=\"url(%23grain)\"/></svg>');
     opacity: 0.3;
   }
 

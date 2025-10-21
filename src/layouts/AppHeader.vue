@@ -5,7 +5,7 @@
 
       <div class="logo">
         <img src="/favicon.ico" alt="Logo" class="logo-icon" />
-        <span class="logo-text">专利服务平台</span>
+        <span class="logo-text">{{ $t('auth.loginTitle') }}</span>
       </div>
     </div>
 
@@ -18,6 +18,24 @@
     </div>
 
     <div class="header-right">
+      <!-- 语言切换 -->
+      <el-dropdown @command="handleLanguageChange">
+        <el-button text>
+          {{ $t('settings.language') }}
+          <el-icon class="dropdown-icon">
+            <ArrowDown />
+          </el-icon>
+        </el-button>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item v-for="lang in SUPPORT_LOCALES" :key="lang" :command="lang"
+              :disabled="currentLocale === lang">
+              {{ getLocaleName(lang) }}
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
+
       <el-badge :value="notifications.length" class="notification-badge">
         <el-button :icon="Bell" circle text @click="showNotifications = true" />
       </el-badge>
@@ -37,19 +55,13 @@
               <el-icon>
                 <UserIcon />
               </el-icon>
-              个人中心
+              {{ $t('menu.profile') }}
             </el-dropdown-item>
-            <!-- <el-dropdown-item command="settings">
-              <el-icon>
-                <Setting />
-              </el-icon>
-              设置
-            </el-dropdown-item> -->
             <el-dropdown-item divided command="logout">
               <el-icon>
                 <SwitchButton />
               </el-icon>
-              退出登录
+              {{ $t('auth.logout') }}
             </el-dropdown-item>
           </el-dropdown-menu>
         </template>
@@ -57,10 +69,10 @@
     </div>
 
     <!-- 通知抽屉 -->
-    <el-drawer v-model="showNotifications" title="通知消息" direction="rtl" size="320px">
+    <el-drawer v-model="showNotifications" :title="$t('notification.title')" direction="rtl" size="320px">
       <div class="notifications-content">
         <div v-if="notifications.length === 0" class="empty-notifications">
-          <el-empty description="暂无通知" />
+          <el-empty :description="$t('notification.noNotification')" />
         </div>
 
         <div v-else class="notification-list">
@@ -72,14 +84,14 @@
               <div class="notification-time">{{ formatDate(notification.time) }}</div>
             </div>
             <el-button v-if="!notification.read" text size="small" @click="markAsRead(notification.id)">
-              标记已读
+              {{ $t('notification.markAsRead') }}
             </el-button>
           </div>
         </div>
 
         <div class="notification-actions">
           <el-button type="primary" text @click="markAllAsRead">
-            全部标记已读
+            {{ $t('notification.markAllRead') }}
           </el-button>
         </div>
       </div>
@@ -90,6 +102,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import {
   Bell,
   UserFilled,
@@ -102,6 +115,7 @@ import { ElMessage } from 'element-plus'
 import { formatDate } from '@/utils'
 import type { User } from '@/types'
 import { notificationService, type NotificationMessage } from '@/services/notification'
+import { setLocale, type SupportLocale, getLocaleName, SUPPORT_LOCALES } from '@/i18n'
 
 // Props
 interface Props {
@@ -123,21 +137,49 @@ const emit = defineEmits<{
 // Composables
 const route = useRoute()
 const router = useRouter()
+const { locale, t } = useI18n()
 
 // 响应式数据
 const showNotifications = ref(false)
 const notifications = ref<NotificationMessage[]>([])
+const currentLocale = computed(() => locale.value)
+
+// 导入 SUPPORT_LOCALES 和 getLocaleName 以供模板使用
+const supportedLocales = SUPPORT_LOCALES
+const getLanguageName = getLocaleName
 
 // SSE消息处理器取消函数
 let unsubscribe: (() => void) | null = null
 
+// 路由名称到翻译键的映射
+const routeTitleMap: Record<string, string> = {
+  'Dashboard': 'menu.dashboard',
+  'TechReport': 'menu.techReport',
+  'TechReportNew': 'menu.newReport',
+  'TechReportHistory': 'menu.reportHistory',
+  'PatentSearch': 'menu.patentSearch',
+  'PatentSearchQuick': 'menu.quickSearch',
+  'ThreeAnalysis': 'menu.threeAnalysis',
+  'ThreeAnalysisNew': 'menu.newAnalysis',
+  'ThreeAnalysisHistory': 'menu.analysisHistory',
+  'PatentDraft': 'menu.patentDraft',
+  'PatentDraftNew': 'menu.newDraft',
+  'PatentDraftManage': 'menu.draftManage',
+  'DefenseSupport': 'menu.defenseSupport',
+  'Profile': 'menu.profile'
+}
+
 // 计算属性
 const breadcrumbItems = computed(() => {
-  const matched = route.matched.filter(item => item.meta?.title)
-  const items = matched.map(item => ({
-    title: item.meta?.title as string,
-    path: item.path
-  }))
+  const matched = route.matched.filter(item => item.name)
+  const items = matched.map(item => {
+    const routeName = item.name as string
+    const translationKey = routeTitleMap[routeName]
+    return {
+      title: translationKey ? t(translationKey) : (item.meta?.title as string || routeName),
+      path: item.path
+    }
+  })
 
   return items
 })
@@ -168,6 +210,12 @@ const markAllAsRead = () => {
   notifications.value.forEach(notification => {
     notification.read = true
   })
+}
+
+// 语言切换
+const handleLanguageChange = (locale: string) => {
+  setLocale(locale as SupportLocale)
+  ElMessage.success(locale === 'zh-CN' ? '语言已切换为中文' : 'Language switched to English')
 }
 
 // 生命周期

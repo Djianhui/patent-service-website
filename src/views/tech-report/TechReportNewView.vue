@@ -2,8 +2,8 @@
   <div class="tech-report-new-container">
     <!-- 页面头部 -->
     <div class="page-header">
-      <h1 class="page-title">新建技术方案报告</h1>
-      <p class="page-subtitle">上输入技术领域，系统将为您生成专业的技术方案分析报告</p>
+      <h1 class="page-title">{{ $t('techReport.newReport') }}</h1>
+      <p class="page-subtitle">{{ $t('techReport.subtitle') }}</p>
     </div>
 
     <!-- 主要内容 -->
@@ -11,24 +11,23 @@
       <el-card class="input-card">
         <template #header>
           <div class="card-header">
-            <span>技术信息输入</span>
+            <span>{{ $t('techReport.technicalInfoInput') }}</span>
           </div>
         </template>
 
         <!-- 基本信息 -->
         <el-form ref="formRef" :model="formData" :rules="formRules" label-width="120px">
-          <el-form-item label="技术领域" prop="technicalField" required>
+          <el-form-item :label="$t('techReport.technicalField')" prop="technicalField" required>
             <el-input v-model="formData.technicalField" type="textarea" :rows="6"
-              placeholder="请描述本技术方案所属的技术领域，例如：人工智能、机器学习、物联网、区块链、生物技术、新材料、新能源、医疗设备、通信技术、软件技术、农业装备、防务技术等" maxlength="500"
-              show-word-limit resize="vertical" />
+              :placeholder="$t('techReport.pleaseEnterField')" maxlength="500" show-word-limit resize="vertical" />
           </el-form-item>
 
           <!-- 操作按钮 -->
           <el-form-item>
             <div class="form-actions">
-              <el-button @click="resetForm">重置</el-button>
+              <el-button @click="resetForm">{{ $t('common.reset') }}</el-button>
               <el-button type="primary" @click="generateReport" :loading="generating" :disabled="!canGenerate">
-                {{ generating ? '生成中...' : '生成报告' }}
+                {{ generating ? $t('techReport.generating') : $t('techReport.generate') }}
               </el-button>
             </div>
           </el-form-item>
@@ -38,7 +37,7 @@
       <!-- 预览区域 -->
       <el-card v-if="generating || previewData" class="preview-card">
         <template #header>
-          <span>生成预览</span>
+          <span>{{ $t('techReport.generationPreview') }}</span>
         </template>
 
         <div v-if="generating" class="generating-status">

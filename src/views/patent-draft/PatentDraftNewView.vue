@@ -2,44 +2,43 @@
   <div class="patent-draft-new-container">
     <!-- 页面头部 -->
     <div class="page-header">
-      <h1 class="page-title">新建专利草稿</h1>
-      <p class="page-subtitle">只需填写技术交底，自动生成完整专利草稿</p>
+      <h1 class="page-title">{{ $t('patentDraft.newDraft') }}</h1>
+      <p class="page-subtitle">{{ $t('patentDraft.subtitle') }}</p>
     </div>
 
     <!-- 技术交底表单 -->
     <el-card class="form-card">
       <template #header>
         <div class="card-header">
-          <span>发明专利 - 草稿</span>
-          <el-tag type="success" size="small">专业版</el-tag>
+          <span>{{ $t('patentDraft.inventionPatent') }}</span>
+          <el-tag type="success" size="small">{{ $t('patentDraft.professional') }}</el-tag>
         </div>
       </template>
 
       <div class="form-tips">
-        <el-alert title="填写说明" description="请按要求填写技术领域和技术方案，我们将自动生成摘要、权利要求书和说明书等完整专利文档" type="info" show-icon
-          :closable="false" />
+        <el-alert :title="$t('patentDraft.fillInstructions')" :description="$t('patentDraft.fillDescription')"
+          type="info" show-icon :closable="false" />
       </div>
 
       <el-form ref="formRef" :model="draftData" label-width="120px" :rules="formRules">
-        <el-form-item label="发明名称" prop="title">
-          <el-input v-model="draftData.title" placeholder="请输入发明名称（例如：组装式食用菌种植棚）" size="large" maxlength="50"
-            show-word-limit />
+        <el-form-item :label="$t('patentDraft.inventionName')" prop="title">
+          <el-input v-model="draftData.title" :placeholder="$t('patentDraft.pleaseEnterName')" size="large"
+            maxlength="50" show-word-limit />
         </el-form-item>
 
-        <el-form-item label="技术方案" prop="technicalSolution">
+        <el-form-item :label="$t('patentDraft.technicalSolution')" prop="technicalSolution">
           <el-input v-model="draftData.technicalSolution" type="textarea" :rows="8"
-            placeholder="请详细描述本发明的技术方案，包括结构组成、工作原理、技术特点等。建议300-1000字，内容越详细，生成的专利质量越高。" maxlength="10000" show-word-limit
-            resize="vertical" />
+            :placeholder="$t('patentDraft.pleaseEnterSolution')" maxlength="10000" show-word-limit resize="vertical" />
         </el-form-item>
 
         <el-form-item>
           <div class="form-actions">
-            <el-button @click="resetForm" size="large">清空重填</el-button>
+            <el-button @click="resetForm" size="large">{{ $t('patentDraft.clearAndRefill') }}</el-button>
             <el-button type="primary" @click="generateDraft" :loading="generating" size="large">
               <el-icon class="mr-1">
                 <Star />
               </el-icon>
-              {{ generating ? '生成中...' : '生成专利草稿' }}
+              {{ generating ? $t('patentDraft.generating') : $t('patentDraft.generateDraft') }}
             </el-button>
           </div>
         </el-form-item>

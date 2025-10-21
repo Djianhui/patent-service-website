@@ -2,10 +2,10 @@
   <div class="tech-report-history-container">
     <!-- 页面头部 -->
     <div class="page-header">
-      <h1 class="page-title">技术方案报告历史</h1>
+      <h1 class="page-title">{{ $t('techReport.reportHistory') }}</h1>
       <div class="header-actions">
         <el-button type="primary" @click="$router.push('/app/tech-report/new')">
-          新建报告
+          {{ $t('techReport.newReport') }}
         </el-button>
       </div>
     </div>
@@ -13,25 +13,27 @@
     <!-- 搜索和筛选 -->
     <el-card class="filter-card">
       <el-form :model="filterForm" inline>
-        <el-form-item label="关键词">
-          <el-input v-model="filterForm.keyword" placeholder="搜索报告标题或内容" clearable @clear="handleSearch"
-            @keyup.enter="handleSearch" />
+        <el-form-item :label="$t('techReport.keyword')">
+          <el-input v-model="filterForm.keyword" :placeholder="$t('techReport.searchPlaceholder')" clearable
+            @clear="handleSearch" @keyup.enter="handleSearch" />
         </el-form-item>
-        <el-form-item label="状态">
-          <el-select v-model="filterForm.status" placeholder="选择状态" clearable style="width: 150px">
-            <el-option label="全部" value="" />
-            <el-option label="生成中" value="generating" />
-            <el-option label="已完成" value="completed" />
-            <el-option label="生成失败" value="failed" />
+        <el-form-item :label="$t('techReport.status')">
+          <el-select v-model="filterForm.status" :placeholder="$t('techReport.selectStatus')" clearable
+            style="width: 150px">
+            <el-option :label="$t('techReport.allStatus')" value="" />
+            <el-option :label="$t('techReport.statusGenerating')" value="generating" />
+            <el-option :label="$t('techReport.statusCompleted')" value="completed" />
+            <el-option :label="$t('techReport.statusFailed')" value="failed" />
           </el-select>
         </el-form-item>
-        <el-form-item label="时间范围">
-          <el-date-picker v-model="filterForm.dateRange" type="daterange" range-separator="至" start-placeholder="开始日期"
-            end-placeholder="结束日期" format="YYYY-MM-DD" value-format="YYYY-MM-DD" />
+        <el-form-item :label="$t('techReport.timeRange')">
+          <el-date-picker v-model="filterForm.dateRange" type="daterange" :range-separator="$t('techReport.to')"
+            :start-placeholder="$t('techReport.startDate')" :end-placeholder="$t('techReport.endDate')"
+            format="YYYY-MM-DD" value-format="YYYY-MM-DD" />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="handleSearch">搜索</el-button>
-          <el-button @click="resetFilter">重置</el-button>
+          <el-button type="primary" @click="handleSearch">{{ $t('common.search') }}</el-button>
+          <el-button @click="resetFilter">{{ $t('common.reset') }}</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -49,7 +51,7 @@
                   <el-icon>
                     <Picture />
                   </el-icon>
-                  <span>图片加载失败</span>
+                  <span>{{ $t('techReport.imageLoadFailed') }}</span>
                 </div>
               </template>
               <template #placeholder>
@@ -65,14 +67,14 @@
               <el-icon>
                 <ZoomIn />
               </el-icon>
-              <span>点击放大</span>
+              <span>{{ $t('techReport.clickToEnlarge') }}</span>
             </div>
           </div>
 
           <!-- 报告内容区域 -->
           <div class="report-info">
             <div class="report-header">
-              <h3 class="report-title">{{ report.title }}</h3>
+              <h3 class="report-title">{{ $t('techReport.title') }}</h3>
               <div class="report-status">
                 <el-tag :type="getStatusType(report.status)">
                   {{ getStatusText(report.status) }}
@@ -81,12 +83,7 @@
             </div>
 
             <div class="report-meta">
-              <span class="meta-item">
-                <el-icon>
-                  <User />
-                </el-icon>
-                {{ report.technicalField || '未分类' }}
-              </span>
+
               <span class="meta-item">
                 <el-icon>
                   <Calendar />
@@ -96,25 +93,25 @@
 
             </div>
 
-            <div class="report-content">
+            <!-- <div class="report-content">
               <p>{{ getReportSummary(report) }}</p>
-            </div>
+            </div> -->
 
             <div class="report-actions" @click.stop>
               <el-button size="small" text @click="downloadReport(report, 'pdf')" :disabled="!(report as any).pdfUrl">
                 <el-icon>
                   <Download />
                 </el-icon>
-                下载PDF
+                {{ $t('techReport.downloadPDF') }}
               </el-button>
               <el-button size="small" text @click="downloadReport(report, 'word')" :disabled="!(report as any).wordUrl">
                 <el-icon>
                   <Download />
                 </el-icon>
-                下载Word
+                {{ $t('techReport.downloadWord') }}
               </el-button>
               <el-button size="small" text type="danger" @click="deleteReport(report)">
-                删除
+                {{ $t('common.delete') }}
               </el-button>
             </div>
           </div>
@@ -122,9 +119,9 @@
 
         <!-- 空状态 -->
         <div v-if="!loading && reportList.length === 0" class="empty-state">
-          <el-empty description="暂无技术方案报告">
+          <el-empty :description="$t('techReport.noReports')">
             <el-button type="primary" @click="$router.push('/app/tech-report/new')">
-              创建第一个报告
+              {{ $t('techReport.createFirstReport') }}
             </el-button>
           </el-empty>
         </div>
@@ -148,10 +145,12 @@ import { User, Calendar, Document, Download, Picture, Loading, ZoomIn } from '@e
 import { useTechReportStore } from '@/stores/techReport'
 import { formatDate } from '@/utils'
 import type { TechReport } from '@/types'
+import { useI18n } from 'vue-i18n'
 
 // Composables
 const router = useRouter()
 const techReportStore = useTechReportStore()
+const { t } = useI18n()
 
 // 响应式数据
 const loading = ref(false)
@@ -183,11 +182,11 @@ const getStatusType = (status: string) => {
 
 const getStatusText = (status: string) => {
   const texts: Record<string, string> = {
-    generating: '生成中',
-    completed: '已完成',
-    failed: '生成失败'
+    generating: t('techReport.statusGenerating'),
+    completed: t('techReport.statusCompleted'),
+    failed: t('techReport.statusFailed')
   }
-  return texts[status] || '未知'
+  return texts[status] || t('common.unknown')
 }
 
 const getReportSummary = (report: TechReport) => {

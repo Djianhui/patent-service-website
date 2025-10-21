@@ -134,7 +134,7 @@ const mockPatents: Patent[] = [
 ]
 
 // 模拟收藏列表
-let mockFavoritePatents: Patent[] = []
+const mockFavoritePatents: Patent[] = []
 
 export const patentSearchService = {
   // 快速检索（生成专利检索报告）
@@ -228,7 +228,7 @@ export const patentSearchService = {
         const patents: Patent[] = response.data.records.map(record => {
           // 解析 taskJson
           let title = '专利检索报告'
-          let abstract = ''
+          const abstract = ''
           let keyword = ''
 
           try {

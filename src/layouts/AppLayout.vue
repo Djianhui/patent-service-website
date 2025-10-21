@@ -15,12 +15,14 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '@/stores/auth'
 import AppHeader from './AppHeader.vue'
 import AppSidebar from './AppSidebar.vue'
 
 const router = useRouter()
 const authStore = useAuthStore()
+const { t } = useI18n()
 
 // 响应式数据
 const sidebarCollapsed = ref(false)
@@ -28,96 +30,90 @@ const sidebarCollapsed = ref(false)
 // 计算属性
 const user = computed(() => authStore.user)
 
-// 菜单项配置
-const menuItems = ref([
+// 菜单项配置 - 使用 computed 以支持语言切换
+const menuItems = computed(() => [
   {
     id: 'dashboard',
-    title: '首页',
+    title: t('menu.dashboard'),
     icon: 'House',
     path: '/app/dashboard'
   },
   {
     id: 'tech-report',
-    title: '技术方案报告',
+    title: t('menu.techReport'),
     icon: 'Document',
     path: '/app/tech-report',
     children: [
       {
         id: 'tech-report-new',
-        title: '新建报告',
+        title: t('menu.newReport'),
         path: '/app/tech-report/new'
       },
       {
         id: 'tech-report-history',
-        title: '历史报告',
+        title: t('menu.reportHistory'),
         path: '/app/tech-report/history'
       }
     ]
   },
   {
     id: 'patent-draft',
-    title: '专利撰写',
+    title: t('menu.patentDraft'),
     icon: 'Edit',
     path: '/app/patent-draft',
     children: [
       {
         id: 'patent-draft-new',
-        title: '新建草稿',
+        title: t('menu.newDraft'),
         path: '/app/patent-draft/new'
       },
       {
         id: 'patent-draft-manage',
-        title: '草稿管理',
+        title: t('menu.draftManage'),
         path: '/app/patent-draft/manage'
       }
     ]
   },
   {
     id: 'patent-search',
-    title: '专利检索',
+    title: t('menu.patentSearch'),
     icon: 'Search',
     path: '/app/patent-search',
     children: [
       {
         id: 'patent-search-quick',
-        title: '快速检索',
+        title: t('menu.quickSearch'),
         path: '/app/patent-search/quick'
-      },
-      // {
-      //   id: 'patent-search-results',
-      //   title: '检索结果',
-      //   path: '/app/patent-search/results'
-      // }
+      }
     ]
   },
   {
     id: 'three-analysis',
-    title: '三性分析',
+    title: t('menu.threeAnalysis'),
     icon: 'DataAnalysis',
     path: '/app/three-analysis',
     children: [
       {
         id: 'three-analysis-new',
-        title: '新建分析',
+        title: t('menu.newAnalysis'),
         path: '/app/three-analysis/new'
       },
       {
         id: 'three-analysis-history',
-        title: '分析历史',
+        title: t('menu.analysisHistory'),
         path: '/app/three-analysis/history'
       }
     ]
   },
-
   {
     id: 'defense-support',
-    title: '答辩支持',
+    title: t('menu.defenseSupport'),
     icon: 'ChatDotSquare',
     path: '/app/defense-support/simulation'
   },
   {
     id: 'profile',
-    title: '用户中心',
+    title: t('menu.profile'),
     icon: 'User',
     path: '/app/profile'
   }
