@@ -319,7 +319,7 @@ export const threeAnalysisService = {
         requestData.fileUrls = data.fileUrls
         // 如果同时提供了文本信息，作为 prompt
         if (data.title || data.technicalSolution) {
-          const prompt = '专利标题' + data.title + '\n' + '技术方案' + data.technicalSolution
+          const prompt = '专利标题：' + data.title + '\n' + '技术方案：' + data.technicalSolution
 
           if (prompt) {
             requestData.prompt = prompt
@@ -329,7 +329,7 @@ export const threeAnalysisService = {
         }
       } else {
         // 没有文件，使用文本输入（拼接 prompt：专利标题 + 技术方案）
-        const prompt = `${data.title || ''}\n${data.technicalSolution || ''}`
+        const prompt = '专利标题：' + data.title + '\n' + '技术方案：' + data.technicalSolution
         requestData.prompt = prompt.trim()
       }
 

@@ -12,7 +12,7 @@ export interface PageQueryRequest {
     column: string
   }>
   state?: number
-  type: number  // 2: 专利检索
+  type: number // 2: 专利检索
 }
 
 // 分页查询响应结果
@@ -46,7 +46,8 @@ const mockPatents: Patent[] = [
   {
     id: '1',
     title: '组装式食用菌种植棚',
-    abstract: '本实用新型公开了一种组装式食用菌种植棚，涉及食用菌种植技术不领域，包括棚体，所述棚体包括左右两侧板设置在棚体的左右两侧，所述左右两侧板之间连通过两个接头固定在左右两侧板上，所述接头固定在棚体的左右两侧，所述左右两侧板之间连通过两个与接头连通的上下网格板防护带，所述上下网格板设置在棚体的上下两侧...',
+    abstract:
+      '本实用新型公开了一种组装式食用菌种植棚，涉及食用菌种植技术不领域，包括棚体，所述棚体包括左右两侧板设置在棚体的左右两侧，所述左右两侧板之间连通过两个接头固定在左右两侧板上，所述接头固定在棚体的左右两侧，所述左右两侧板之间连通过两个与接头连通的上下网格板防护带，所述上下网格板设置在棚体的上下两侧...',
     applicant: '常州吴县某公司',
     inventor: ['张三', '李四'],
     applicationNumber: 'CN202203520U',
@@ -56,15 +57,17 @@ const mockPatents: Patent[] = [
     ipcClass: ['A01G1/04', 'A01G31/02'],
     claims: [
       '一种组装式食用菌种植棚，其特征在于，包括棚体...',
-      '根据权利要求一所述的组装式食用菌种植棚...'
+      '根据权利要求一所述的组装式食用菌种植棚...',
     ],
-    description: '技术领域：本实用新型涉及食用菌种植技术领域，具体为一种组装式食用菌种植棚。\n\n背景技术：随着食用菌市场需求的不断增长，传统的种植方式已无法满足大规模生产的需要。现有的种植架存在空间利用率低、组装不便等问题。',
-    drawings: []
+    description:
+      '技术领域：本实用新型涉及食用菌种植技术领域，具体为一种组装式食用菌种植棚。\n\n背景技术：随着食用菌市场需求的不断增长，传统的种植方式已无法满足大规模生产的需要。现有的种植架存在空间利用率低、组装不便等问题。',
+    drawings: [],
   },
   {
     id: '2',
     title: '一种新型菌菇种植用温室大棚结构',
-    abstract: '本发明涉及农业种植技术领域，公开了一种新型菌菇种植用温室大棚结构。该结构包括支架系统、层板系统和温度控制系统，支架系统采用模块化设计，可根据不同需求进行组合。层板系统采用可调节高度设计，能够适应不同菌种的生长需求。',
+    abstract:
+      '本发明涉及农业种植技术领域，公开了一种新型菌菇种植用温室大棚结构。该结构包括支架系统、层板系统和温度控制系统，支架系统采用模块化设计，可根据不同需求进行组合。层板系统采用可调节高度设计，能够适应不同菌种的生长需求。',
     applicant: '山东农业大学',
     inventor: ['王五', '赵六', '孙七'],
     applicationNumber: 'CN202301145623',
@@ -74,15 +77,16 @@ const mockPatents: Patent[] = [
     ipcClass: ['A01G31/04', 'A01G9/14'],
     claims: [
       '一种新型菌菇种植用温室大棚结构，其特征在于...',
-      '根据权利要求一所述的新型菌菇种植用温室大棚结构...'
+      '根据权利要求一所述的新型菌菇种植用温室大棚结构...',
     ],
     description: '本发明属于农业装备技术领域，特别涉及一种用于菌菇种植的温室大棚结构。',
-    drawings: []
+    drawings: [],
   },
   {
     id: '3',
     title: '智能化食用菌种植装置',
-    abstract: '本发明公开了一种智能化食用菌种植装置，包括种植箱体、温度控制模块、湿度控制模块、通风系统和智能监控系统。该装置能够实时监测环境参数，自动调节温度、湿度和通风量，为食用菌生长提供最佳环境。',
+    abstract:
+      '本发明公开了一种智能化食用菌种植装置，包括种植箱体、温度控制模块、湿度控制模块、通风系统和智能监控系统。该装置能够实时监测环境参数，自动调节温度、湿度和通风量，为食用菌生长提供最佳环境。',
     applicant: '北京智能农业科技有限公司',
     inventor: ['刘八', '陈九'],
     applicationNumber: 'CN202201998765',
@@ -92,15 +96,16 @@ const mockPatents: Patent[] = [
     ipcClass: ['A01G31/02', 'G05D27/02'],
     claims: [
       '一种智能化食用菌种植装置，其特征在于...',
-      '根据权利要求一所述的智能化食用菌种植装置...'
+      '根据权利要求一所述的智能化食用菌种植装置...',
     ],
     description: '本发明属于农业种植技术领域，特别涉及一种具有智能化功能的食用菌种植装置。',
-    drawings: []
+    drawings: [],
   },
   {
     id: '4',
     title: '一种环保型菌菇培养架',
-    abstract: '本实用新型公开了一种环保型菌菇培养架，包括基座、立柱、层板和培养盒。该培养架采用可回收材料制造，结构简单，组装方便，能够有效提高空间利用率，降低生产成本。',
+    abstract:
+      '本实用新型公开了一种环保型菌菇培养架，包括基座、立柱、层板和培养盒。该培养架采用可回收材料制造，结构简单，组装方便，能够有效提高空间利用率，降低生产成本。',
     applicant: '江苏绿色农业合作社',
     inventor: ['周十'],
     applicationNumber: 'CN202102567890',
@@ -108,16 +113,15 @@ const mockPatents: Patent[] = [
     applicationDate: '2021-11-20',
     publicationDate: '2022-02-15',
     ipcClass: ['A01G31/04'],
-    claims: [
-      '一种环保型菌菇培养架，其特征在于...'
-    ],
+    claims: ['一种环保型菌菇培养架，其特征在于...'],
     description: '本实用新型属于菌菇种植设备技术领域，特别涉及一种环保型菌菇培养架。',
-    drawings: []
+    drawings: [],
   },
   {
     id: '5',
     title: '多层式食用菌种植系统',
-    abstract: '本发明提供了一种多层式食用菌种植系统，包括多层种植架、自动化控制系统和营养液循环系统。该系统能够在有限的空间内实现大量生产，提高产量和质量。',
+    abstract:
+      '本发明提供了一种多层式食用菌种植系统，包括多层种植架、自动化控制系统和营养液循环系统。该系统能够在有限的空间内实现大量生产，提高产量和质量。',
     applicant: '上海现代农业科技集团',
     inventor: ['吴十一', '郑十二'],
     applicationNumber: 'CN202003456789',
@@ -125,12 +129,10 @@ const mockPatents: Patent[] = [
     applicationDate: '2020-04-25',
     publicationDate: '2020-12-08',
     ipcClass: ['A01G31/02', 'A01G31/06'],
-    claims: [
-      '一种多层式食用菌种植系统，其特征在于...'
-    ],
+    claims: ['一种多层式食用菌种植系统，其特征在于...'],
     description: '本发明属于农业种植技术领域，特别涉及一种用于食用菌的多层式种植系统。',
-    drawings: []
-  }
+    drawings: [],
+  },
 ]
 
 // 模拟收藏列表
@@ -138,10 +140,13 @@ let mockFavoritePatents: Patent[] = []
 
 export const patentSearchService = {
   // 快速检索（生成专利检索报告）
-  async quickSearch(keyword: string, params?: {
-    page?: number
-    pageSize?: number
-  }): Promise<SearchResult> {
+  async quickSearch(
+    keyword: string,
+    params?: {
+      page?: number
+      pageSize?: number
+    },
+  ): Promise<SearchResult> {
     try {
       console.log('=== 开始专利检索 ===')
       console.log('检索关键词:', keyword)
@@ -149,7 +154,7 @@ export const patentSearchService = {
       // 调用API生成专利检索报告
       const response = await request.post<any>('/manus/task', {
         prompt: keyword,
-        type: 2  // 2: 专利检索
+        type: 2, // 2: 专利检索
       })
 
       console.log('检索提交响应:', response)
@@ -160,7 +165,7 @@ export const patentSearchService = {
           patents: [],
           total: 0,
           page: params?.page || 1,
-          pageSize: params?.pageSize || 20
+          pageSize: params?.pageSize || 20,
         }
       } else {
         throw new Error(response.msg || '检索失败')
@@ -204,15 +209,15 @@ export const patentSearchService = {
         keyword: params?.keyword || '',
         pageIndex: params?.page || 1,
         pageSize: params?.pageSize || 20,
-        type: 2  // 2: 专利检索
+        type: 2, // 2: 专利检索
       }
 
       // 状态映射
       if (params?.status) {
         const statusMap: Record<string, number> = {
-          'generating': 0,
-          'completed': 1,
-          'failed': 2
+          generating: 0,
+          completed: 1,
+          failed: 2,
         }
         requestData.state = statusMap[params.status]
       }
@@ -225,7 +230,7 @@ export const patentSearchService = {
 
       if (response.code === 200 && response.data) {
         // 转换为 Patent 类型
-        const patents: Patent[] = response.data.records.map(record => {
+        const patents: Patent[] = response.data.records.map((record) => {
           // 解析 taskJson
           let title = '专利检索报告'
           let abstract = ''
@@ -261,7 +266,7 @@ export const patentSearchService = {
             pdfUrl: record.pdfUrl,
             wordUrl: record.wordUrl,
             mdUrl: record.mdUrl,
-            state: record.state
+            state: record.state,
           } as Patent & {
             firstImgUrl?: string
             pdfUrl?: string
@@ -275,7 +280,7 @@ export const patentSearchService = {
 
         return {
           patents,
-          total: response.data.total
+          total: response.data.total,
         }
       } else {
         throw new Error(response.msg || '获取检索历史失败')
@@ -302,13 +307,16 @@ export const patentSearchService = {
   },
 
   // 高级检索
-  async advancedSearch(criteria: PatentSearchCriteria, params?: {
-    page?: number
-    pageSize?: number
-  }): Promise<SearchResult> {
+  async advancedSearch(
+    criteria: PatentSearchCriteria,
+    params?: {
+      page?: number
+      pageSize?: number
+    },
+  ): Promise<SearchResult> {
     const response = await request.post('/patent/search/advanced', {
       ...criteria,
-      ...params
+      ...params,
     })
     return response
   },
@@ -316,10 +324,10 @@ export const patentSearchService = {
   // 获取专利详情
   async getPatentDetail(id: string): Promise<Patent> {
     // 模拟 API 调用延迟
-    await new Promise(resolve => setTimeout(resolve, 500))
+    await new Promise((resolve) => setTimeout(resolve, 500))
 
     // 查找模拟数据
-    const patent = mockPatents.find(p => p.id === id)
+    const patent = mockPatents.find((p) => p.id === id)
     if (!patent) {
       throw new Error('专利不存在')
     }
@@ -334,11 +342,11 @@ export const patentSearchService = {
   // 收藏专利
   async favoritePatent(id: string): Promise<void> {
     // 模拟 API 调用延迟
-    await new Promise(resolve => setTimeout(resolve, 500))
+    await new Promise((resolve) => setTimeout(resolve, 500))
 
     // 查找专利并添加到收藏列表
-    const patent = mockPatents.find(p => p.id === id)
-    if (patent && !mockFavoritePatents.find(p => p.id === id)) {
+    const patent = mockPatents.find((p) => p.id === id)
+    if (patent && !mockFavoritePatents.find((p) => p.id === id)) {
       mockFavoritePatents.push(patent)
     }
 
@@ -349,10 +357,10 @@ export const patentSearchService = {
   // 取消收藏专利
   async unfavoritePatent(id: string): Promise<void> {
     // 模拟 API 调用延迟
-    await new Promise(resolve => setTimeout(resolve, 500))
+    await new Promise((resolve) => setTimeout(resolve, 500))
 
     // 从收藏列表中删除
-    const index = mockFavoritePatents.findIndex(p => p.id === id)
+    const index = mockFavoritePatents.findIndex((p) => p.id === id)
     if (index !== -1) {
       mockFavoritePatents.splice(index, 1)
     }
@@ -362,12 +370,9 @@ export const patentSearchService = {
   },
 
   // 获取收藏的专利
-  async getFavoritePatents(params?: {
-    page?: number
-    pageSize?: number
-  }): Promise<SearchResult> {
+  async getFavoritePatents(params?: { page?: number; pageSize?: number }): Promise<SearchResult> {
     // 模拟 API 调用延迟
-    await new Promise(resolve => setTimeout(resolve, 800))
+    await new Promise((resolve) => setTimeout(resolve, 800))
 
     // 分页处理
     const page = params?.page || 1
@@ -380,7 +385,7 @@ export const patentSearchService = {
       patents: paginatedPatents,
       total: mockFavoritePatents.length,
       page,
-      pageSize
+      pageSize,
     }
 
     // 真实 API 调用（已注释）
@@ -403,5 +408,5 @@ export const patentSearchService = {
   async exportSearchResults(searchId: string, format: 'excel' | 'csv' = 'excel'): Promise<Blob> {
     const response = await request.get(`/patent/search/${searchId}/export?format=${format}`)
     return response
-  }
+  },
 }
