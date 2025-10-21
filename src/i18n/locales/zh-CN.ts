@@ -1,4 +1,4 @@
-import { TitleComponent } from "echarts/components";
+import { TitleComponent } from 'echarts/components'
 
 export default {
   common: {
@@ -23,7 +23,7 @@ export default {
     downloadFailed: '直接下载失败，正在尝试在新窗口打开...',
     preparingDownload: '正在准备下载...',
     loadFailed: '加载数据失败',
-    unknown: '未知'
+    unknown: '未知',
   },
   menu: {
     home: '首页',
@@ -46,7 +46,7 @@ export default {
     simulation: '模拟审查',
     strategy: '策略建议',
     profile: '个人中心',
-    about: '关于'
+    about: '关于',
   },
   auth: {
     login: '登录',
@@ -87,6 +87,11 @@ export default {
     professionalPlatform: '专业的专利服务平台',
     oneStopService: '为您提供专利检索、分析、撰写、答辩等一站式服务',
     smartSearch: '智能检索',
+    smartSearchDesc: '智能检索全球专利文献',
+    threeAnalysisDesc: '专利新颖性、创造性、实用性分析',
+    patentDraftDesc: 'AI辅助生成专利申请文件',
+    techReportDesc: '技术方案专利性分析报告',
+    defenseSupportDesc: '专利答辩策略与案例支持',
     // 注册界面
     userRegister: '用户注册',
     registerPrompt: '创建您的账户，开始使用专利服务',
@@ -97,7 +102,7 @@ export default {
     strong: '强',
     registering: '注册中...',
     registerButton: '注册账户',
-    hasAccountPrompt: '已有账户？'
+    hasAccountPrompt: '已有账户？',
   },
   patentSearch: {
     title: '专利快速检索',
@@ -122,7 +127,7 @@ export default {
     failed: '失败',
     imageLoadFailed: '图片加载失败',
     clickToEnlarge: '点击放大',
-    tryExample: '试试以下案例：'
+    tryExample: '试试以下案例：',
   },
   techReport: {
     title: '技术方案报告',
@@ -133,7 +138,8 @@ export default {
     technicalField: '技术领域',
     technicalSolution: '技术方案',
     pleaseEnterName: '请输入发明名称',
-    pleaseEnterField: '请描述本技术方案所属的技术领域，例如：人工智能、机器学习、物联网、区块链、生物技术、新材料、新能源、医疗设备、通信技术、软件技术、农业装备、防务技术等',
+    pleaseEnterField:
+      '请描述本技术方案所属的技术领域，例如：人工智能、机器学习、物联网、区块链、生物技术、新材料、新能源、医疗设备、通信技术、软件技术、农业装备、防务技术等',
     pleaseEnterSolution: '请详细描述技术方案',
     generate: '生成报告',
     generating: '生成中...',
@@ -162,7 +168,7 @@ export default {
     noReports: '暂无技术方案报告',
     createFirstReport: '创建第一个报告',
     imageLoadFailed: '图片加载失败',
-    clickToEnlarge: '点击放大'
+    clickToEnlarge: '点击放大',
   },
   patentDraft: {
     title: '专利撰写',
@@ -171,7 +177,8 @@ export default {
     inventionPatent: '发明专利 - 草稿',
     professional: '专业版',
     fillInstructions: '填写说明',
-    fillDescription: '请按要求填写技术领域和技术方案，我们将自动生成摘要、权利要求书和说明书等完整专利文档',
+    fillDescription:
+      '请按要求填写技术领域和技术方案，我们将自动生成摘要、权利要求书和说明书等完整专利文档',
     draftList: '草稿列表',
     draftManagement: '草稿管理',
     patentDraftTitle: '专利草稿',
@@ -204,7 +211,8 @@ export default {
     submitReview: '提交审核',
     pleaseEnterName: '请输入发明名称（例如：组装式食用菌种植棚）',
     pleaseEnterField: '请输入技术领域',
-    pleaseEnterSolution: '请详细描述本发明的技术方案，包括结构组成、工作原理、技术特点等。建议300-1000字，内容越详细，生成的专利质量越高',
+    pleaseEnterSolution:
+      '请详细描述本发明的技术方案，包括结构组成、工作原理、技术特点等。建议300-1000字，内容越详细，生成的专利质量越高',
     clearAndRefill: '清空重填',
     generateDraft: '生成专利草稿',
     generating: '生成中...',
@@ -221,7 +229,7 @@ export default {
     analysisReport: '分析报告',
     startAnalysis: '开始分析',
     analyzing: '分析中...',
-    viewResult: '查看结果'
+    viewResult: '查看结果',
   },
   notification: {
     title: '通知消息',
@@ -230,12 +238,12 @@ export default {
     clearAll: '清空全部',
     noNotification: '暂无通知',
     systemNotification: '系统通知',
-    newMessage: '新消息'
+    newMessage: '新消息',
   },
   settings: {
     language: '语言',
     theme: '主题',
     changePassword: '修改密码',
-    accountSettings: '账号设置'
-  }
+    accountSettings: '账号设置',
+  },
 }

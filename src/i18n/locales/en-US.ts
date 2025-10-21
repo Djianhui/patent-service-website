@@ -21,7 +21,7 @@ export default {
     downloadFailed: 'Direct download failed, trying to open in new window...',
     preparingDownload: 'Preparing download...',
     loadFailed: 'Failed to load data',
-    unknown: 'Unknown'
+    unknown: 'Unknown',
   },
   menu: {
     home: 'Home',
@@ -44,7 +44,7 @@ export default {
     simulation: 'Simulation',
     strategy: 'Strategy',
     profile: 'Profile',
-    about: 'About'
+    about: 'About',
   },
   auth: {
     login: 'Login',
@@ -81,10 +81,15 @@ export default {
     pleaseEnterUsernameOrPhone: 'Please enter username/phone',
     loginLoading: 'Logging in...',
     loginButton: 'Login',
-    noAccountPrompt: 'Don\'t have an account?',
+    noAccountPrompt: "Don't have an account?",
     professionalPlatform: 'Professional Patent Service Platform',
     oneStopService: 'One-stop service for patent search, analysis, writing, and defense',
     smartSearch: 'Smart Search',
+    smartSearchDesc: 'Intelligent search of global patent literature',
+    threeAnalysisDesc: 'Patent novelty, creativity, and utility analysis',
+    patentDraftDesc: 'AI-assisted generation of patent application documents',
+    techReportDesc: 'Technical solution patentability analysis report',
+    defenseSupportDesc: 'Patent defense strategies and case support',
     // Register page
     userRegister: 'User Registration',
     registerPrompt: 'Create your account to start using patent services',
@@ -95,7 +100,7 @@ export default {
     strong: 'Strong',
     registering: 'Registering...',
     registerButton: 'Register Account',
-    hasAccountPrompt: 'Already have an account?'
+    hasAccountPrompt: 'Already have an account?',
   },
   patentSearch: {
     title: 'Quick Patent Search',
@@ -120,18 +125,20 @@ export default {
     failed: 'Failed',
     imageLoadFailed: 'Image Load Failed',
     clickToEnlarge: 'Click to Enlarge',
-    tryExample: 'Try examples:'
+    tryExample: 'Try examples:',
   },
   techReport: {
     title: 'Technical Report',
     newReport: 'New Technical Report',
-    subtitle: 'Enter technical field, the system will generate professional technical solution analysis report for you',
+    subtitle:
+      'Enter technical field, the system will generate professional technical solution analysis report for you',
     technicalInfoInput: 'Technical Information Input',
     inventionName: 'Invention Name',
     technicalField: 'Technical Field',
     technicalSolution: 'Technical Solution',
     pleaseEnterName: 'Please enter invention name',
-    pleaseEnterField: 'Please describe the technical field of this technical solution, such as: artificial intelligence, machine learning, Internet of Things, blockchain, biotechnology, new materials, new energy, medical equipment, communication technology, software technology, agricultural equipment, defense technology, etc.',
+    pleaseEnterField:
+      'Please describe the technical field of this technical solution, such as: artificial intelligence, machine learning, Internet of Things, blockchain, biotechnology, new materials, new energy, medical equipment, communication technology, software technology, agricultural equipment, defense technology, etc.',
     pleaseEnterSolution: 'Please describe technical solution in detail',
     generate: 'Generate Report',
     generating: 'Generating...',
@@ -160,20 +167,23 @@ export default {
     noReports: 'No Technical Reports',
     createFirstReport: 'Create First Report',
     imageLoadFailed: 'Image Load Failed',
-    clickToEnlarge: 'Click to Enlarge'
+    clickToEnlarge: 'Click to Enlarge',
   },
   patentDraft: {
     title: 'Patent Draft',
     newDraft: 'New Patent Draft',
-    subtitle: 'Just fill in the technical disclosure, automatically generate a complete patent draft',
+    subtitle:
+      'Just fill in the technical disclosure, automatically generate a complete patent draft',
     inventionPatent: 'Invention Patent - Draft',
     professional: 'Professional',
     fillInstructions: 'Fill Instructions',
-    fillDescription: 'Please fill in the technical field and technical solution as required. We will automatically generate complete patent documents such as abstract, claims and description',
+    fillDescription:
+      'Please fill in the technical field and technical solution as required. We will automatically generate complete patent documents such as abstract, claims and description',
     draftList: 'Draft List',
     draftManagement: 'Draft Management',
     patentDraftTitle: 'Patent Draft',
-    manageDescription: 'Manage your patent application drafts, support editing, downloading and deleting',
+    manageDescription:
+      'Manage your patent application drafts, support editing, downloading and deleting',
     searchPlaceholder: 'Search draft title...',
     statusFilter: 'Status Filter',
     allStatus: 'All',
@@ -202,12 +212,13 @@ export default {
     submitReview: 'Submit Review',
     pleaseEnterName: 'Please enter invention name (e.g., Assembled Mushroom Planting Shed)',
     pleaseEnterField: 'Please enter technical field',
-    pleaseEnterSolution: 'Please describe the technical solution of the invention in detail, including structural composition, working principle, technical features, etc. 300-1000 words recommended, the more detailed the content, the higher the quality of the generated patent',
+    pleaseEnterSolution:
+      'Please describe the technical solution of the invention in detail, including structural composition, working principle, technical features, etc. 300-1000 words recommended, the more detailed the content, the higher the quality of the generated patent',
     clearAndRefill: 'Clear and Refill',
     generateDraft: 'Generate Patent Draft',
     generating: 'Generating...',
     confirmDelete: 'Are you sure you want to delete "{title}"?',
-    confirmDeleteTitle: 'Confirm Deletion'
+    confirmDeleteTitle: 'Confirm Deletion',
   },
   threeAnalysis: {
     title: 'Three Analysis',
@@ -219,7 +230,7 @@ export default {
     analysisReport: 'Analysis Report',
     startAnalysis: 'Start Analysis',
     analyzing: 'Analyzing...',
-    viewResult: 'View Result'
+    viewResult: 'View Result',
   },
   notification: {
     title: 'Notifications',
@@ -228,12 +239,12 @@ export default {
     clearAll: 'Clear All',
     noNotification: 'No Notifications',
     systemNotification: 'System Notification',
-    newMessage: 'New Message'
+    newMessage: 'New Message',
   },
   settings: {
     language: 'Language',
     theme: 'Theme',
     changePassword: 'Change Password',
-    accountSettings: 'Account Settings'
-  }
+    accountSettings: 'Account Settings',
+  },
 }

@@ -75,17 +75,76 @@
         </div>
       </el-form>
     </div>
+
+    <div class="register-background">
+      <div class="background-content">
+        <h3>{{ $t('auth.professionalPlatform') }}</h3>
+        <p>{{ $t('auth.oneStopService') }}</p>
+        <div class="features">
+          <div class="feature-item">
+            <div class="feature-icon">
+              <Search />
+            </div>
+            <div class="feature-text">
+              <h4>{{ $t('auth.smartSearch') }}</h4>
+              <p>{{ $t('auth.smartSearchDesc') }}</p>
+            </div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">
+              <DataAnalysis />
+            </div>
+            <div class="feature-text">
+              <h4>{{ $t('menu.threeAnalysis') }}</h4>
+              <p>{{ $t('auth.threeAnalysisDesc') }}</p>
+            </div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">
+              <Edit />
+            </div>
+            <div class="feature-text">
+              <h4>{{ $t('menu.patentDraft') }}</h4>
+              <p>{{ $t('auth.patentDraftDesc') }}</p>
+            </div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">
+              <Document />
+            </div>
+            <div class="feature-text">
+              <h4>{{ $t('menu.techReport') }}</h4>
+              <p>{{ $t('auth.techReportDesc') }}</p>
+            </div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">
+              <ChatDotSquare />
+            </div>
+            <div class="feature-text">
+              <h4>{{ $t('menu.defenseSupport') }}</h4>
+              <p>{{ $t('auth.defenseSupportDesc') }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
 import {
   User,
   Lock,
   CircleCheck,
+  Search,
+  DataAnalysis,
+  Edit,
+  Document,
+  ChatDotSquare,
   ArrowDown
 } from '@element-plus/icons-vue'
 import { useAuthStore } from '@/stores/auth'
@@ -113,6 +172,12 @@ const registerForm = reactive({
 // 计算属性
 const passwordStrength = computed(() => {
   return validatePasswordStrength(registerForm.password)
+})
+
+const currentLocale = computed(() => locale.value)
+
+const currentLocaleName = computed(() => {
+  return getLocaleName(currentLocale.value as SupportLocale)
 })
 
 // 自定义验证器
@@ -167,13 +232,6 @@ const refreshCaptcha = () => {
   getCaptcha()
 }
 
-// 页面加载时获取验证码
-const init = async () => {
-  await getCaptcha()
-}
-
-init()
-
 const handleRegister = async () => {
   if (!registerFormRef.value) return
 
@@ -212,12 +270,6 @@ const handleRegister = async () => {
   }
 }
 
-const currentLocale = computed(() => locale.value)
-
-const currentLocaleName = computed(() => {
-  return getLocaleName(currentLocale.value as SupportLocale)
-})
-
 const getLocaleDisplayText = (lang: string) => {
   return getLocaleName(lang as SupportLocale)
 }
@@ -226,85 +278,98 @@ const handleLanguageChange = (lang: string) => {
   setLocale(lang as SupportLocale)
 }
 
+// 生命周期
+onMounted(async () => {
+  await getCaptcha()
+})
 </script>
 
 <style scoped lang="scss">
 .register-container {
   min-height: 100vh;
   display: flex;
-  position: relative;
-  overflow: hidden;
-  justify-content: center;
-  align-items: center;
-  background: linear-gradient(135deg, #667eea 0%, #40a9ff 100%);
+  background-color: #f8f9fa;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
 .register-wrapper {
-  width: 100%;
+  flex: 1;
   max-width: 480px;
-  padding: var(--spacing-xl);
-  background-color: var(--color-bg-primary);
-  border-radius: 12px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  padding: 48px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: #ffffff;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+  position: relative;
+  z-index: 2;
 
   @media (max-width: 768px) {
     max-width: 100%;
-    padding: var(--spacing-lg);
-    border-radius: 0;
+    padding: 32px 24px;
+    box-shadow: none;
   }
 }
 
 .register-header {
-  text-align: center;
-  margin-bottom: var(--spacing-xl);
+  text-align: left;
+  margin-bottom: 40px;
 
   .logo {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: var(--spacing-sm);
-    margin-bottom: var(--spacing-lg);
+    gap: 12px;
+    margin-bottom: 32px;
 
     .logo-icon {
-      width: 32px;
-      height: 32px;
+      width: 36px;
+      height: 36px;
     }
 
     .logo-text {
-      font-size: var(--font-size-xl);
-      font-weight: var(--font-weight-bold);
-      color: var(--color-primary);
+      font-size: 24px;
+      font-weight: 700;
+      color: #2c3e50;
     }
   }
 
   .language-selector {
     position: absolute;
-    top: var(--spacing-sm);
-    right: var(--spacing-sm);
+    top: 24px;
+    right: 24px;
 
     .language-button {
-      font-size: var(--font-size-sm);
-      color: var(--color-text-secondary);
+      font-size: 14px;
+      color: #6c757d;
+      padding: 8px 12px;
+      border-radius: 6px;
+
+      &:hover {
+        color: #2c3e50;
+        background-color: #f1f3f4;
+      }
     }
   }
 
   .register-title {
-    font-size: var(--font-size-2xl);
-    font-weight: var(--font-weight-semibold);
-    color: var(--color-text-primary);
-    margin-bottom: var(--spacing-sm);
+    font-size: 28px;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 12px;
+    line-height: 1.3;
   }
 
   .register-subtitle {
-    color: var(--color-text-secondary);
-    font-size: var(--font-size-sm);
+    color: #6c757d;
+    font-size: 16px;
+    line-height: 1.5;
   }
 }
 
 .register-form {
   .captcha-container {
     display: flex;
-    gap: var(--spacing-sm);
+    gap: 12px;
     width: 100%;
 
     .el-input {
@@ -313,20 +378,22 @@ const handleLanguageChange = (lang: string) => {
 
     .captcha-image {
       width: 120px;
-      height: 40px;
-      border: 1px solid var(--el-border-color);
-      border-radius: var(--border-radius-base);
+      height: 48px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
       cursor: pointer;
       overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
-      background-color: var(--color-bg-secondary);
-      transition: all var(--transition-base);
+      background-color: #f9fafb;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
 
       &:hover {
-        border-color: var(--color-primary);
+        border-color: #3b82f6;
         transform: translateY(-2px);
+        box-shadow: 0 4px 6px rgba(59, 130, 246, 0.1);
       }
 
       img {
@@ -336,9 +403,9 @@ const handleLanguageChange = (lang: string) => {
       }
 
       span {
-        font-size: var(--font-size-xs);
-        color: var(--color-text-secondary);
-        padding: 0 var(--spacing-xs);
+        font-size: 13px;
+        color: #6c757d;
+        padding: 0 8px;
         text-align: center;
       }
     }
@@ -347,61 +414,181 @@ const handleLanguageChange = (lang: string) => {
   .password-strength {
     display: flex;
     align-items: center;
-    gap: var(--spacing-sm);
-    margin-bottom: var(--spacing-md);
-    font-size: var(--font-size-xs);
+    gap: 12px;
+    margin-bottom: 24px;
+    font-size: 13px;
 
     .strength-label {
-      color: var(--color-text-secondary);
-      min-width: 60px;
+      color: #6c757d;
+      min-width: 70px;
     }
 
     .strength-bar {
       flex: 1;
       height: 6px;
-      background-color: var(--color-bg-tertiary);
+      background-color: #e5e7eb;
       border-radius: 3px;
       overflow: hidden;
 
       .strength-fill {
         height: 100%;
-        transition: all var(--transition-base);
+        transition: all 0.3s ease;
 
         &.strength-weak {
-          background-color: var(--color-error);
+          background-color: #ef4444;
         }
 
         &.strength-medium {
-          background-color: var(--color-warning);
+          background-color: #f59e0b;
         }
 
         &.strength-strong {
-          background-color: var(--color-success);
+          background-color: #10b981;
         }
       }
     }
 
     .strength-text {
-      min-width: 30px;
-      color: var(--color-text-secondary);
+      min-width: 40px;
+      color: #6c757d;
+      font-weight: 500;
     }
   }
 
   .register-button {
     width: 100%;
     height: 48px;
-    font-size: var(--font-size-base);
-    font-weight: var(--font-weight-medium);
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 8px;
+    background-color: #3b82f6;
+    border-color: #3b82f6;
+    margin-top: 8px;
+
+    &:hover {
+      background-color: #2563eb;
+      border-color: #2563eb;
+    }
+
+    &:active {
+      background-color: #1d4ed8;
+      border-color: #1d4ed8;
+    }
   }
 
   .login-link {
     text-align: center;
-    color: var(--color-text-secondary);
-    font-size: var(--font-size-sm);
-    margin-top: var(--spacing-md);
+    color: #6c757d;
+    font-size: 15px;
+    margin-top: 24px;
 
     span {
-      margin-right: var(--spacing-xs);
+      margin-right: 8px;
+    }
+
+    :deep(.el-link) {
+      font-weight: 500;
+      font-size: 15px;
+    }
+  }
+}
+
+.register-background {
+  flex: 1;
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  position: relative;
+  padding: 40px;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+
+  .background-content {
+    text-align: left;
+    z-index: 1;
+    max-width: 500px;
+
+    h3 {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      line-height: 1.3;
+    }
+
+    p {
+      font-size: 18px;
+      margin-bottom: 40px;
+      opacity: 0.9;
+      line-height: 1.6;
+    }
+
+    .features {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+
+      .feature-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.15);
+          transform: translateY(-3px);
+        }
+
+        .feature-icon {
+          width: 48px;
+          height: 48px;
+          border-radius: 12px;
+          background: rgba(255, 255, 255, 0.15);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+
+          .el-icon {
+            font-size: 24px;
+          }
+        }
+
+        .feature-text {
+          flex: 1;
+
+          h4 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: white;
+          }
+
+          p {
+            font-size: 14px;
+            margin: 0;
+            opacity: 0.85;
+            line-height: 1.5;
+          }
+        }
+      }
     }
   }
 }

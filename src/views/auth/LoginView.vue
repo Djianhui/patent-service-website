@@ -51,47 +51,11 @@
           </div>
         </el-form-item>
 
-        <!-- 默认账号提示 -->
-        <!-- <div class="default-account-hint">
-          <el-alert title="测试账号" type="info" :closable="false" show-icon>
-            <template #default>
-              <div class="account-info">
-                <p>用户名：admin</p>
-                <p>密码：admin123</p>
-                <el-button size="small" type="primary" plain @click="quickLogin">
-                  一键登录
-                </el-button>
-              </div>
-            </template>
-</el-alert>
-</div> -->
-
-        <!-- <el-form-item>
-          <div class="form-options">
-            <el-checkbox v-model="loginForm.remember">
-              {{ $t('auth.rememberMe') }}
-            </el-checkbox>
-            <el-link type="primary" @click="$router.push('/forgot-password')">
-              {{ $t('auth.forgotPassword') }}
-            </el-link>
-          </div>
-        </el-form-item> -->
-
         <el-form-item>
           <el-button type="primary" size="large" :loading="loading" @click="handleLogin" class="login-button">
             {{ loading ? $t('auth.loginLoading') : $t('auth.loginButton') }}
           </el-button>
         </el-form-item>
-
-        <!-- <el-divider>
-          <span class="divider-text">其他登录方式</span>
-        </el-divider>
-
-        <div class="social-login">
-          <el-button circle :icon="Platform" @click="handleSocialLogin('wechat')" />
-          <el-button circle :icon="Platform" @click="handleSocialLogin('qq')" />
-          <el-button circle :icon="ChromeFilled" @click="handleSocialLogin('google')" />
-        </div> -->
 
         <div class="register-link">
           <span>{{ $t('auth.noAccountPrompt') }}</span>
@@ -108,34 +72,49 @@
         <p>{{ $t('auth.oneStopService') }}</p>
         <div class="features">
           <div class="feature-item">
-            <el-icon>
+            <div class="feature-icon">
               <Search />
-            </el-icon>
-            <span>{{ $t('auth.smartSearch') }}</span>
+            </div>
+            <div class="feature-text">
+              <h4>{{ $t('auth.smartSearch') }}</h4>
+              <p>{{ $t('auth.smartSearchDesc') }}</p>
+            </div>
           </div>
           <div class="feature-item">
-            <el-icon>
+            <div class="feature-icon">
               <DataAnalysis />
-            </el-icon>
-            <span>{{ $t('menu.threeAnalysis') }}</span>
+            </div>
+            <div class="feature-text">
+              <h4>{{ $t('menu.threeAnalysis') }}</h4>
+              <p>{{ $t('auth.threeAnalysisDesc') }}</p>
+            </div>
           </div>
           <div class="feature-item">
-            <el-icon>
+            <div class="feature-icon">
               <Edit />
-            </el-icon>
-            <span>{{ $t('menu.patentDraft') }}</span>
+            </div>
+            <div class="feature-text">
+              <h4>{{ $t('menu.patentDraft') }}</h4>
+              <p>{{ $t('auth.patentDraftDesc') }}</p>
+            </div>
           </div>
           <div class="feature-item">
-            <el-icon>
-              <Edit />
-            </el-icon>
-            <span>{{ $t('menu.techReport') }}</span>
+            <div class="feature-icon">
+              <Document />
+            </div>
+            <div class="feature-text">
+              <h4>{{ $t('menu.techReport') }}</h4>
+              <p>{{ $t('auth.techReportDesc') }}</p>
+            </div>
           </div>
           <div class="feature-item">
-            <el-icon>
+            <div class="feature-icon">
               <ChatDotSquare />
-            </el-icon>
-            <span>{{ $t('menu.defenseSupport') }}</span>
+            </div>
+            <div class="feature-text">
+              <h4>{{ $t('menu.defenseSupport') }}</h4>
+              <p>{{ $t('auth.defenseSupportDesc') }}</p>
+            </div>
           </div>
         </div>
       </div>
@@ -151,11 +130,10 @@ import {
   User,
   Lock,
   CircleCheck,
-  Platform,
-  ChromeFilled,
   Search,
   DataAnalysis,
   Edit,
+  Document,
   ChatDotSquare,
   ArrowDown
 } from '@element-plus/icons-vue'
@@ -274,16 +252,6 @@ const handleLogin = async () => {
   }
 }
 
-const handleSocialLogin = (type: string) => {
-  ElMessage.info(`${type}登录功能开发中...`)
-}
-
-const quickLogin = () => {
-  loginForm.username = 'admin'
-  loginForm.password = 'admin123'
-  handleLogin()
-}
-
 const handleLanguageChange = (lang: string) => {
   setLocale(lang as SupportLocale)
 }
@@ -308,82 +276,88 @@ onMounted(async () => {
 .login-container {
   min-height: 100vh;
   display: flex;
-  position: relative;
-  overflow: hidden;
+  background-color: #f8f9fa;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
 .login-wrapper {
   flex: 1;
   max-width: 480px;
-  padding: var(--spacing-2xl);
+  padding: 48px 40px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  background-color: var(--color-bg-primary);
+  background-color: #ffffff;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
   position: relative;
   z-index: 2;
 
   @media (max-width: 768px) {
     max-width: 100%;
-    padding: var(--spacing-lg);
+    padding: 32px 24px;
+    box-shadow: none;
   }
 }
 
 .login-header {
-  text-align: center;
-  margin-bottom: var(--spacing-2xl);
+  text-align: left;
+  margin-bottom: 40px;
 
   .logo {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: var(--spacing-sm);
-    margin-bottom: var(--spacing-lg);
+    gap: 12px;
+    margin-bottom: 32px;
 
     .logo-icon {
-      width: 32px;
-      height: 32px;
+      width: 36px;
+      height: 36px;
     }
 
     .logo-text {
-      font-size: var(--font-size-xl);
-      font-weight: var(--font-weight-bold);
-      color: var(--color-primary);
+      font-size: 24px;
+      font-weight: 700;
+      color: #2c3e50;
     }
   }
 
   .language-selector {
     position: absolute;
-    top: var(--spacing-sm);
-    right: var(--spacing-sm);
+    top: 24px;
+    right: 24px;
 
     .language-button {
-      font-size: var(--font-size-sm);
-      color: var(--color-text-secondary);
+      font-size: 14px;
+      color: #6c757d;
+      padding: 8px 12px;
+      border-radius: 6px;
 
       &:hover {
-        color: var(--color-primary);
+        color: #2c3e50;
+        background-color: #f1f3f4;
       }
     }
   }
 
   .login-title {
-    font-size: var(--font-size-2xl);
-    font-weight: var(--font-weight-semibold);
-    color: var(--color-text-primary);
-    margin-bottom: var(--spacing-sm);
+    font-size: 28px;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 12px;
+    line-height: 1.3;
   }
 
   .login-subtitle {
-    color: var(--color-text-secondary);
-    font-size: var(--font-size-sm);
+    color: #6c757d;
+    font-size: 16px;
+    line-height: 1.5;
   }
 }
 
 .login-form {
   .captcha-container {
     display: flex;
-    gap: var(--spacing-sm);
+    gap: 12px;
     width: 100%;
 
     .el-input {
@@ -392,20 +366,22 @@ onMounted(async () => {
 
     .captcha-image {
       width: 120px;
-      height: 40px;
-      border: 1px solid var(--el-border-color);
-      border-radius: var(--border-radius-base);
+      height: 48px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
       cursor: pointer;
       overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
-      background-color: var(--color-bg-secondary);
-      transition: all var(--transition-base);
+      background-color: #f9fafb;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
 
       &:hover {
-        border-color: var(--color-primary);
+        border-color: #3b82f6;
         transform: translateY(-2px);
+        box-shadow: 0 4px 6px rgba(59, 130, 246, 0.1);
       }
 
       img {
@@ -415,86 +391,61 @@ onMounted(async () => {
       }
 
       span {
-        font-size: var(--font-size-xs);
-        color: var(--color-text-secondary);
-        padding: 0 var(--spacing-xs);
+        font-size: 13px;
+        color: #6c757d;
+        padding: 0 8px;
         text-align: center;
       }
     }
   }
 
-  .form-options {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-  }
-
   .login-button {
     width: 100%;
     height: 48px;
-    font-size: var(--font-size-base);
-    font-weight: var(--font-weight-medium);
-  }
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 8px;
+    background-color: #3b82f6;
+    border-color: #3b82f6;
+    margin-top: 8px;
 
-  .divider-text {
-    color: var(--color-text-secondary);
-    font-size: var(--font-size-xs);
-  }
+    &:hover {
+      background-color: #2563eb;
+      border-color: #2563eb;
+    }
 
-  .social-login {
-    display: flex;
-    justify-content: center;
-    gap: var(--spacing-md);
-    margin-bottom: var(--spacing-lg);
-
-    .el-button {
-      width: 48px;
-      height: 48px;
-      font-size: 20px;
+    &:active {
+      background-color: #1d4ed8;
+      border-color: #1d4ed8;
     }
   }
 
   .register-link {
     text-align: center;
-    color: var(--color-text-secondary);
-    font-size: var(--font-size-sm);
+    color: #6c757d;
+    font-size: 15px;
+    margin-top: 24px;
 
     span {
-      margin-right: var(--spacing-xs);
+      margin-right: 8px;
     }
-  }
 
-  .default-account-hint {
-    margin-bottom: var(--spacing-lg);
-
-    .account-info {
-      display: flex;
-      flex-direction: column;
-      gap: var(--spacing-xs);
-
-      p {
-        margin: 0;
-        font-size: var(--font-size-sm);
-        color: var(--color-text-regular);
-      }
-
-      .el-button {
-        margin-top: var(--spacing-sm);
-        align-self: flex-start;
-      }
+    :deep(.el-link) {
+      font-weight: 500;
+      font-size: 15px;
     }
   }
 }
 
 .login-background {
   flex: 1;
-  background: linear-gradient(135deg, #667eea 0%, #40a9ff 100%);
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
   position: relative;
+  padding: 40px;
 
   &::before {
     content: '';
@@ -503,7 +454,7 @@ onMounted(async () => {
     left: 0;
     right: 0;
     bottom: 0;
-    opacity: 0.3;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
   }
 
   @media (max-width: 768px) {
@@ -511,44 +462,75 @@ onMounted(async () => {
   }
 
   .background-content {
-    text-align: center;
+    text-align: left;
     z-index: 1;
-    max-width: 400px;
-    padding: var(--spacing-xl);
+    max-width: 500px;
 
     h3 {
-      font-size: var(--font-size-2xl);
-      font-weight: var(--font-weight-semibold);
-      margin-bottom: var(--spacing-md);
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      line-height: 1.3;
     }
 
     p {
-      font-size: var(--font-size-base);
-      margin-bottom: var(--spacing-2xl);
+      font-size: 18px;
+      margin-bottom: 40px;
       opacity: 0.9;
+      line-height: 1.6;
     }
 
     .features {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: var(--spacing-lg);
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
 
       .feature-item {
         display: flex;
-        align-items: center;
-        gap: var(--spacing-sm);
-        padding: var(--spacing-md);
+        align-items: flex-start;
+        gap: 16px;
+        padding: 20px;
         background: rgba(255, 255, 255, 0.1);
-        border-radius: var(--border-radius-base);
+        border-radius: 12px;
         backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
 
-        .el-icon {
-          font-size: 20px;
+        &:hover {
+          background: rgba(255, 255, 255, 0.15);
+          transform: translateY(-3px);
         }
 
-        span {
-          font-size: var(--font-size-sm);
-          font-weight: var(--font-weight-medium);
+        .feature-icon {
+          width: 48px;
+          height: 48px;
+          border-radius: 12px;
+          background: rgba(255, 255, 255, 0.15);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+
+          .el-icon {
+            font-size: 24px;
+          }
+        }
+
+        .feature-text {
+          flex: 1;
+
+          h4 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: white;
+          }
+
+          p {
+            font-size: 14px;
+            margin: 0;
+            opacity: 0.85;
+            line-height: 1.5;
+          }
         }
       }
     }
