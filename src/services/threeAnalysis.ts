@@ -317,16 +317,7 @@ export const threeAnalysisService = {
       // 如果有文件，优先使用文件
       if (data.fileUrls && data.fileUrls.length > 0) {
         requestData.fileUrls = data.fileUrls
-        // 如果同时提供了文本信息，作为 prompt
-        if (data.title || data.technicalSolution) {
-          const prompt = '专利标题：' + data.title + '\n' + '技术方案：' + data.technicalSolution
-
-          if (prompt) {
-            requestData.prompt = prompt
-          } else {
-            requestData.prompt = '无输入'
-          }
-        }
+        requestData.prompt = '参考上传文件内容，生成三性分析报告。'
       } else {
         // 没有文件，使用文本输入（拼接 prompt：专利标题 + 技术方案）
         const prompt = '专利标题：' + data.title + '\n' + '技术方案：' + data.technicalSolution
