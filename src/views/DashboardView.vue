@@ -5,15 +5,15 @@
       <div class="header-content">
         <div class="welcome-info">
           <h1 class="welcome-title">
-            Welcome back, {{ authStore.userName || 'User' }}!
+            {{ t('dashboard.welcomeBack', { user: authStore.userName || t('dashboard.user') }) }}
           </h1>
           <p class="welcome-subtitle">
-            Today is {{ formatDate(new Date(), 'MMMM DD, YYYY') }}, let's start today's work
+            {{ t('dashboard.todayIs', { date: formatDate(new Date(), 'MMMM DD, YYYY') }) }}
           </p>
         </div>
         <div class="quick-actions">
           <el-button type="primary" :icon="Plus" @click="$router.push('/app/tech-report/new')">
-            New Technical Report
+            {{ t('dashboard.newTechReport') }}
           </el-button>
         </div>
       </div>
@@ -27,15 +27,13 @@
             <el-icon class="guide-icon">
               <InfoFilled />
             </el-icon>
-            <span>System Usage Guide</span>
+            <span>{{ t('dashboard.systemUsageGuide') }}</span>
           </div>
         </template>
 
         <div class="guide-content">
           <p class="guide-description">
-            The intelligent patent service system provides you with a one-stop patent application solution. Please
-            follow these
-            steps to use the system:
+            {{ t('dashboard.guideDescription') }}
           </p>
 
           <div class="steps-container">
@@ -59,9 +57,8 @@
           </div>
 
           <div class="guide-tips">
-            <el-alert title="Tips"
-              description="You can start using the system from any step. The system will provide corresponding service support based on your needs."
-              type="info" show-icon :closable="false" />
+            <el-alert :title="t('dashboard.tips')" :description="t('dashboard.guideTips')" type="info" show-icon
+              :closable="false" />
           </div>
         </div>
       </el-card>
@@ -69,7 +66,7 @@
 
     <!-- 快捷工具 -->
     <div class="quick-tools-section">
-      <h2 class="section-title">Quick Tools</h2>
+      <h2 class="section-title">{{ t('dashboard.quickTools.title') }}</h2>
       <div class="tools-grid">
         <div v-for="tool in quickTools" :key="tool.key" class="tool-card" @click="$router.push(tool.path)">
           <div class="tool-icon" :style="{ backgroundColor: tool.color }">
@@ -97,9 +94,9 @@
         <el-card class="activity-card">
           <template #header>
             <div class="card-header">
-              <span>Recent Activities</span>
+              <span>{{ t('dashboard.recentActivities') }}</span>
               <el-link type="primary" @click="$router.push('/app/tech-report/history')">
-                View All
+                {{ t('dashboard.viewAll') }}
               </el-link>
             </div>
           </template>
@@ -117,13 +114,13 @@
                 <div class="activity-time">{{ formatDate(activity.time) }}</div>
               </div>
               <el-button size="small" text @click="viewActivity(activity)">
-                View
+                {{ t('dashboard.view') }}
               </el-button>
             </div>
           </div>
 
           <div v-if="recentActivities.length === 0" class="empty-state">
-            <el-empty description="No activity records" />
+            <el-empty :description="t('dashboard.noActivityRecords')" />
           </div>
         </el-card>
       </div>
@@ -133,12 +130,12 @@
         <el-card class="todo-card">
           <template #header>
             <div class="card-header">
-              <span>To-Do List</span>
+              <span>{{ t('dashboard.todoList') }}</span>
               <el-button size="small" text @click="showAddTodo = true">
                 <el-icon>
                   <Plus />
                 </el-icon>
-                Add
+                {{ t('dashboard.add') }}
               </el-button>
             </div>
           </template>
@@ -149,7 +146,7 @@
               <div class="todo-content">
                 <div class="todo-title">{{ todo.title }}</div>
                 <div class="todo-deadline" v-if="todo.deadline">
-                  Due: {{ formatDate(todo.deadline, 'MM-DD HH:mm') }}
+                  {{ t('dashboard.due') }}: {{ formatDate(todo.deadline, 'MM-DD HH:mm') }}
                 </div>
               </div>
               <el-button size="small" text @click="deleteTodo(todo.id)">
@@ -161,37 +158,38 @@
           </div>
 
           <div v-if="todoList.length === 0" class="empty-state">
-            <el-empty description="No to-do items" />
+            <el-empty :description="t('dashboard.noTodoItems')" />
           </div>
         </el-card>
       </div>
     </div>
 
     <!-- 添加待办事项对话框 -->
-    <el-dialog v-model="showAddTodo" title="Add To-Do Item" width="400px">
+    <el-dialog v-model="showAddTodo" :title="t('dashboard.addTodoItem')" width="400px">
       <el-form :model="newTodo" label-width="80px">
-        <el-form-item label="Title" required>
-          <el-input v-model="newTodo.title" placeholder="Please enter to-do item title" />
+        <el-form-item :label="t('dashboard.title')" required>
+          <el-input v-model="newTodo.title" :placeholder="t('dashboard.enterTodoTitle')" />
         </el-form-item>
-        <el-form-item label="Deadline">
-          <el-date-picker v-model="newTodo.deadline" type="datetime" placeholder="Select deadline"
+        <el-form-item :label="t('dashboard.deadline')">
+          <el-date-picker v-model="newTodo.deadline" type="datetime" :placeholder="t('dashboard.selectDeadline')"
             style="width: 100%" />
         </el-form-item>
       </el-form>
 
       <template #footer>
-        <el-button @click="showAddTodo = false">Cancel</el-button>
-        <el-button type="primary" @click="addTodo">Confirm</el-button>
+        <el-button @click="showAddTodo = false">{{ t('dashboard.cancel') }}</el-button>
+        <el-button type="primary" @click="addTodo">{{ t('dashboard.confirm') }}</el-button>
       </template>
     </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { formatDate, generateRandomString } from '@/utils'
+import { useI18n } from 'vue-i18n'
 import {
   Plus,
   Search,
@@ -210,24 +208,25 @@ import {
 // Composables
 const router = useRouter()
 const authStore = useAuthStore()
+const { t } = useI18n()
 
 // 响应式数据
 const showAddTodo = ref(false)
 
 // 系统使用引导步骤
-const guideSteps = ref([
+const guideSteps = computed(() => [
   {
     key: 'tech-report',
-    title: 'Technical Report',
-    description: 'Need direction? Let us help you customize a technical solution with clear guidance and professional approach.',
+    title: t('dashboard.guideSteps.techReport.title'),
+    description: t('dashboard.guideSteps.techReport.description'),
     icon: 'Document',
     color: '#1890ff',
     path: '/app/tech-report/new'
   },
   {
     key: 'patent-draft',
-    title: 'Patent Draft',
-    description: 'Save time and effort. Generate patent drafts with one click and easily complete your patent application.',
+    title: t('dashboard.guideSteps.patentDraft.title'),
+    description: t('dashboard.guideSteps.patentDraft.description'),
     icon: 'Edit',
     color: '#722ed1',
     path: '/app/patent-draft/new'
@@ -270,19 +269,19 @@ const recentActivities = ref<Array<{
 ])
 
 // 快捷工具
-const quickTools = ref([
+const quickTools = computed(() => [
   {
     key: 'tech-report',
-    title: 'Technical Report',
-    description: 'Quickly generate technical solution analysis reports',
+    title: t('dashboard.quickTools.techReport.title'),
+    description: t('dashboard.quickTools.techReport.description'),
     icon: 'Document',
     color: '#1890ff',
     path: '/app/tech-report/new'
   },
   {
     key: 'patent-draft',
-    title: 'Patent Writing',
-    description: 'Write patent application documents',
+    title: t('dashboard.quickTools.patentDraft.title'),
+    description: t('dashboard.quickTools.patentDraft.description'),
     icon: 'Edit',
     color: '#722ed1',
     path: '/app/patent-draft/new'

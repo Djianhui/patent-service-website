@@ -243,4 +243,52 @@ export default {
     changePassword: 'تغيير كلمة المرور',
     accountSettings: 'الإعدادات',
   },
+  dashboard: {
+    welcomeBack: 'مرحبًا بك مرة أخرى، {user}!',
+    user: 'المستخدم',
+    todayIs: 'اليوم هو {date}، لنبدأ عمل اليوم',
+    newTechReport: 'تقرير تقني جديد',
+    systemUsageGuide: 'دليل استخدام النظام',
+    guideDescription:
+      'يوفر لك نظام الخدمة الذكية للبراءات حلاً شاملاً لطلب البراءات. يرجى اتباع هذه الخطوات لاستخدام النظام:',
+    tips: 'نصائح',
+    guideTips:
+      'يمكنك البدء في استخدام النظام من أي خطوة. سيوفر النظام دعم الخدمة المقابل بناءً على احتياجاتك.',
+    guideSteps: {
+      techReport: {
+        title: 'التقرير التقني',
+        description: 'هل تحتاج إلى توجيه؟ دعنا نساعدك في تخصيص حل تقني بإرشادات واضحة ونهج مهني.',
+      },
+      patentDraft: {
+        title: 'مسودة براءة',
+        description: 'وفر الوقت والجهد. أنشئ مسودات براءات بنقرة واحدة وأكمل طلب البراءة بسهولة.',
+      },
+    },
+    quickTools: {
+      title: 'الأدوات السريعة',
+      techReport: {
+        title: 'التقرير التقني',
+        description: 'أنشئ تقارير تحليل الحلول التقنية بسرعة',
+      },
+      patentDraft: {
+        title: 'كتابة البراءة',
+        description: 'اكتب وثائق طلب البراءة',
+      },
+    },
+    recentActivities: 'الأنشطة الأخيرة',
+    viewAll: 'عرض الكل',
+    view: 'عرض',
+    noActivityRecords: 'لا توجد سجلات الأنشطة',
+    todoList: 'قائمة المهام',
+    add: 'إضافة',
+    due: 'مستحق',
+    noTodoItems: 'لا توجد مهام',
+    addTodoItem: 'إضافة مهمة',
+    title: 'العنوان',
+    deadline: 'الموعد النهائي',
+    enterTodoTitle: 'يرجى إدخال عنوان المهمة',
+    selectDeadline: 'اختر الموعد النهائي',
+    cancel: 'إلغاء',
+    confirm: 'تأكيد',
+  },
 }

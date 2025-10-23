@@ -254,4 +254,54 @@ export default {
     changePassword: 'Change Password',
     accountSettings: 'Account Settings',
   },
+  dashboard: {
+    welcomeBack: 'Welcome back, {user}!',
+    user: 'User',
+    todayIs: "Today is {date}, let's start today's work",
+    newTechReport: 'New Technical Report',
+    systemUsageGuide: 'System Usage Guide',
+    guideDescription:
+      'The intelligent patent service system provides you with a one-stop patent application solution. Please follow these steps to use the system:',
+    tips: 'Tips',
+    guideTips:
+      'You can start using the system from any step. The system will provide corresponding service support based on your needs.',
+    guideSteps: {
+      techReport: {
+        title: 'Technical Report',
+        description:
+          'Need direction? Let us help you customize a technical solution with clear guidance and professional approach.',
+      },
+      patentDraft: {
+        title: 'Patent Draft',
+        description:
+          'Save time and effort. Generate patent drafts with one click and easily complete your patent application.',
+      },
+    },
+    quickTools: {
+      title: 'Quick Tools',
+      techReport: {
+        title: 'Technical Report',
+        description: 'Quickly generate technical solution analysis reports',
+      },
+      patentDraft: {
+        title: 'Patent Writing',
+        description: 'Write patent application documents',
+      },
+    },
+    recentActivities: 'Recent Activities',
+    viewAll: 'View All',
+    view: 'View',
+    noActivityRecords: 'No activity records',
+    todoList: 'To-Do List',
+    add: 'Add',
+    due: 'Due',
+    noTodoItems: 'No to-do items',
+    addTodoItem: 'Add To-Do Item',
+    title: 'Title',
+    deadline: 'Deadline',
+    enterTodoTitle: 'Please enter to-do item title',
+    selectDeadline: 'Select deadline',
+    cancel: 'Cancel',
+    confirm: 'Confirm',
+  },
 }

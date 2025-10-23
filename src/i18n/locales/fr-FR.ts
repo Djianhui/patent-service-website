@@ -244,4 +244,54 @@ export default {
     changePassword: 'Changer le mot de passe',
     accountSettings: 'Paramètres',
   },
+  dashboard: {
+    welcomeBack: 'Bon retour, {user} !',
+    user: 'Utilisateur',
+    todayIs: "Aujourd'hui est {date}, commençons le travail d'aujourd'hui",
+    newTechReport: 'Nouveau rapport technique',
+    systemUsageGuide: "Guide d'utilisation du système",
+    guideDescription:
+      'Le système de service de brevets intelligent vous fournit une solution complète pour le dépôt de brevets. Veuillez suivre ces étapes pour utiliser le système :',
+    tips: 'Conseils',
+    guideTips:
+      "Vous pouvez commencer à utiliser le système à partir de n'importe quelle étape. Le système fournira un support de service correspondant en fonction de vos besoins.",
+    guideSteps: {
+      techReport: {
+        title: 'Rapport technique',
+        description:
+          "Besoin d'orientation ? Laissez-nous vous aider à personnaliser une solution technique avec des conseils clairs et une approche professionnelle.",
+      },
+      patentDraft: {
+        title: 'Brouillon de brevet',
+        description:
+          'Gagnez du temps et des efforts. Générez des brouillons de brevets en un clic et complétez facilement votre dépôt de brevet.',
+      },
+    },
+    quickTools: {
+      title: 'Outils rapides',
+      techReport: {
+        title: 'Rapport technique',
+        description: "Générez rapidement des rapports d'analyse de solutions techniques",
+      },
+      patentDraft: {
+        title: 'Rédaction de brevet',
+        description: 'Rédigez des documents de dépôt de brevet',
+      },
+    },
+    recentActivities: 'Activités récentes',
+    viewAll: 'Tout voir',
+    view: 'Voir',
+    noActivityRecords: "Aucun enregistrement d'activité",
+    todoList: 'Liste de tâches',
+    add: 'Ajouter',
+    due: 'Échéance',
+    noTodoItems: 'Aucune tâche',
+    addTodoItem: 'Ajouter une tâche',
+    title: 'Titre',
+    deadline: 'Date limite',
+    enterTodoTitle: 'Veuillez entrer le titre de la tâche',
+    selectDeadline: 'Sélectionner la date limite',
+    cancel: 'Annuler',
+    confirm: 'Confirmer',
+  },
 }

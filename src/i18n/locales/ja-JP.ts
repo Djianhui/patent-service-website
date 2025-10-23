@@ -243,4 +243,53 @@ export default {
     changePassword: 'パスワード変更',
     accountSettings: '設定',
   },
+  dashboard: {
+    welcomeBack: 'お帰りなさい、{user}！',
+    user: 'ユーザー',
+    todayIs: '今日は{date}です、今日の仕事を始めましょう',
+    newTechReport: '新しい技術レポート',
+    systemUsageGuide: 'システム使用ガイド',
+    guideDescription:
+      'インテリジェント特許サービスシステムは、ワンストップの特許出願ソリューションを提供します。以下の手順に従ってシステムを使用してください：',
+    tips: 'ヒント',
+    guideTips:
+      'どのステップからでもシステムを使用できます。システムはあなたのニーズに応じたサービスサポートを提供します。',
+    guideSteps: {
+      techReport: {
+        title: '技術レポート',
+        description:
+          '方向性が必要ですか？明確なガイダンスと専門的なアプローチで技術ソリューションをカスタマイズします。',
+      },
+      patentDraft: {
+        title: '特許草案',
+        description: '時間と労力を節約。ワンクリックで特許草案を生成し、特許出願を簡単に完了。',
+      },
+    },
+    quickTools: {
+      title: 'クイックツール',
+      techReport: {
+        title: '技術レポート',
+        description: '技術ソリューション分析レポートをすばやく生成',
+      },
+      patentDraft: {
+        title: '特許作成',
+        description: '特許出願文書を作成',
+      },
+    },
+    recentActivities: '最近の活動',
+    viewAll: 'すべて表示',
+    view: '表示',
+    noActivityRecords: '活動記録なし',
+    todoList: 'ToDoリスト',
+    add: '追加',
+    due: '期限',
+    noTodoItems: 'ToDoアイテムなし',
+    addTodoItem: 'ToDoアイテムを追加',
+    title: 'タイトル',
+    deadline: '期限',
+    enterTodoTitle: 'ToDoアイテムのタイトルを入力してください',
+    selectDeadline: '期限を選択',
+    cancel: 'キャンセル',
+    confirm: '確認',
+  },
 }

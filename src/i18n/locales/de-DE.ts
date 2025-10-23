@@ -243,4 +243,54 @@ export default {
     changePassword: 'Passwort ändern',
     accountSettings: 'Einstellungen',
   },
+  dashboard: {
+    welcomeBack: 'Willkommen zurück, {user}!',
+    user: 'Benutzer',
+    todayIs: 'Heute ist {date}, lassen Sie uns mit der Arbeit von heute beginnen',
+    newTechReport: 'Neuer Technischer Bericht',
+    systemUsageGuide: 'Systemverwendungsanleitung',
+    guideDescription:
+      'Das intelligente Patentservice-System bietet Ihnen eine Komplettlösung für Patentanmeldungen. Bitte folgen Sie diesen Schritten, um das System zu verwenden:',
+    tips: 'Tipps',
+    guideTips:
+      'Sie können das System von jedem Schritt aus beginnen. Das System wird entsprechende Serviceunterstützung basierend auf Ihren Anforderungen bieten.',
+    guideSteps: {
+      techReport: {
+        title: 'Technischer Bericht',
+        description:
+          'Brauchen Sie eine Richtung? Lassen Sie uns Ihnen helfen, eine technische Lösung mit klaren Anweisungen und professionellem Ansatz zu erstellen.',
+      },
+      patentDraft: {
+        title: 'Patententwurf',
+        description:
+          'Sparen Sie Zeit und Mühe. Generieren Sie Patententwürfe mit einem Klick und vervollständigen Sie Ihre Patentanmeldung einfach.',
+      },
+    },
+    quickTools: {
+      title: 'Schnellwerkzeuge',
+      techReport: {
+        title: 'Technischer Bericht',
+        description: 'Schnell technische Lösungsanalyseberichte generieren',
+      },
+      patentDraft: {
+        title: 'Patentschrift',
+        description: 'Patentanmeldedokumente schreiben',
+      },
+    },
+    recentActivities: 'Letzte Aktivitäten',
+    viewAll: 'Alle anzeigen',
+    view: 'Anzeigen',
+    noActivityRecords: 'Keine Aktivitätsaufzeichnungen',
+    todoList: 'Aufgabenliste',
+    add: 'Hinzufügen',
+    due: 'Fällig',
+    noTodoItems: 'Keine Aufgaben',
+    addTodoItem: 'Aufgabe hinzufügen',
+    title: 'Titel',
+    deadline: 'Frist',
+    enterTodoTitle: 'Bitte geben Sie den Aufgabentitel ein',
+    selectDeadline: 'Frist auswählen',
+    cancel: 'Abbrechen',
+    confirm: 'Bestätigen',
+  },
 }
