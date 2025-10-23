@@ -3,7 +3,7 @@
     <!-- 页面头部 -->
     <div class="page-header">
       <h1 class="page-title">新建技术方案报告</h1>
-      <p class="page-subtitle">上输入技术领域，系统将为您生成专业的技术方案分析报告</p>
+      <p class="page-subtitle">输入技术领域，系统将为您生成专业的技术方案分析报告</p>
     </div>
 
     <!-- 主要内容 -->
