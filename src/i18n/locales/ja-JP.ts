@@ -21,7 +21,7 @@ export default {
     downloadFailed: '直接ダウンロード失敗、新規ウィンドウで開く...',
     preparingDownload: 'ダウンロード準備中...',
     loadFailed: 'データ読み込み失败',
-    unknown: '不明'
+    unknown: '不明',
   },
   menu: {
     home: 'ホーム',
@@ -44,7 +44,7 @@ export default {
     simulation: 'シミュレーション',
     strategy: '戦略',
     profile: 'プロフィール',
-    about: 'について'
+    about: 'について',
   },
   auth: {
     login: 'ログイン',
@@ -74,13 +74,20 @@ export default {
     pleaseEnterEmail: 'メールを入力',
     pleaseEnterCaptcha: '認証コードを入力',
     passwordNotMatch: 'パスワードが一致しません',
-    invalidEmail: 'メール形式が無效',
+    invalidEmail: 'メール形式が無効',
     // ログインページ
     userLogin: 'ユーザーログイン',
     loginPrompt: 'アカウントにログイン',
     pleaseEnterUsernameOrPhone: 'ユーザー名/電話を入力',
     loginLoading: 'ログイン中...',
     loginButton: 'ログイン',
+    googleLogin: 'Googleでログイン',
+    googleLoginInfo: 'Googleログイン機能は開発中です...',
+    googleLoginSuccess: 'Googleログイン成功',
+    googleLoginFailed: 'Googleログイン失敗',
+    googleLoginError: 'Googleログインサービスが読み込まれていません。ページを更新してください',
+    processingGoogleLogin: 'Googleログインを処理中...',
+    or: 'または',
     noAccountPrompt: 'アカウントがない？',
     professionalPlatform: 'プロフェッショナルプラットフォーム',
     oneStopService: 'ワンストップ特許サービス',
@@ -95,7 +102,7 @@ export default {
     strong: '強い',
     registering: '登録中...',
     registerButton: '登録',
-    hasAccountPrompt: 'アカウント登録済み？'
+    hasAccountPrompt: 'アカウント登録済み？',
   },
   patentSearch: {
     title: 'クイック特許検索',
@@ -120,7 +127,7 @@ export default {
     failed: '失敗',
     imageLoadFailed: '読み込み失敗',
     clickToEnlarge: '拡大',
-    tryExample: '例:'
+    tryExample: '例:',
   },
   techReport: {
     title: '技術レポート',
@@ -160,7 +167,7 @@ export default {
     noReports: 'レポートなし',
     createFirstReport: '最初を作成',
     imageLoadFailed: '読み込み失敗',
-    clickToEnlarge: '拡大'
+    clickToEnlarge: '拡大',
   },
   patentDraft: {
     title: '特許草案',
@@ -207,7 +214,7 @@ export default {
     generateDraft: '生成',
     generating: '生成中...',
     confirmDelete: '"{title}"を削除しますか？',
-    confirmDeleteTitle: '削除確認'
+    confirmDeleteTitle: '削除確認',
   },
   threeAnalysis: {
     title: '三性分析',
@@ -219,7 +226,7 @@ export default {
     analysisReport: 'レポート',
     startAnalysis: '開始',
     analyzing: '分析中...',
-    viewResult: '結果'
+    viewResult: '結果',
   },
   notification: {
     title: '通知',
@@ -228,12 +235,12 @@ export default {
     clearAll: 'すべてクリア',
     noNotification: '通知なし',
     systemNotification: 'システム',
-    newMessage: '新しいメッセージ'
+    newMessage: '新しいメッセージ',
   },
   settings: {
     language: '言語',
     theme: 'テーマ',
     changePassword: 'パスワード変更',
-    accountSettings: '設定'
-  }
+    accountSettings: '設定',
+  },
 }

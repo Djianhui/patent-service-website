@@ -21,7 +21,7 @@ export default {
     downloadFailed: 'فشل التنزيل المباشر، جاري المحاولة في نافذة جديدة...',
     preparingDownload: 'جارٍ تحضير التنزيل...',
     loadFailed: 'فشل تحميل البيانات',
-    unknown: 'غير معروف'
+    unknown: 'غير معروف',
   },
   menu: {
     home: 'الرئيسية',
@@ -44,7 +44,7 @@ export default {
     simulation: 'محاكاة',
     strategy: 'استراتيجية',
     profile: 'الملف الشخصي',
-    about: 'حول'
+    about: 'حول',
   },
   auth: {
     login: 'تسجيل الدخول',
@@ -81,6 +81,13 @@ export default {
     pleaseEnterUsernameOrPhone: 'أدخل الاسم/الهاتف',
     loginLoading: 'جارٍ تسجيل الدخول...',
     loginButton: 'تسجيل الدخول',
+    googleLogin: 'تسجيل الدخول عبر Google',
+    googleLoginInfo: 'ميزة تسجيل الدخول عبر Google قيد التطوير...',
+    googleLoginSuccess: 'تم تسجيل الدخول عبر Google بنجاح',
+    googleLoginFailed: 'فشل تسجيل الدخول عبر Google',
+    googleLoginError: 'خدمة تسجيل الدخول عبر Google لم تُحمّل، يرجى تحديث الصفحة',
+    processingGoogleLogin: 'جارٍ معالجة تسجيل الدخول عبر Google...',
+    or: 'أو',
     noAccountPrompt: 'لا يوجد حساب؟',
     professionalPlatform: 'المنصة المهنية',
     oneStopService: 'خدمة البراءات الشاملة',
@@ -95,7 +102,7 @@ export default {
     strong: 'قوي',
     registering: 'جارٍ التسجيل...',
     registerButton: 'التسجيل',
-    hasAccountPrompt: 'لديك حساب بالفعل؟'
+    hasAccountPrompt: 'لديك حساب بالفعل؟',
   },
   patentSearch: {
     title: 'البحث السريع عن البراءات',
@@ -120,7 +127,7 @@ export default {
     failed: 'فشل',
     imageLoadFailed: 'فشل التحميل',
     clickToEnlarge: 'تكبير',
-    tryExample: 'أمثلة:'
+    tryExample: 'أمثلة:',
   },
   techReport: {
     title: 'التقرير التقني',
@@ -160,7 +167,7 @@ export default {
     noReports: 'لا توجد تقارير',
     createFirstReport: 'إنشاء الأول',
     imageLoadFailed: 'فشل التحميل',
-    clickToEnlarge: 'تكبير'
+    clickToEnlarge: 'تكبير',
   },
   patentDraft: {
     title: 'مسودة البراءة',
@@ -207,7 +214,7 @@ export default {
     generateDraft: 'إنشاء',
     generating: 'جار الإنشاء...',
     confirmDelete: 'هل تريد حذف "{title}"؟',
-    confirmDeleteTitle: 'تأكيد الحذف'
+    confirmDeleteTitle: 'تأكيد الحذف',
   },
   threeAnalysis: {
     title: 'التحليل الثلاثي',
@@ -219,7 +226,7 @@ export default {
     analysisReport: 'التقرير',
     startAnalysis: 'بدء',
     analyzing: 'جار التحليل...',
-    viewResult: 'النتيجة'
+    viewResult: 'النتيجة',
   },
   notification: {
     title: 'الإشعارات',
@@ -228,12 +235,12 @@ export default {
     clearAll: 'مسح الكل',
     noNotification: 'لا توجد إشعارات',
     systemNotification: 'النظام',
-    newMessage: 'رسالة جديدة'
+    newMessage: 'رسالة جديدة',
   },
   settings: {
     language: 'اللغة',
     theme: 'السمة',
     changePassword: 'تغيير كلمة المرور',
-    accountSettings: 'الإعدادات'
-  }
+    accountSettings: 'الإعدادات',
+  },
 }

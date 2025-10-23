@@ -21,7 +21,7 @@ export default {
     downloadFailed: 'Ошибка загрузки, открытие в новом окне...',
     preparingDownload: 'Подготовка загрузки...',
     loadFailed: 'Ошибка загрузки данных',
-    unknown: 'Неизвестно'
+    unknown: 'Неизвестно',
   },
   menu: {
     home: 'Главная',
@@ -44,7 +44,7 @@ export default {
     simulation: 'Моделирование',
     strategy: 'Стратегия',
     profile: 'Профиль',
-    about: 'О программе'
+    about: 'О программе',
   },
   auth: {
     login: 'Войти',
@@ -81,6 +81,13 @@ export default {
     pleaseEnterUsernameOrPhone: 'Введите имя/телефон',
     loginLoading: 'Вход...',
     loginButton: 'Войти',
+    googleLogin: 'Войти через Google',
+    googleLoginInfo: 'Функция входа через Google в разработке...',
+    googleLoginSuccess: 'Вход через Google выполнен',
+    googleLoginFailed: 'Ошибка входа через Google',
+    googleLoginError: 'Служба входа Google не загружена, обновите страницу',
+    processingGoogleLogin: 'Обработка входа через Google...',
+    or: 'или',
     noAccountPrompt: 'Нет аккаунта?',
     professionalPlatform: 'Профессиональная патентная платформа',
     oneStopService: 'Комплексный сервис патентов',
@@ -95,7 +102,7 @@ export default {
     strong: 'Сильный',
     registering: 'Регистрация...',
     registerButton: 'Зарегистрировать',
-    hasAccountPrompt: 'Уже есть аккаунт?'
+    hasAccountPrompt: 'Уже есть аккаунт?',
   },
   patentSearch: {
     title: 'Быстрый поиск патентов',
@@ -120,7 +127,7 @@ export default {
     failed: 'Ошибка',
     imageLoadFailed: 'Ошибка загрузки',
     clickToEnlarge: 'Увеличить',
-    tryExample: 'Примеры:'
+    tryExample: 'Примеры:',
   },
   techReport: {
     title: 'Технический отчет',
@@ -160,7 +167,7 @@ export default {
     noReports: 'Нет отчетов',
     createFirstReport: 'Создать первый',
     imageLoadFailed: 'Ошибка загрузки',
-    clickToEnlarge: 'Увеличить'
+    clickToEnlarge: 'Увеличить',
   },
   patentDraft: {
     title: 'Черновик патента',
@@ -207,7 +214,7 @@ export default {
     generateDraft: 'Генерировать',
     generating: 'Генерация...',
     confirmDelete: 'Удалить "{title}"?',
-    confirmDeleteTitle: 'Подтвердить удаление'
+    confirmDeleteTitle: 'Подтвердить удаление',
   },
   threeAnalysis: {
     title: 'Тройной анализ',
@@ -219,7 +226,7 @@ export default {
     analysisReport: 'Отчет',
     startAnalysis: 'Начать',
     analyzing: 'Анализ...',
-    viewResult: 'Результат'
+    viewResult: 'Результат',
   },
   notification: {
     title: 'Уведомления',
@@ -228,12 +235,12 @@ export default {
     clearAll: 'Очистить',
     noNotification: 'Нет уведомлений',
     systemNotification: 'Системное',
-    newMessage: 'Новое сообщение'
+    newMessage: 'Новое сообщение',
   },
   settings: {
     language: 'Язык',
     theme: 'Тема',
     changePassword: 'Сменить пароль',
-    accountSettings: 'Настройки'
-  }
+    accountSettings: 'Настройки',
+  },
 }

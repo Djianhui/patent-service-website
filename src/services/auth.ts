@@ -39,7 +39,7 @@ export const authService = {
         username: data.username,
         password: data.password,
         code: data.code,
-        uuid: data.uuid
+        uuid: data.uuid,
       })
 
       console.log('后端返回数据:', response)
@@ -59,9 +59,9 @@ export const authService = {
             email: `${data.username}@example.com`,
             role: 'admin',
             createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
+            updatedAt: new Date().toISOString(),
           },
-          expiresIn: 7200
+          expiresIn: 7200,
         }
 
         console.log('登录响应数据:', loginResponse)
@@ -109,7 +109,7 @@ export const authService = {
 
         return {
           uuid: response.uuid,
-          img: imgData
+          img: imgData,
         }
       } else {
         throw new Error(response.msg || '获取验证码失败')
@@ -130,7 +130,7 @@ export const authService = {
         username: data.username,
         password: data.password,
         code: data.code,
-        uuid: data.uuid
+        uuid: data.uuid,
       })
 
       console.log('注册返回数据:', response)
@@ -160,7 +160,7 @@ export const authService = {
       setTimeout(() => {
         resolve({
           token: 'refreshed-jwt-token-' + Date.now(),
-          expiresIn: 7200
+          expiresIn: 7200,
         })
       }, 500)
     })
@@ -181,7 +181,7 @@ export const authService = {
           createdAt: response.user.createTime || new Date().toISOString(),
           updatedAt: response.user.updateTime || new Date().toISOString(),
           // 保存原始用户数据，包含userId用于SSE连接
-          userId: response.user.userId
+          userId: response.user.userId,
         } as User
       } else {
         throw new Error(response.msg || '获取用户信息失败')
@@ -203,7 +203,7 @@ export const authService = {
           role: 'admin' as any,
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
-          ...data
+          ...data,
         })
       }, 500)
     })
@@ -243,5 +243,89 @@ export const authService = {
         resolve()
       }, 500)
     })
-  }
+  },
+
+  // Google登录
+  async googleLogin(data: { idToken?: string; code?: string }): Promise<LoginResponse> {
+    try {
+      console.log('=== Google登录请求开始 ===')
+
+      let response: any
+
+      // 根据传入的参数类型调用不同的后端接口
+      if (data.code) {
+        // 为测试添加默认值
+        const codeToUse =
+          data.code === 'test-default' ? '4/P7q7W91a-oMsCeLvIaQm6bTrgtp7' : data.code
+        console.log('使用授权码进行登录:', codeToUse.substring(0, 30) + '...')
+        // 调用正确的后端Google登录回调接口
+
+        // 创建 URLSearchParams 对象并添加参数
+        const params = new URLSearchParams()
+        params.append('code', data.code)
+
+        const encodedCode = encodeURIComponent(data.code)
+        response = await request.get<any>(`/google/auth/callback?code=${encodedCode}`)
+      } else if (data.idToken) {
+        console.log('使用ID Token进行登录:', data.idToken.substring(0, 30) + '...')
+        // 调用后端Google登录接口（ID Token流程）- 保持POST请求
+        response = await request.post<any>('/google-login', {
+          idToken: data.idToken,
+        })
+      } else {
+        throw new Error('Missing Google authentication data')
+      }
+
+      console.log('后端返回数据:', response)
+
+      // 检查后端返回的是否成功
+      if (response.code === 200 && response.token) {
+        console.log('Token获取成功:', response.token.substring(0, 30) + '...')
+        console.log('Token长度:', response.token.length)
+
+        // 成功情况，返回标准格式
+        const loginResponse = {
+          token: response.token,
+          user: response.user || {
+            id: '1',
+            username: response.email?.split('@')[0] || 'google_user',
+            email: response.email || '',
+            role: 'user',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          },
+          expiresIn: 7200,
+        }
+
+        console.log('Google登录响应数据:', loginResponse)
+        console.log('==================')
+        return loginResponse
+      } else {
+        // 失败情况，抛出后端返回的错误信息
+        const errorMessage = response.msg || response.message || 'Google登录失败'
+        console.error('Google登录失败:', errorMessage)
+        throw new Error(errorMessage)
+      }
+    } catch (error: any) {
+      console.error('=== Google登录异常 ===')
+      console.error('错误类型:', error.constructor.name)
+      console.error('错误信息:', error.message)
+      console.error('完整错误:', error)
+
+      // 处理不同类型的错误
+      if (error.response && error.response.data) {
+        // HTTP 响应错误，获取后端返回的错误信息
+        const backendError = error.response.data
+        const errorMessage = backendError.msg || backendError.message || 'Google登录失败'
+        console.error('后端错误信息:', errorMessage)
+        throw new Error(errorMessage)
+      } else if (error.message) {
+        // 前端处理过程中的错误
+        throw new Error(error.message)
+      } else {
+        // 其他未知错误
+        throw new Error('网络错误，请检查网络连接')
+      }
+    }
+  },
 }

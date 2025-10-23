@@ -30,6 +30,16 @@ const routes: RouteRecordRaw[] = [
     },
   },
   {
+    path: '/google-callback',
+    name: 'GoogleCallback',
+    component: () => import('@/views/auth/GoogleCallback.vue'),
+    meta: {
+      title: 'Google登录处理',
+      requiresAuth: false,
+      hideForAuth: true,
+    },
+  },
+  {
     path: '/app',
     component: AppLayout,
     meta: {

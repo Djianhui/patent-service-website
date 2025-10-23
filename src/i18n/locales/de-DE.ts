@@ -21,7 +21,7 @@ export default {
     downloadFailed: 'Download fehlgeschlagen, Öffnen in neuem Fenster...',
     preparingDownload: 'Download vorbereiten...',
     loadFailed: 'Daten konnten nicht geladen werden',
-    unknown: 'Unbekannt'
+    unknown: 'Unbekannt',
   },
   menu: {
     home: 'Startseite',
@@ -44,7 +44,7 @@ export default {
     simulation: 'Simulation',
     strategy: 'Strategie',
     profile: 'Profil',
-    about: 'Über'
+    about: 'Über',
   },
   auth: {
     login: 'Anmelden',
@@ -81,6 +81,13 @@ export default {
     pleaseEnterUsernameOrPhone: 'Name/Telefon eingeben',
     loginLoading: 'Anmeldung...',
     loginButton: 'Anmelden',
+    googleLogin: 'Mit Google anmelden',
+    googleLoginInfo: 'Google-Anmeldefunktion wird entwickelt...',
+    googleLoginSuccess: 'Google-Anmeldung erfolgreich',
+    googleLoginFailed: 'Google-Anmeldung fehlgeschlagen',
+    googleLoginError: 'Google-Anmeldedienst nicht geladen, bitte Seite aktualisieren',
+    processingGoogleLogin: 'Google-Anmeldung wird verarbeitet...',
+    or: 'oder',
     noAccountPrompt: 'Kein Konto?',
     professionalPlatform: 'Professionelle Plattform',
     oneStopService: 'Komplett-Patentservice',
@@ -95,7 +102,7 @@ export default {
     strong: 'Stark',
     registering: 'Registrierung...',
     registerButton: 'Registrieren',
-    hasAccountPrompt: 'Bereits ein Konto?'
+    hasAccountPrompt: 'Bereits ein Konto?',
   },
   patentSearch: {
     title: 'Schnelle Patentsuche',
@@ -120,7 +127,7 @@ export default {
     failed: 'Fehlgeschlagen',
     imageLoadFailed: 'Ladefehler',
     clickToEnlarge: 'Vergrößern',
-    tryExample: 'Beispiele:'
+    tryExample: 'Beispiele:',
   },
   techReport: {
     title: 'Technischer Bericht',
@@ -160,7 +167,7 @@ export default {
     noReports: 'Keine Berichte',
     createFirstReport: 'Ersten erstellen',
     imageLoadFailed: 'Ladefehler',
-    clickToEnlarge: 'Vergrößern'
+    clickToEnlarge: 'Vergrößern',
   },
   patentDraft: {
     title: 'Patententwurf',
@@ -207,7 +214,7 @@ export default {
     generateDraft: 'Generieren',
     generating: 'Generierung...',
     confirmDelete: '"{title}" löschen?',
-    confirmDeleteTitle: 'Löschen bestätigen'
+    confirmDeleteTitle: 'Löschen bestätigen',
   },
   threeAnalysis: {
     title: 'Dreifachanalyse',
@@ -219,7 +226,7 @@ export default {
     analysisReport: 'Bericht',
     startAnalysis: 'Starten',
     analyzing: 'Analyse...',
-    viewResult: 'Ergebnis'
+    viewResult: 'Ergebnis',
   },
   notification: {
     title: 'Benachrichtigungen',
@@ -228,12 +235,12 @@ export default {
     clearAll: 'Alle löschen',
     noNotification: 'Keine Benachrichtigungen',
     systemNotification: 'System',
-    newMessage: 'Neue Nachricht'
+    newMessage: 'Neue Nachricht',
   },
   settings: {
     language: 'Sprache',
     theme: 'Design',
     changePassword: 'Passwort ändern',
-    accountSettings: 'Einstellungen'
-  }
+    accountSettings: 'Einstellungen',
+  },
 }

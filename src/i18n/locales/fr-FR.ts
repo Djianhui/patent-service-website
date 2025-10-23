@@ -21,7 +21,7 @@ export default {
     downloadFailed: 'Échec du téléchargement, ouverture dans une nouvelle fenêtre...',
     preparingDownload: 'Préparation du téléchargement...',
     loadFailed: 'Échec du chargement des données',
-    unknown: 'Inconnu'
+    unknown: 'Inconnu',
   },
   menu: {
     home: 'Accueil',
@@ -44,7 +44,7 @@ export default {
     simulation: 'Simulation',
     strategy: 'Stratégie',
     profile: 'Profil',
-    about: 'À propos'
+    about: 'À propos',
   },
   auth: {
     login: 'Connexion',
@@ -81,6 +81,14 @@ export default {
     pleaseEnterUsernameOrPhone: 'Nom/téléphone',
     loginLoading: 'Connexion...',
     loginButton: 'Se connecter',
+    googleLogin: 'Se connecter avec Google',
+    googleLoginInfo: 'La fonction de connexion Google est en développement...',
+    googleLoginSuccess: 'Connexion Google réussie',
+    googleLoginFailed: 'Échec de la connexion Google',
+    googleLoginError:
+      "Le service de connexion Google n'est pas chargé, veuillez actualiser la page",
+    processingGoogleLogin: 'Traitement de la connexion Google...',
+    or: 'ou',
     noAccountPrompt: 'Pas de compte?',
     professionalPlatform: 'Plateforme professionnelle',
     oneStopService: 'Service complet de brevets',
@@ -94,8 +102,8 @@ export default {
     medium: 'Moyen',
     strong: 'Fort',
     registering: 'Inscription...',
-    registerButton: 'S\'inscrire',
-    hasAccountPrompt: 'Déjà un compte?'
+    registerButton: "S'inscrire",
+    hasAccountPrompt: 'Déjà un compte?',
   },
   patentSearch: {
     title: 'Recherche rapide de brevets',
@@ -108,7 +116,7 @@ export default {
     searching: 'Recherche...',
     searchHistory: 'Historique',
     totalRecords: 'Total {count} enregistrements',
-    noHistory: 'Pas d\'historique',
+    noHistory: "Pas d'historique",
     publicationNumber: 'Numéro de publication',
     publicationDate: 'Date de publication',
     applicant: 'Demandeur',
@@ -120,14 +128,14 @@ export default {
     failed: 'Échec',
     imageLoadFailed: 'Échec du chargement',
     clickToEnlarge: 'Agrandir',
-    tryExample: 'Exemples:'
+    tryExample: 'Exemples:',
   },
   techReport: {
     title: 'Rapport technique',
     newReport: 'Nouveau rapport',
     subtitle: 'Générer un rapport professionnel',
-    technicalInfoInput: 'Saisie d\'informations',
-    inventionName: 'Nom de l\'invention',
+    technicalInfoInput: "Saisie d'informations",
+    inventionName: "Nom de l'invention",
     technicalField: 'Domaine technique',
     technicalSolution: 'Solution technique',
     pleaseEnterName: 'Entrez le nom',
@@ -160,13 +168,13 @@ export default {
     noReports: 'Aucun rapport',
     createFirstReport: 'Créer le premier',
     imageLoadFailed: 'Échec du chargement',
-    clickToEnlarge: 'Agrandir'
+    clickToEnlarge: 'Agrandir',
   },
   patentDraft: {
     title: 'Brouillon de brevet',
     newDraft: 'Nouveau brouillon',
     subtitle: 'Génération automatique',
-    inventionPatent: 'Brevet d\'invention',
+    inventionPatent: "Brevet d'invention",
     professional: 'Professionnel',
     fillInstructions: 'Instructions',
     fillDescription: 'Remplir le formulaire',
@@ -207,7 +215,7 @@ export default {
     generateDraft: 'Générer',
     generating: 'Génération...',
     confirmDelete: 'Supprimer "{title}"?',
-    confirmDeleteTitle: 'Confirmer la suppression'
+    confirmDeleteTitle: 'Confirmer la suppression',
   },
   threeAnalysis: {
     title: 'Triple analyse',
@@ -219,7 +227,7 @@ export default {
     analysisReport: 'Rapport',
     startAnalysis: 'Démarrer',
     analyzing: 'Analyse...',
-    viewResult: 'Résultat'
+    viewResult: 'Résultat',
   },
   notification: {
     title: 'Notifications',
@@ -228,12 +236,12 @@ export default {
     clearAll: 'Tout effacer',
     noNotification: 'Aucune notification',
     systemNotification: 'Système',
-    newMessage: 'Nouveau message'
+    newMessage: 'Nouveau message',
   },
   settings: {
     language: 'Langue',
     theme: 'Thème',
     changePassword: 'Changer le mot de passe',
-    accountSettings: 'Paramètres'
-  }
+    accountSettings: 'Paramètres',
+  },
 }

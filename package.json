@@ -33,6 +33,8 @@
   },
   "devDependencies": {
     "@tsconfig/node22": "^22.0.2",
+    "@types/gapi": "^0.0.47",
+    "@types/gapi.auth2": "^0.0.61",
     "@types/node": "^22.18.6",
     "@vitejs/plugin-vue": "^6.0.1",
     "@vitest/ui": "^3.2.4",
