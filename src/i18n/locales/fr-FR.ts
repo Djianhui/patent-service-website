@@ -320,8 +320,11 @@ export default {
       },
       floatingCards: {
         techReport: 'Rapport technique',
+        techReportDesc: 'Analyse intelligente IA',
         patentSearch: 'Recherche de brevets',
+        patentSearchDesc: 'Base de données mondiale de brevets',
         patentDraft: 'Brouillon de brevet',
+        patentDraftDesc: 'Génération de documents professionnels',
       },
     },
     services: {

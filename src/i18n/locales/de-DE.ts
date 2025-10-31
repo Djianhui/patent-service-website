@@ -314,8 +314,11 @@ export default {
       },
       floatingCards: {
         techReport: 'Technischer Bericht',
+        techReportDesc: 'KI-intelligente Analyse',
         patentSearch: 'Patentsuche',
+        patentSearchDesc: 'Globale Patentdatenbank',
         patentDraft: 'Patententwurf',
+        patentDraftDesc: 'Professionelle Dokumentenerstellung',
       },
     },
     services: {

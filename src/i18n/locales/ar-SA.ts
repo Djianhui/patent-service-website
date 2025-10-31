@@ -308,8 +308,11 @@ export default {
       stats: { users: 'المستخدمون النشطون', patents: 'البراءات المعالجة', satisfaction: 'الرضا' },
       floatingCards: {
         techReport: 'تقرير تقني',
+        techReportDesc: 'التحليل الذكي بالذكاء الاصطناعي',
         patentSearch: 'بحث البراءات',
+        patentSearchDesc: 'قاعدة بيانات البراءات العالمية',
         patentDraft: 'مسودة براءة',
+        patentDraftDesc: 'إنشاء مستندات محترفة',
       },
     },
     services: {

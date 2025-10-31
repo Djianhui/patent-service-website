@@ -106,7 +106,7 @@
                   </el-icon>
                   <div class="card-text">
                     <h4>{{ $t('landing.hero.floatingCards.techReport') }}</h4>
-                    <p>AI智能分析</p>
+                    <p>{{ $t('landing.hero.floatingCards.techReportDesc') }}</p>
                   </div>
                 </div>
               </div>
@@ -117,7 +117,7 @@
                   </el-icon>
                   <div class="card-text">
                     <h4>{{ $t('landing.hero.floatingCards.patentSearch') }}</h4>
-                    <p>全球专利数据库</p>
+                    <p>{{ $t('landing.hero.floatingCards.patentSearchDesc') }}</p>
                   </div>
                 </div>
               </div>
@@ -128,7 +128,7 @@
                   </el-icon>
                   <div class="card-text">
                     <h4>{{ $t('landing.hero.floatingCards.patentDraft') }}</h4>
-                    <p>专业文档生成</p>
+                    <p>{{ $t('landing.hero.floatingCards.patentDraftDesc') }}</p>
                   </div>
                 </div>
               </div>

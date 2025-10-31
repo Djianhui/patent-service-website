@@ -314,8 +314,11 @@ export default {
       },
       floatingCards: {
         techReport: 'Технический отчет',
+        techReportDesc: 'Интеллектуальный анализ ИИ',
         patentSearch: 'Поиск патентов',
+        patentSearchDesc: 'Глобальная база данных патентов',
         patentDraft: 'Черновик патента',
+        patentDraftDesc: 'Профессиональное создание документов',
       },
     },
     services: {

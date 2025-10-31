@@ -320,8 +320,11 @@ export default {
       },
       floatingCards: {
         techReport: '技术报告',
+        techReportDesc: 'AI智能分析',
         patentSearch: '专利检索',
+        patentSearchDesc: '全球专利数据库',
         patentDraft: '专利撰写',
+        patentDraftDesc: '专业文档生成',
       },
     },
     services: {

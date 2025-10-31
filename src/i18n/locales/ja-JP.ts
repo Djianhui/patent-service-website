@@ -318,8 +318,11 @@ export default {
       },
       floatingCards: {
         techReport: '技術レポート',
+        techReportDesc: 'AIインテリジェント分析',
         patentSearch: '特許検索',
+        patentSearchDesc: 'グローバル特許データベース',
         patentDraft: '特許草案',
+        patentDraftDesc: 'プロフェッショナル文書生成',
       },
     },
     services: {
