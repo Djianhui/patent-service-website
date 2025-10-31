@@ -308,11 +308,8 @@ export default {
       stats: { users: 'المستخدمون النشطون', patents: 'البراءات المعالجة', satisfaction: 'الرضا' },
       floatingCards: {
         techReport: 'تقرير تقني',
-        techReportDesc: 'التحليل الذكي بالذكاء الاصطناعي',
         patentSearch: 'بحث البراءات',
-        patentSearchDesc: 'قاعدة بيانات البراءات العالمية',
         patentDraft: 'مسودة براءة',
-        patentDraftDesc: 'إنشاء مستندات محترفة',
       },
     },
     services: {
@@ -451,9 +448,9 @@ export default {
         title: 'معلومات الاتصال',
         address: 'العنوان',
         addressContent:
-          '449B BUKIT BATOK WEST AVENUE 9, #18-82, WEST VALLEY @ BUKIT BATOK, SINGAPORE (652449)',
+          "449B BUKIT BATOK WEST AVENUE 9, #18-82, WEST VALLEY {'@'} BUKIT BATOK, SINGAPORE (652449)",
         email: 'البريد الإلكتروني',
-        emailContent: 'ccsuzc@gmail.com',
+        emailContent: "ccsuzc{'@'}gmail.com",
         phone: 'الهاتف',
         phoneContent: '+86 152-7318-4384',
         hours: 'ساعات العمل',

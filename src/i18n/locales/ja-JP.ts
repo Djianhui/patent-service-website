@@ -455,9 +455,9 @@ export default {
         title: '連絡先',
         address: '住所',
         addressContent:
-          '449B BUKIT BATOK WEST AVENUE 9, #18-82, WEST VALLEY @ BUKIT BATOK, SINGAPORE (652449)',
+          "449B BUKIT BATOK WEST AVENUE 9, #18-82, WEST VALLEY {'@'} BUKIT BATOK, SINGAPORE (652449)",
         email: 'メール',
-        emailContent: 'ccsuzc@gmail.com',
+        emailContent: "ccsuzc{'@'}gmail.com",
         phone: '電話',
         phoneContent: '+86 152-7318-4384',
         hours: '営業時間',

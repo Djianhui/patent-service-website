@@ -7,7 +7,11 @@ import AppLayout from '@/layouts/AppLayout.vue'
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    name: 'Landing',
+    redirect: '/home',
+  },
+  {
+    path: '/home',
+    name: 'Home',
     component: () => import('@/views/LandingView.vue'),
     meta: {
       title: '首页',

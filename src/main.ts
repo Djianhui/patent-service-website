@@ -13,6 +13,13 @@ import i18n from './i18n'
 
 const app = createApp(App)
 
+// 全局错误处理
+app.config.errorHandler = (err, instance, info) => {
+  console.error('Vue Error:', err)
+  console.error('Component:', instance)
+  console.error('Error Info:', info)
+}
+
 // 注册Element Plus图标
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)
