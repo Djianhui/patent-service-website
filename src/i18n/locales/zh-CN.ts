@@ -254,22 +254,22 @@ export default {
     accountSettings: '账号设置',
   },
   dashboard: {
-    welcomeBack: '欢迎回来，{user}！',
+    welcomeBack: '欢迎回来,{user}!',
     user: '用户',
-    todayIs: '今天是{date}，让我们开始今天的工作',
+    todayIs: '今天是{date},让我们开始今天的工作',
     newTechReport: '新建技术报告',
     systemUsageGuide: '系统使用指南',
-    guideDescription: '智能专利服务系统为您提供一站式专利申请解决方案。请按照以下步骤使用系统：',
+    guideDescription: '智能专利服务系统为您提供一站式专利申请解决方案。请按照以下步骤使用系统:',
     tips: '提示',
     guideTips: '您可以从任意步骤开始使用系统。系统将根据您的需求提供相应的服务支持。',
     guideSteps: {
       techReport: {
         title: '技术报告',
-        description: '需要方向指引？让我们帮助您定制技术解决方案，提供清晰的指导和专业的途径。',
+        description: '需要方向指引?让我们帮助您定制技术解决方案,提供清晰的指导和专业的途径。',
       },
       patentDraft: {
         title: '专利草稿',
-        description: '节省时间和精力。一键生成专利草稿，轻松完成专利申请。',
+        description: '节省时间和精力。一键生成专利草稿,轻松完成专利申请。',
       },
     },
     quickTools: {
@@ -298,5 +298,215 @@ export default {
     selectDeadline: '选择截止时间',
     cancel: '取消',
     confirm: '确认',
+  },
+  landing: {
+    brand: 'PatentPro',
+    nav: {
+      features: '功能特性',
+      pricing: '价格方案',
+      about: '关于我们',
+      contact: '联系我们',
+    },
+    hero: {
+      title: '智能化专利服务,让创新更简单',
+      subtitle:
+        '专业的AI驱动专利平台,提供专利检索、分析、撰写、答辩等一站式服务,助力您的知识产权保护',
+      getStarted: '立即开始',
+      viewDemo: '查看演示',
+      stats: {
+        users: '活跃用户',
+        patents: '处理专利',
+        satisfaction: '满意度',
+      },
+      floatingCards: {
+        techReport: '技术报告',
+        patentSearch: '专利检索',
+        patentDraft: '专利撰写',
+      },
+    },
+    services: {
+      title: '专业的知识产权解决方案',
+      subtitle: '为企业和个人提供全方位的专利服务',
+      intelligentAnalysis: {
+        title: '智能分析平台',
+        description: '基于AI的专利分析与评估系统',
+      },
+      globalSearch: {
+        title: '全球专利检索',
+        description: '覆盖多国专利数据库的检索服务',
+      },
+      patentDraft: {
+        title: '专利撰写工具',
+        description: 'AI辅助的专业文档生成系统',
+      },
+      threeAnalysis: {
+        title: '三性分析服务',
+        description: '新颖性、创造性、实用性专业评估',
+      },
+      techReport: {
+        title: '技术报告生成',
+        description: '智能化技术方案分析报告',
+      },
+      defenseSupport: {
+        title: '答辩支持',
+        description: '专利申请答辩策略与文档支持',
+      },
+    },
+    stats: {
+      title: '数据驱动的专利服务',
+      subtitle: '通过先进的数据分析技术，为您提供精准的专利情报',
+      patentDatabase: '专利数据库',
+      successCases: '成功案例',
+      customerSatisfaction: '客户满意度',
+    },
+    features: {
+      title: '强大的功能,满足您的所有需求',
+      subtitle: '从检索到撰写,从分析到答辩,我们提供全方位的专利服务解决方案',
+      items: {
+        techReport: {
+          title: '技术方案报告',
+          desc: '智能分析技术方案,生成专业的专利性分析报告,为您的专利申请提供科学依据',
+        },
+        patentSearch: {
+          title: '专利智能检索',
+          desc: '海量专利数据库,智能检索算法,快速定位相关专利文献,提供全面的检索服务',
+        },
+        patentDraft: {
+          title: '专利智能撰写',
+          desc: 'AI辅助撰写专利申请文件,自动生成权利要求书和说明书,提高撰写效率',
+        },
+        threeAnalysis: {
+          title: '三性分析',
+          desc: '专业评估专利的新颖性、创造性和实用性,为您的专利申请提供科学指导',
+        },
+        defenseSupport: {
+          title: '答辩支持',
+          desc: '提供专利答辩策略建议和案例支持,帮助您应对各种审查意见',
+        },
+        aiPowered: {
+          title: 'AI智能助手',
+          desc: '先进的人工智能技术,为您提供智能化、自动化的专利服务体验',
+        },
+      },
+    },
+    pricing: {
+      title: '选择适合您的方案',
+      subtitle: '灵活的价格方案,满足个人和企业的不同需求',
+      popular: '最受欢迎',
+      perMonth: '/月',
+      choosePlan: '选择方案',
+      plans: {
+        free: {
+          name: '免费版',
+          features: {
+            searches: '每月5次检索',
+            reports: '每月2份报告',
+            support: '社区支持',
+          },
+        },
+        pro: {
+          name: '专业版',
+          features: {
+            searches: '无限次检索',
+            reports: '每月20份报告',
+            drafts: '每月10份草稿',
+            support: '优先客服支持',
+            api: 'API访问',
+          },
+        },
+        enterprise: {
+          name: '企业版',
+          features: {
+            unlimited: '无限制使用',
+            team: '团队协作',
+            custom: '定制化服务',
+            priority: '专属客服',
+            dedicated: '专属服务器',
+          },
+        },
+      },
+    },
+    cta: {
+      title: '准备好开始了吗?',
+      subtitle: '立即注册,体验智能化的专利服务',
+      startNow: '立即开始',
+    },
+    footer: {
+      description: '专业的智能化专利服务平台,为全球创新者提供一站式知识产权保护解决方案',
+      product: '产品',
+      company: '公司',
+      legal: '法律',
+      api: 'API文档',
+      blog: '博客',
+      privacy: '隐私政策',
+      terms: '服务条款',
+      copyright: '版权所有',
+    },
+    about: {
+      title: '关于我们',
+      subtitle: '专注于为全球创新者提供专业的知识产权服务',
+      mission: {
+        title: '我们的使命',
+        content:
+          '通过人工智能和大数据技术,让专利服务更加智能、高效、便捷,帮助创新者保护和实现他们的创意价值。',
+      },
+      vision: {
+        title: '我们的愿景',
+        content: '成为全球领先的智能化专利服务平台,为创新发展提供强有力的知识产权保护支持。',
+      },
+      values: {
+        title: '核心价值观',
+        innovation: '创新驱动',
+        innovationDesc: '持续技术创新,提供前沿解决方案',
+        professional: '专业服务',
+        professionalDesc: '资深专家团队,专业可靠',
+        efficiency: '高效便捷',
+        efficiencyDesc: 'AI赋能,提升服务效率',
+        integrity: '诚信为本',
+        integrityDesc: '坚守职业道德,保护客户利益',
+      },
+      team: {
+        title: '专业团队',
+        description:
+          '我们拥有一支由专利代理人、技术专家、AI工程师组成的专业团队,致力于为客户提供最优质的服务。',
+      },
+    },
+    contact: {
+      title: '联系我们',
+      subtitle: '我们随时准备为您提供帮助',
+      info: {
+        title: '联系信息',
+        address: '地址',
+        addressContent:
+          '449B BUKIT BATOK WEST AVENUE 9, #18-82, WEST VALLEY @ BUKIT BATOK, SINGAPORE (652449)',
+        email: '邮箱',
+        emailContent: 'ccsuzc@gmail.com',
+        phone: '电话',
+        phoneContent: '+86 152-7318-4384',
+        hours: '工作时间',
+        hoursContent: '周一至周五 9:00-18:00',
+      },
+      form: {
+        title: '在线咨询',
+        name: '姓名',
+        namePlaceholder: '请输入您的姓名',
+        email: '邮箱',
+        emailPlaceholder: '请输入您的邮箱',
+        subject: '主题',
+        subjectPlaceholder: '请输入咨询主题',
+        message: '留言',
+        messagePlaceholder: '请输入您的留言内容',
+        submit: '发送消息',
+        sending: '发送中...',
+        success: '消息发送成功,我们会尽快回复您!',
+        error: '发送失败,请稍后重试',
+      },
+      social: {
+        title: '关注我们',
+        wechat: '微信公众号',
+        weibo: '新浪微博',
+        linkedin: 'LinkedIn',
+      },
+    },
   },
 }

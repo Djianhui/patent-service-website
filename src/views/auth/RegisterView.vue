@@ -9,6 +9,7 @@
         <div class="language-selector">
           <el-dropdown @command="handleLanguageChange">
             <el-button class="language-button" text>
+              <span :class="`fi fi-${getFlagCode(currentLocale)}`" class="flag-icon-round"></span>
               {{ currentLocaleName }}
               <el-icon class="el-icon--right">
                 <arrow-down />
@@ -18,6 +19,7 @@
               <el-dropdown-menu>
                 <el-dropdown-item v-for="lang in SUPPORT_LOCALES" :key="lang" :command="lang"
                   :disabled="currentLocale === lang">
+                  <span :class="`fi fi-${getFlagCode(lang)}`" class="flag-icon-round"></span>
                   {{ getLocaleDisplayText(lang) }}
                 </el-dropdown-item>
               </el-dropdown-menu>
@@ -278,6 +280,20 @@ const handleLanguageChange = (lang: string) => {
   setLocale(lang as SupportLocale)
 }
 
+// 获取国旗代码
+const getFlagCode = (lang: string) => {
+  const codeMap: Record<string, string> = {
+    'zh-CN': 'cn',
+    'en-US': 'us',
+    'ja-JP': 'jp',
+    'de-DE': 'de',
+    'fr-FR': 'fr',
+    'ru-RU': 'ru',
+    'ar-SA': 'sa',
+  }
+  return codeMap[lang] || 'us'
+}
+
 // 生命周期
 onMounted(async () => {
   await getCaptcha()
@@ -329,7 +345,7 @@ onMounted(async () => {
     .logo-text {
       font-size: 24px;
       font-weight: 700;
-      color: #2c3e50;
+      color: #1a1a1a;
     }
   }
 
@@ -340,27 +356,49 @@ onMounted(async () => {
 
     .language-button {
       font-size: 14px;
-      color: #6c757d;
+      color: #666;
       padding: 8px 12px;
-      border-radius: 6px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
 
       &:hover {
-        color: #2c3e50;
-        background-color: #f1f3f4;
+        color: #1a1a1a;
+        background-color: #f8f9fa;
       }
+    }
+
+    .flag-icon-round {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      overflow: hidden;
+      display: inline-block;
+      background-size: cover;
+      background-position: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      flex-shrink: 0;
+    }
+
+    :deep(.el-dropdown-menu__item) {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 16px;
     }
   }
 
   .register-title {
-    font-size: 28px;
+    font-size: 32px;
     font-weight: 700;
-    color: #2c3e50;
+    color: #1a1a1a;
     margin-bottom: 12px;
     line-height: 1.3;
   }
 
   .register-subtitle {
-    color: #6c757d;
+    color: #666;
     font-size: 16px;
     line-height: 1.5;
   }
@@ -380,7 +418,7 @@ onMounted(async () => {
       width: 120px;
       height: 48px;
       border: 1px solid #d1d5db;
-      border-radius: 6px;
+      border-radius: 12px;
       cursor: pointer;
       overflow: hidden;
       display: flex;
@@ -391,9 +429,9 @@ onMounted(async () => {
       flex-shrink: 0;
 
       &:hover {
-        border-color: #3b82f6;
+        border-color: #667eea;
         transform: translateY(-2px);
-        box-shadow: 0 4px 6px rgba(59, 130, 246, 0.1);
+        box-shadow: 0 4px 6px rgba(102, 126, 234, 0.1);
       }
 
       img {
@@ -419,7 +457,7 @@ onMounted(async () => {
     font-size: 13px;
 
     .strength-label {
-      color: #6c757d;
+      color: #666;
       min-width: 70px;
     }
 
@@ -450,7 +488,7 @@ onMounted(async () => {
 
     .strength-text {
       min-width: 40px;
-      color: #6c757d;
+      color: #666;
       font-weight: 500;
     }
   }
@@ -460,25 +498,25 @@ onMounted(async () => {
     height: 48px;
     font-size: 16px;
     font-weight: 600;
-    border-radius: 8px;
-    background-color: #3b82f6;
-    border-color: #3b82f6;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
     margin-top: 8px;
 
     &:hover {
-      background-color: #2563eb;
-      border-color: #2563eb;
+      background: linear-gradient(135deg, #5568d3 0%, #6a4093 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
     }
 
     &:active {
-      background-color: #1d4ed8;
-      border-color: #1d4ed8;
+      transform: translateY(0);
     }
   }
 
   .login-link {
     text-align: center;
-    color: #6c757d;
+    color: #666;
     font-size: 15px;
     margin-top: 24px;
 
@@ -489,13 +527,18 @@ onMounted(async () => {
     :deep(.el-link) {
       font-weight: 500;
       font-size: 15px;
+      color: #667eea;
+
+      &:hover {
+        color: #764ba2;
+      }
     }
   }
 }
 
 .register-background {
   flex: 1;
-  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -510,7 +553,8 @@ onMounted(async () => {
     left: 0;
     right: 0;
     bottom: 0;
-    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    opacity: 0.3;
   }
 
   @media (max-width: 768px) {

@@ -11,23 +11,31 @@ import arSA from './locales/ar-SA'
 export type MessageSchema = typeof zhCN
 
 // 支持的语言列表
-export const SUPPORT_LOCALES = ['zh-CN', 'en-US', 'ru-RU', 'fr-FR', 'de-DE', 'ja-JP', 'ar-SA'] as const
+export const SUPPORT_LOCALES = [
+  'zh-CN',
+  'en-US',
+  'ru-RU',
+  'fr-FR',
+  'de-DE',
+  'ja-JP',
+  'ar-SA',
+] as const
 export type SupportLocale = (typeof SUPPORT_LOCALES)[number]
 
-// 从本地存储获取保存的语言设置，默认为中文
+// 从本地存储获取保存的语言设置，默认为英文
 const getDefaultLocale = (): SupportLocale => {
   const savedLocale = localStorage.getItem('locale')
   if (savedLocale && SUPPORT_LOCALES.includes(savedLocale as SupportLocale)) {
     return savedLocale as SupportLocale
   }
-  return 'zh-CN'
+  return 'en-US'
 }
 
 // 创建 i18n 实例
 const i18n = createI18n({
   legacy: false, // 使用 Composition API 模式
   locale: getDefaultLocale(), // 默认语言
-  fallbackLocale: 'zh-CN', // 回退语言
+  fallbackLocale: 'en-US', // 回退语言
   messages: {
     'zh-CN': zhCN,
     'en-US': enUS,
@@ -35,9 +43,9 @@ const i18n = createI18n({
     'fr-FR': frFR,
     'de-DE': deDE,
     'ja-JP': jaJP,
-    'ar-SA': arSA
+    'ar-SA': arSA,
   },
-  globalInjection: true // 全局注入 $t 函数
+  globalInjection: true, // 全局注入 $t 函数
 })
 
 /**
@@ -70,7 +78,7 @@ export function getLocaleName(locale: SupportLocale): string {
     'fr-FR': 'Français',
     'de-DE': 'Deutsch',
     'ja-JP': '日本語',
-    'ar-SA': 'العربية'
+    'ar-SA': 'العربية',
   }
   return names[locale]
 }

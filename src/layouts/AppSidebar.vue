@@ -1,39 +1,27 @@
 <template>
   <aside class="app-sidebar" :class="{ collapsed }">
-    <el-menu
-      :default-active="activeMenuId"
-      :collapse="collapsed"
-      :unique-opened="true"
-      mode="vertical"
-      router
-      @select="handleMenuSelect"
-    >
+    <el-menu :default-active="activeMenuId" :collapse="collapsed" :unique-opened="true" mode="vertical" router
+      @select="handleMenuSelect">
       <template v-for="item in menuItems" :key="item.id">
         <!-- 有子菜单的项 -->
-        <el-sub-menu 
-          v-if="item.children && item.children.length > 0"
-          :index="item.id"
-        >
+        <el-sub-menu v-if="item.children && item.children.length > 0" :index="item.id">
           <template #title>
-            <el-icon><component :is="item.icon" /></el-icon>
+            <el-icon>
+              <component :is="item.icon" />
+            </el-icon>
             <span>{{ item.title }}</span>
           </template>
-          
-          <el-menu-item
-            v-for="child in item.children"
-            :key="child.id"
-            :index="child.path"
-          >
+
+          <el-menu-item v-for="child in item.children" :key="child.id" :index="child.path">
             {{ child.title }}
           </el-menu-item>
         </el-sub-menu>
-        
+
         <!-- 无子菜单的项 -->
-        <el-menu-item 
-          v-else
-          :index="item.path"
-        >
-          <el-icon><component :is="item.icon" /></el-icon>
+        <el-menu-item v-else :index="item.path">
+          <el-icon>
+            <component :is="item.icon" />
+          </el-icon>
           <template #title>{{ item.title }}</template>
         </el-menu-item>
       </template>
@@ -78,13 +66,13 @@ const route = useRoute()
 // 计算属性
 const activeMenuId = computed(() => {
   const currentPath = route.path
-  
+
   // 查找匹配的菜单项
   for (const item of props.menuItems) {
     if (item.path === currentPath) {
       return item.path
     }
-    
+
     if (item.children) {
       for (const child of item.children) {
         if (child.path === currentPath) {
@@ -93,7 +81,7 @@ const activeMenuId = computed(() => {
       }
     }
   }
-  
+
   return currentPath
 })
 
@@ -125,7 +113,7 @@ const handleMenuSelect = (path: string) => {
       height: 48px;
       line-height: 48px;
       margin: var(--spacing-xs) var(--spacing-sm);
-      border-radius: var(--border-radius-base);
+      border-radius: 8px;
       color: var(--color-text-primary);
       font-weight: var(--font-weight-medium);
 
@@ -135,7 +123,7 @@ const handleMenuSelect = (path: string) => {
       }
 
       &.is-active {
-        background-color: var(--color-primary);
+        background: var(--color-primary-gradient);
         color: white;
 
         &::before {
@@ -154,7 +142,7 @@ const handleMenuSelect = (path: string) => {
         height: 48px;
         line-height: 48px;
         margin: var(--spacing-xs) var(--spacing-sm);
-        border-radius: var(--border-radius-base);
+        border-radius: 8px;
         color: var(--color-text-primary);
         font-weight: var(--font-weight-medium);
 
@@ -179,13 +167,13 @@ const handleMenuSelect = (path: string) => {
         .el-menu-item {
           margin: var(--spacing-xs) var(--spacing-md);
           padding-left: calc(var(--spacing-lg) + 18px + var(--spacing-sm)) !important;
-          
+
           &:hover {
             background-color: var(--color-bg-tertiary);
           }
 
           &.is-active {
-            background-color: var(--color-primary);
+            background: var(--color-primary-gradient);
             color: white;
           }
         }
@@ -194,11 +182,12 @@ const handleMenuSelect = (path: string) => {
 
     // 折叠状态下的样式
     &.el-menu--collapse {
+
       .el-menu-item,
       .el-sub-menu .el-sub-menu__title {
         margin: var(--spacing-xs);
         text-align: center;
-        
+
         .el-icon {
           margin-right: 0;
         }

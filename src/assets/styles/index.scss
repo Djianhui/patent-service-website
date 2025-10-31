@@ -1,45 +1,52 @@
 @import './variables.scss';
 
+// 全局字体设置，确保 emoji 正确显示
+* {
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans',
+    sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
 // Element Plus 样式覆盖
 .el-button {
-  border-radius: var(--border-radius-base);
+  border-radius: 12px;
   font-weight: var(--font-weight-medium);
   transition: all var(--transition-fast);
 
   &.el-button--primary {
-    background-color: var(--color-primary);
-    border-color: var(--color-primary);
+    background: var(--color-primary-gradient);
+    border: none;
 
     &:hover {
-      background-color: var(--color-primary-light);
-      border-color: var(--color-primary-light);
+      background: linear-gradient(135deg, #5568d3 0%, #6a4093 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
     }
 
     &:active {
-      background-color: var(--color-primary-dark);
-      border-color: var(--color-primary-dark);
+      transform: translateY(0);
     }
   }
 }
 
 .el-input {
   .el-input__wrapper {
-    border-radius: var(--border-radius-base);
+    border-radius: 12px;
     transition: all var(--transition-fast);
 
     &:hover {
-      border-color: var(--color-primary-light);
+      border-color: var(--color-primary);
     }
 
     &.is-focus {
       border-color: var(--color-primary);
-      box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+      box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
     }
   }
 }
 
 .el-card {
-  border-radius: var(--border-radius-large);
+  border-radius: 12px;
   box-shadow: var(--shadow-light);
   transition: box-shadow var(--transition-base);
 
@@ -64,15 +71,16 @@
   border-right: none;
 
   .el-menu-item {
-    border-radius: var(--border-radius-base);
+    border-radius: 8px;
     margin: var(--spacing-xs) var(--spacing-sm);
 
     &:hover {
       background-color: var(--color-bg-tertiary);
+      color: var(--color-primary);
     }
 
     &.is-active {
-      background-color: var(--color-primary);
+      background: var(--color-primary-gradient);
       color: white;
 
       &::before {
@@ -83,11 +91,12 @@
 
   .el-sub-menu {
     .el-sub-menu__title {
-      border-radius: var(--border-radius-base);
+      border-radius: 8px;
       margin: var(--spacing-xs) var(--spacing-sm);
 
       &:hover {
         background-color: var(--color-bg-tertiary);
+        color: var(--color-primary);
       }
     }
   }
@@ -135,16 +144,17 @@
 
   .btn-prev,
   .btn-next {
-    border-radius: var(--border-radius-base);
+    border-radius: 8px;
   }
 
   .el-pager li {
-    border-radius: var(--border-radius-base);
+    border-radius: 8px;
     margin: 0 var(--spacing-xs);
 
     &.is-active {
-      background-color: var(--color-primary);
+      background: var(--color-primary-gradient);
       color: white;
+      border: none;
     }
   }
 }
@@ -179,7 +189,7 @@
   .logo {
     font-size: var(--font-size-xl);
     font-weight: var(--font-weight-bold);
-    color: var(--color-primary);
+    color: #1a1a1a;
     margin-right: var(--spacing-xl);
   }
 
@@ -221,13 +231,13 @@
   background-color: var(--color-bg-primary);
   padding: var(--spacing-lg);
   margin-bottom: var(--spacing-lg);
-  border-radius: var(--border-radius-large);
+  border-radius: 12px;
   box-shadow: var(--shadow-light);
 
   .title {
     font-size: var(--font-size-2xl);
     font-weight: var(--font-weight-semibold);
-    color: var(--color-text-primary);
+    color: #1a1a1a;
     margin-bottom: var(--spacing-sm);
   }
 
@@ -238,7 +248,7 @@
 
 .content-card {
   background-color: var(--color-bg-primary);
-  border-radius: var(--border-radius-large);
+  border-radius: 12px;
   box-shadow: var(--shadow-light);
   padding: var(--spacing-lg);
   margin-bottom: var(--spacing-lg);
@@ -251,7 +261,7 @@
   .section-title {
     font-size: var(--font-size-lg);
     font-weight: var(--font-weight-semibold);
-    color: var(--color-text-primary);
+    color: #1a1a1a;
     margin-bottom: var(--spacing-md);
     padding-bottom: var(--spacing-sm);
     border-bottom: 2px solid var(--color-primary);

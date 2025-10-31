@@ -7,7 +7,12 @@ import AppLayout from '@/layouts/AppLayout.vue'
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    redirect: '/app/dashboard',
+    name: 'Landing',
+    component: () => import('@/views/LandingView.vue'),
+    meta: {
+      title: '首页',
+      requiresAuth: false,
+    },
   },
   {
     path: '/login',
@@ -256,10 +261,17 @@ router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore()
 
   // 设置页面标题
-  if (to.meta?.title) {
-    document.title = `${to.meta.title} - 专利服务平台`
+  const titleKey = to.meta?.title
+  if (titleKey) {
+    // 如果是字符串,可能是翻译key或直接的标题
+    if (typeof titleKey === 'string') {
+      document.title =
+        titleKey === '首页' || titleKey === 'Home'
+          ? 'PatentPro - 智能化专利服务平台'
+          : `${titleKey} - 专利服务平台`
+    }
   } else {
-    document.title = '专利服务平台'
+    document.title = 'PatentPro - 专利服务平台'
   }
 
   // 检查是否需要认证

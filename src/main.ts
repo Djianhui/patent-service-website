@@ -1,4 +1,5 @@
 import './assets/styles/index.scss'
+import 'flag-icons/css/flag-icons.min.css'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'

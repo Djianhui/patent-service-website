@@ -21,6 +21,7 @@
       <!-- 语言切换 -->
       <el-dropdown @command="handleLanguageChange">
         <el-button text>
+          <span :class="`fi fi-${getFlagCode(currentLocale)}`" class="flag-icon-round"></span>
           {{ $t('settings.language') }}
           <el-icon class="dropdown-icon">
             <ArrowDown />
@@ -30,6 +31,7 @@
           <el-dropdown-menu>
             <el-dropdown-item v-for="lang in SUPPORT_LOCALES" :key="lang" :command="lang"
               :disabled="currentLocale === lang">
+              <span :class="`fi fi-${getFlagCode(lang)}`" class="flag-icon-round"></span>
               {{ getLocaleName(lang) }}
             </el-dropdown-item>
           </el-dropdown-menu>
@@ -143,6 +145,48 @@ const { locale, t } = useI18n()
 const showNotifications = ref(false)
 const notifications = ref<NotificationMessage[]>([])
 const currentLocale = computed(() => locale.value)
+
+// 国旗图标映射
+const flagMap: Record<string, string> = {
+  'zh-CN': '🇨🇳',
+  'en-US': '🇺🇸',
+  'ja-JP': '🇯🇵',
+  'de-DE': '🇩🇪',
+  'fr-FR': '🇫🇷',
+  'ru-RU': '🇷🇺',
+  'ar-SA': '🇸🇦',
+}
+
+// 国家代码映射
+const flagTextMap: Record<string, string> = {
+  'zh-CN': 'CN',
+  'en-US': 'US',
+  'ja-JP': 'JP',
+  'de-DE': 'DE',
+  'fr-FR': 'FR',
+  'ru-RU': 'RU',
+  'ar-SA': 'SA',
+}
+
+const currentLanguageFlag = computed(() => flagMap[locale.value] || '🇺🇸')
+
+const getFlagIcon = (lang: string) => {
+  return flagMap[lang] || '🇺🇸'
+}
+
+// 获取国旗代码
+const getFlagCode = (lang: string) => {
+  const codeMap: Record<string, string> = {
+    'zh-CN': 'cn',
+    'en-US': 'us',
+    'ja-JP': 'jp',
+    'de-DE': 'de',
+    'fr-FR': 'fr',
+    'ru-RU': 'ru',
+    'ar-SA': 'sa',
+  }
+  return codeMap[lang] || 'us'
+}
 
 // 导入 SUPPORT_LOCALES 和 getLocaleName 以供模板使用
 const supportedLocales = SUPPORT_LOCALES
@@ -362,7 +406,7 @@ const connectSSE = (userId: string | number) => {
       gap: var(--spacing-sm);
       font-size: var(--font-size-lg);
       font-weight: var(--font-weight-semibold);
-      color: var(--color-primary);
+      color: #1a1a1a;
 
       .logo-icon {
         width: 24px;
@@ -395,6 +439,26 @@ const connectSSE = (userId: string | number) => {
     display: flex;
     align-items: center;
     gap: var(--spacing-md);
+
+    .flag-icon-round {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      overflow: hidden;
+      display: inline-block;
+      background-size: cover;
+      background-position: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      margin-right: 6px;
+      flex-shrink: 0;
+    }
+
+    :deep(.el-dropdown-menu__item) {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 16px;
+    }
 
     .notification-badge {
       :deep(.el-badge__content) {
@@ -462,7 +526,7 @@ const connectSSE = (userId: string | number) => {
       gap: var(--spacing-sm);
 
       &.unread {
-        background-color: rgba(24, 144, 255, 0.05);
+        background-color: rgba(102, 126, 234, 0.05);
         border-left: 3px solid var(--color-primary);
       }
 

@@ -92,6 +92,11 @@ export default {
     professionalPlatform: 'プロフェッショナルプラットフォーム',
     oneStopService: 'ワンストップ特許サービス',
     smartSearch: 'スマート検索',
+    smartSearchDesc: '世界中の特許文献をスマート検索',
+    threeAnalysisDesc: '特許の新規性、創造性、実用性分析',
+    patentDraftDesc: 'AI支援による特許申請書類の生成',
+    techReportDesc: '技術ソリューションの特許性分析レポート',
+    defenseSupportDesc: '特許防御戦略とケースサポート',
     // 登録ページ
     userRegister: 'ユーザー登録',
     registerPrompt: 'アカウントを作成',
@@ -291,5 +296,197 @@ export default {
     selectDeadline: '期限を選択',
     cancel: 'キャンセル',
     confirm: '確認',
+  },
+  landing: {
+    brand: 'PatentPro',
+    nav: {
+      features: '機能',
+      pricing: '料金',
+      about: '会社情報',
+      contact: 'お問い合わせ',
+    },
+    hero: {
+      title: 'インテリジェント特許サービスをシンプルに',
+      subtitle:
+        'AI駆動の専門的な特許プラットフォーム。特許検索、分析、作成、防御のワンストップサービスで知的財産を保護',
+      getStarted: '今すぐ始める',
+      viewDemo: 'デモを見る',
+      stats: {
+        users: 'アクティブユーザー',
+        patents: '処理済み特許',
+        satisfaction: '満足度',
+      },
+      floatingCards: {
+        techReport: '技術レポート',
+        patentSearch: '特許検索',
+        patentDraft: '特許草案',
+      },
+    },
+    services: {
+      title: 'プロフェッショナルな知的財産ソリューション',
+      subtitle: '企業と個人のための包括的な特許サービス',
+      intelligentAnalysis: {
+        title: 'インテリジェント分析プラットフォーム',
+        description: 'AIベースの特許分析と評価システム',
+      },
+      globalSearch: {
+        title: 'グローバル特許検索',
+        description: '多国籍特許データベースをカバーする検索サービス',
+      },
+      patentDraft: {
+        title: '特許作成ツール',
+        description: 'AI支援による専門文書生成システム',
+      },
+      threeAnalysis: {
+        title: '三性分析サービス',
+        description: '新規性、創造性、実用性の専門評価',
+      },
+      techReport: {
+        title: '技術レポート生成',
+        description: 'インテリジェントな技術ソリューション分析レポート',
+      },
+      defenseSupport: {
+        title: '防御サポート',
+        description: '特許申請防御戦略と文書サポート',
+      },
+    },
+    stats: {
+      title: 'データ駆動型特許サービス',
+      subtitle: '先進的なデータ分析技術で正確な特許情報を提供',
+      patentDatabase: '特許データベース',
+      successCases: '成功事例',
+      customerSatisfaction: '顧客満足度',
+    },
+    features: {
+      title: 'すべてのニーズに対応する強力な機能',
+      subtitle: '検索から作成、分析から防御まで、包括的な特許サービスソリューション',
+      items: {
+        techReport: {
+          title: '技術ソリューションレポート',
+          desc: '技術ソリューションを知的に分析し、専門的な特許性分析レポートを生成',
+        },
+        patentSearch: {
+          title: 'インテリジェント特許検索',
+          desc: '大規模な特許データベースとスマート検索アルゴリズム',
+        },
+        patentDraft: { title: 'インテリジェント特許作成', desc: 'AI支援による特許申請書類の作成' },
+        threeAnalysis: { title: '三性分析', desc: '特許の新規性、創造性、実用性の専門的評価' },
+        defenseSupport: { title: '防御サポート', desc: '特許防御戦略の提案とケースサポート' },
+        aiPowered: {
+          title: 'AIアシスタント',
+          desc: '先進的な人工知能技術によるインテリジェントサービス',
+        },
+      },
+    },
+    pricing: {
+      title: 'あなたに最適なプランを選択',
+      subtitle: '個人と企業の異なるニーズに対応する柔軟な料金プラン',
+      popular: '人気',
+      perMonth: '/月',
+      choosePlan: 'プランを選択',
+      plans: {
+        free: {
+          name: '無料',
+          features: {
+            searches: '月5回の検索',
+            reports: '月2件のレポート',
+            support: 'コミュニティサポート',
+          },
+        },
+        pro: {
+          name: 'プロフェッショナル',
+          features: {
+            searches: '無制限検索',
+            reports: '月20件のレポート',
+            drafts: '月10件の草案',
+            support: '優先サポート',
+            api: 'APIアクセス',
+          },
+        },
+        enterprise: {
+          name: 'エンタープライズ',
+          features: {
+            unlimited: '無制限使用',
+            team: 'チームコラボレーション',
+            custom: 'カスタマイズサービス',
+            priority: '専属サポート',
+            dedicated: '専用サーバー',
+          },
+        },
+      },
+    },
+    cta: {
+      title: '準備はできましたか？',
+      subtitle: '今すぐ登録してインテリジェント特許サービスを体験',
+      startNow: '今すぐ始める',
+    },
+    about: {
+      title: '会社情報',
+      subtitle: 'グローバルイノベーターに専門的な知的財産サービスを提供',
+      mission: {
+        title: '私たちの使命',
+        content:
+          'AIとビッグデータ技術を通じて、特許サービスをよりスマートで効率的で便利なものにし、イノベーターが創造的価値を保護し実現することを支援します。',
+      },
+      vision: {
+        title: '私たちのビジョン',
+        content:
+          'イノベーションの発展に強力な知的財産保護サポートを提供する、世界有数のインテリジェント特許サービスプラットフォームになること。',
+      },
+      values: {
+        title: 'コアバリュー',
+        innovation: 'イノベーション主導',
+        innovationDesc: '継続的な技術革新、最先端のソリューション提供',
+        professional: 'プロフェッショナルサービス',
+        professionalDesc: '経験豊富な専門家チーム、信頼性高い',
+        efficiency: '高効率で便利',
+        efficiencyDesc: 'AIを活用し、サービス効率を向上',
+        integrity: '誠実第一',
+        integrityDesc: '職業個理を守り、顧客の利益を保護',
+      },
+    },
+    contact: {
+      title: 'お問い合わせ',
+      subtitle: 'いつでもお手伝いいたします',
+      info: {
+        title: '連絡先',
+        address: '住所',
+        addressContent:
+          '449B BUKIT BATOK WEST AVENUE 9, #18-82, WEST VALLEY @ BUKIT BATOK, SINGAPORE (652449)',
+        email: 'メール',
+        emailContent: 'ccsuzc@gmail.com',
+        phone: '電話',
+        phoneContent: '+86 152-7318-4384',
+        hours: '営業時間',
+        hoursContent: '月曜日から金曜日 9:00-18:00',
+      },
+      form: {
+        title: 'オンラインお問い合わせ',
+        name: 'お名前',
+        namePlaceholder: 'お名前を入力してください',
+        email: 'メール',
+        emailPlaceholder: 'メールアドレスを入力してください',
+        subject: '件名',
+        subjectPlaceholder: '件名を入力してください',
+        message: 'メッセージ',
+        messagePlaceholder: 'メッセージ内容を入力してください',
+        submit: '送信',
+      },
+      social: {
+        title: 'フォローする',
+      },
+    },
+    footer: {
+      description:
+        'グローバルイノベーターに知的財産保護ソリューションを提供する専門的なプラットフォーム',
+      product: '製品',
+      company: '会社',
+      legal: '法務',
+      api: 'APIドキュメント',
+      blog: 'ブログ',
+      privacy: 'プライバシーポリシー',
+      terms: '利用規約',
+      copyright: 'All rights reserved',
+    },
   },
 }

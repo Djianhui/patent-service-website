@@ -407,13 +407,14 @@ onMounted(async () => {
           height: 44px;
           padding: 0 20px;
           font-weight: 600;
-          border-radius: 8px;
-          background-color: #3b82f6;
-          border-color: #3b82f6;
+          border-radius: 12px;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          border: none;
 
           &:hover {
-            background-color: #2563eb;
-            border-color: #2563eb;
+            background: linear-gradient(135deg, #5568d3 0%, #6a4093 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
           }
         }
       }
@@ -449,7 +450,7 @@ onMounted(async () => {
         font-size: 18px;
 
         .guide-icon {
-          color: #3b82f6;
+          color: #667eea;
           font-size: 20px;
         }
       }
@@ -487,15 +488,15 @@ onMounted(async () => {
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
 
             &:hover {
-              border-color: #3b82f6;
-              box-shadow: 0 6px 12px rgba(59, 130, 246, 0.15);
+              border-color: #667eea;
+              box-shadow: 0 6px 12px rgba(102, 126, 234, 0.15);
               transform: translateY(-3px);
             }
 
             .step-number {
               width: 36px;
               height: 36px;
-              background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+              background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
               color: white;
               border-radius: 50%;
               display: flex;
@@ -588,7 +589,7 @@ onMounted(async () => {
     .section-title {
       font-size: 24px;
       font-weight: 700;
-      color: #2c3e50;
+      color: #1a1a1a;
       margin-bottom: 24px;
       text-align: center;
     }
@@ -617,7 +618,7 @@ onMounted(async () => {
         &:hover {
           transform: translateY(-4px);
           box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-          border-color: #3b82f6;
+          border-color: #667eea;
         }
 
         .tool-icon {
@@ -639,7 +640,7 @@ onMounted(async () => {
           .tool-title {
             font-size: 18px;
             font-weight: 600;
-            color: #2c3e50;
+            color: #1a1a1a;
             margin-bottom: 8px;
           }
 
@@ -732,15 +733,15 @@ onMounted(async () => {
             flex-shrink: 0;
 
             &.report {
-              background-color: #3b82f6;
+              background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             }
 
             &.search {
-              background-color: #10b981;
+              background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             }
 
             &.analysis {
-              background-color: #f59e0b;
+              background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
             }
           }
 
@@ -749,13 +750,13 @@ onMounted(async () => {
 
             .activity-title {
               font-weight: 600;
-              color: #2c3e50;
+              color: #1a1a1a;
               margin-bottom: 6px;
               font-size: 15px;
             }
 
             .activity-desc {
-              color: #6c757d;
+              color: #666;
               font-size: 14px;
               margin-bottom: 6px;
               line-height: 1.5;
@@ -805,7 +806,7 @@ onMounted(async () => {
 
             .todo-title {
               font-weight: 500;
-              color: #2c3e50;
+              color: #1a1a1a;
               margin-bottom: 6px;
               font-size: 15px;
             }

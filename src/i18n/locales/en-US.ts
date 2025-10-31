@@ -304,4 +304,218 @@ export default {
     cancel: 'Cancel',
     confirm: 'Confirm',
   },
+  landing: {
+    brand: 'PatentPro',
+    nav: {
+      features: 'Features',
+      pricing: 'Pricing',
+      about: 'About',
+      contact: 'Contact',
+    },
+    hero: {
+      title: 'Intelligent Patent Services Made Simple',
+      subtitle:
+        'Professional AI-powered patent platform providing one-stop services for patent search, analysis, writing, and defense to protect your intellectual property',
+      getStarted: 'Get Started',
+      viewDemo: 'View Demo',
+      stats: {
+        users: 'Active Users',
+        patents: 'Patents Processed',
+        satisfaction: 'Satisfaction',
+      },
+      floatingCards: {
+        techReport: 'Tech Report',
+        patentSearch: 'Patent Search',
+        patentDraft: 'Patent Draft',
+      },
+    },
+    services: {
+      title: 'Professional Intellectual Property Solutions',
+      subtitle: 'Comprehensive patent services for businesses and individuals',
+      intelligentAnalysis: {
+        title: 'Intelligent Analysis Platform',
+        description: 'AI-based patent analysis and evaluation system',
+      },
+      globalSearch: {
+        title: 'Global Patent Search',
+        description: 'Search service covering multi-national patent databases',
+      },
+      patentDraft: {
+        title: 'Patent Writing Tool',
+        description: 'AI-assisted professional document generation system',
+      },
+      threeAnalysis: {
+        title: 'Three Properties Analysis',
+        description: 'Professional evaluation of novelty, creativity, and practicality',
+      },
+      techReport: {
+        title: 'Technical Report Generation',
+        description: 'Intelligent technical solution analysis reports',
+      },
+      defenseSupport: {
+        title: 'Defense Support',
+        description: 'Patent application defense strategy and document support',
+      },
+    },
+    stats: {
+      title: 'Data-Driven Patent Services',
+      subtitle: 'Providing accurate patent intelligence through advanced data analytics',
+      patentDatabase: 'Patent Database',
+      successCases: 'Success Cases',
+      customerSatisfaction: 'Customer Satisfaction',
+    },
+    features: {
+      title: 'Powerful Features for All Your Needs',
+      subtitle:
+        'From search to writing, from analysis to defense, we provide comprehensive patent service solutions',
+      items: {
+        techReport: {
+          title: 'Technical Solution Report',
+          desc: 'Intelligently analyze technical solutions and generate professional patentability analysis reports to provide scientific basis for your patent applications',
+        },
+        patentSearch: {
+          title: 'Intelligent Patent Search',
+          desc: 'Massive patent database with intelligent search algorithms to quickly locate relevant patent documents and provide comprehensive search services',
+        },
+        patentDraft: {
+          title: 'Intelligent Patent Writing',
+          desc: 'AI-assisted patent application document writing, automatically generating claims and specifications to improve writing efficiency',
+        },
+        threeAnalysis: {
+          title: 'Three Analysis',
+          desc: 'Professional evaluation of patent novelty, creativity, and practicality to provide scientific guidance for your patent applications',
+        },
+        defenseSupport: {
+          title: 'Defense Support',
+          desc: 'Provide patent defense strategy suggestions and case support to help you respond to various examination opinions',
+        },
+        aiPowered: {
+          title: 'AI Assistant',
+          desc: 'Advanced artificial intelligence technology providing intelligent and automated patent service experience',
+        },
+      },
+    },
+    pricing: {
+      title: 'Choose the Right Plan for You',
+      subtitle: 'Flexible pricing plans to meet different needs of individuals and enterprises',
+      popular: 'Most Popular',
+      perMonth: '/month',
+      choosePlan: 'Choose Plan',
+      plans: {
+        free: {
+          name: 'Free',
+          features: {
+            searches: '5 searches per month',
+            reports: '2 reports per month',
+            support: 'Community support',
+          },
+        },
+        pro: {
+          name: 'Professional',
+          features: {
+            searches: 'Unlimited searches',
+            reports: '20 reports per month',
+            drafts: '10 drafts per month',
+            support: 'Priority customer support',
+            api: 'API access',
+          },
+        },
+        enterprise: {
+          name: 'Enterprise',
+          features: {
+            unlimited: 'Unlimited usage',
+            team: 'Team collaboration',
+            custom: 'Customized services',
+            priority: 'Dedicated customer service',
+            dedicated: 'Dedicated server',
+          },
+        },
+      },
+    },
+    cta: {
+      title: 'Ready to Get Started?',
+      subtitle: 'Register now and experience intelligent patent services',
+      startNow: 'Start Now',
+    },
+    footer: {
+      description:
+        'Professional intelligent patent service platform providing one-stop intellectual property protection solutions for global innovators',
+      product: 'Product',
+      company: 'Company',
+      legal: 'Legal',
+      api: 'API Documentation',
+      blog: 'Blog',
+      privacy: 'Privacy Policy',
+      terms: 'Terms of Service',
+      copyright: 'All rights reserved',
+    },
+    about: {
+      title: 'About Us',
+      subtitle:
+        'Dedicated to providing professional intellectual property services for global innovators',
+      mission: {
+        title: 'Our Mission',
+        content:
+          'Through AI and big data technology, make patent services smarter, more efficient, and convenient, helping innovators protect and realize their creative value.',
+      },
+      vision: {
+        title: 'Our Vision',
+        content:
+          "To become the world's leading intelligent patent service platform, providing strong intellectual property protection support for innovation.",
+      },
+      values: {
+        title: 'Core Values',
+        innovation: 'Innovation Driven',
+        innovationDesc: 'Continuous technological innovation, providing cutting-edge solutions',
+        professional: 'Professional Service',
+        professionalDesc: 'Experienced expert team, professional and reliable',
+        efficiency: 'Efficient & Convenient',
+        efficiencyDesc: 'AI-powered, improving service efficiency',
+        integrity: 'Integrity First',
+        integrityDesc: 'Uphold professional ethics, protect client interests',
+      },
+      team: {
+        title: 'Professional Team',
+        description:
+          'We have a professional team of patent agents, technical experts, and AI engineers dedicated to providing the best service to our clients.',
+      },
+    },
+    contact: {
+      title: 'Contact Us',
+      subtitle: 'We are always ready to help you',
+      info: {
+        title: 'Contact Information',
+        address: 'Address',
+        addressContent:
+          '449B BUKIT BATOK WEST AVENUE 9, #18-82, WEST VALLEY @ BUKIT BATOK, SINGAPORE (652449)',
+        email: 'Email',
+        emailContent: 'ccsuzc@gmail.com',
+        phone: 'Phone',
+        phoneContent: '+86 152-7318-4384',
+        hours: 'Business Hours',
+        hoursContent: 'Monday to Friday 9:00-18:00',
+      },
+      form: {
+        title: 'Online Inquiry',
+        name: 'Name',
+        namePlaceholder: 'Please enter your name',
+        email: 'Email',
+        emailPlaceholder: 'Please enter your email',
+        subject: 'Subject',
+        subjectPlaceholder: 'Please enter the subject',
+        message: 'Message',
+        messagePlaceholder: 'Please enter your message',
+        submit: 'Send Message',
+        sending: 'Sending...',
+        success: 'Message sent successfully, we will reply to you soon!',
+        error: 'Failed to send, please try again later',
+      },
+      social: {
+        title: 'Follow Us',
+        wechat: 'WeChat',
+        weibo: 'Weibo',
+        linkedin: 'LinkedIn',
+      },
+    },
+  },
 }

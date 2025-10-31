@@ -92,6 +92,11 @@ export default {
     professionalPlatform: 'المنصة المهنية',
     oneStopService: 'خدمة البراءات الشاملة',
     smartSearch: 'البحث الذكي',
+    smartSearchDesc: 'البحث الذكي في أدبيات البراءات العالمية',
+    threeAnalysisDesc: 'تحليل الجدة والإبداع والعملية للبراءة',
+    patentDraftDesc: 'إنشاء مستندات طلب البراءة بمساعدة الذكاء الاصطناعي',
+    techReportDesc: 'تقرير تحليل إمكانية الحصول على براءة للحل التقني',
+    defenseSupportDesc: 'استراتيجيات الدفاع عن البراءات ودعم الحالات',
     // صفحة التسجيل
     userRegister: 'تسجيل المستخدم',
     registerPrompt: 'أنشئ حسابك',
@@ -290,5 +295,193 @@ export default {
     selectDeadline: 'اختر الموعد النهائي',
     cancel: 'إلغاء',
     confirm: 'تأكيد',
+  },
+  landing: {
+    brand: 'PatentPro',
+    nav: { features: 'المميزات', pricing: 'الأسعار', about: 'من نحن', contact: 'اتصل بنا' },
+    hero: {
+      title: 'خدمات براءات اختراع ذكية مبسطة',
+      subtitle:
+        'منصة احترافية مدعومة بالذكاء الاصطناعي للبحث والتحليل والكتابة والدفاع عن البراءات',
+      getStarted: 'ابدأ الآن',
+      viewDemo: 'شاهد العرض',
+      stats: { users: 'المستخدمون النشطون', patents: 'البراءات المعالجة', satisfaction: 'الرضا' },
+      floatingCards: {
+        techReport: 'تقرير تقني',
+        patentSearch: 'بحث البراءات',
+        patentDraft: 'مسودة براءة',
+      },
+    },
+    services: {
+      title: 'حلول محترفة للملكية الفكرية',
+      subtitle: 'خدمات براءات شاملة للأعمال والأفراد',
+      intelligentAnalysis: {
+        title: 'منصة التحليل الذكي',
+        description: 'نظام تحليل وتقييم البراءات القائم على الذكاء الاصطناعي',
+      },
+      globalSearch: {
+        title: 'بحث عالمي عن البراءات',
+        description: 'خدمة البحث التي تغطي قواعد بيانات البراءات متعددة الجنسيات',
+      },
+      patentDraft: {
+        title: 'أداة كتابة البراءات',
+        description: 'نظام إنشاء وثائق محترفة بمساعدة الذكاء الاصطناعي',
+      },
+      threeAnalysis: {
+        title: 'خدمة التحليل الثلاثي',
+        description: 'تقييم محترف للجدة والإبداع والعملية',
+      },
+      techReport: {
+        title: 'إنشاء التقارير التقنية',
+        description: 'تقارير تحليل الحلول التقنية الذكية',
+      },
+      defenseSupport: {
+        title: 'دعم الدفاع',
+        description: 'استراتيجية الدفاع ودعم المستندات لطلبات البراءات',
+      },
+    },
+    stats: {
+      title: 'خدمات براءات قائمة على البيانات',
+      subtitle: 'معلومات براءات دقيقة من خلال تحليلات بيانات متقدمة',
+      patentDatabase: 'قاعدة بيانات البراءات',
+      successCases: 'حالات نجاح',
+      customerSatisfaction: 'رضا العملاء',
+    },
+    features: {
+      title: 'ميزات قوية لجميع احتياجاتك',
+      subtitle: 'من البحث إلى الكتابة، من التحليل إلى الدفاع - حلول شاملة',
+      items: {
+        techReport: {
+          title: 'تقرير الحل التقني',
+          desc: 'تحليل ذكي وتقارير احترافية حول إمكانية الحصول على براءة',
+        },
+        patentSearch: {
+          title: 'البحث الذكي عن البراءات',
+          desc: 'قاعدة بيانات ضخمة مع خوارزميات بحث ذكية',
+        },
+        patentDraft: {
+          title: 'كتابة البراءات الذكية',
+          desc: 'كتابة طلبات البراءات بمساعدة الذكاء الاصطناعي',
+        },
+        threeAnalysis: { title: 'التحليل الثلاثي', desc: 'تقييم احترافي للجدة والإبداع والعملية' },
+        defenseSupport: {
+          title: 'دعم الدفاع',
+          desc: 'استراتيجيات الدفاع عن البراءات ودعم القضايا',
+        },
+        aiPowered: {
+          title: 'مساعد الذكاء الاصطناعي',
+          desc: 'تقنية ذكاء اصطناعي متقدمة للخدمات الذكية',
+        },
+      },
+    },
+    pricing: {
+      title: 'اختر الخطة المناسبة لك',
+      subtitle: 'خطط تسعير مرنة للاحتياجات الفردية والمؤسسية',
+      popular: 'الأكثر شعبية',
+      perMonth: '/شهر',
+      choosePlan: 'اختر الخطة',
+      plans: {
+        free: {
+          name: 'مجاني',
+          features: {
+            searches: '5 عمليات بحث/شهر',
+            reports: 'تقريران/شهر',
+            support: 'دعم المجتمع',
+          },
+        },
+        pro: {
+          name: 'احترافي',
+          features: {
+            searches: 'بحث غير محدود',
+            reports: '20 تقرير/شهر',
+            drafts: '10 مسودات/شهر',
+            support: 'دعم ذو أولوية',
+            api: 'الوصول إلى API',
+          },
+        },
+        enterprise: {
+          name: 'المؤسسات',
+          features: {
+            unlimited: 'استخدام غير محدود',
+            team: 'تعاون الفريق',
+            custom: 'خدمات مخصصة',
+            priority: 'دعم مخصص',
+            dedicated: 'خادم مخصص',
+          },
+        },
+      },
+    },
+    cta: {
+      title: 'هل أنت مستعد للبدء؟',
+      subtitle: 'سجل الآن وجرب خدمات البراءات الذكية',
+      startNow: 'ابدأ الآن',
+    },
+    about: {
+      title: 'من نحن',
+      subtitle: 'خدمات محترفة للملكية الفكرية للمبتكرين على مستوى العالم',
+      mission: {
+        title: 'مهمتنا',
+        content:
+          'من خلال الذكاء الاصطناعي وتكنولوجيا البيانات الضخمة، جعل خدمات البراءات أكثر ذكاءً وكفاءة وراحة، ومساعدة المبتكرين على حماية وتحقيق قيمتهم الإبداعية.',
+      },
+      vision: {
+        title: 'رؤيتنا',
+        content:
+          'أن نصبح منصة خدمات البراءات الذكية الرائدة على مستوى العالم، وتقديم دعم قوي لحماية الملكية الفكرية للابتكار.',
+      },
+      values: {
+        title: 'القيم الأساسية',
+        innovation: 'الابتكار',
+        innovationDesc: 'الابتكار التكنولوجي المستمر، حلول متقدمة',
+        professional: 'خدمة محترفة',
+        professionalDesc: 'فريق خبراء ذوي خبرة، محترف وموثوق',
+        efficiency: 'فعال ومريح',
+        efficiencyDesc: 'مدعوم بالذكاء الاصطناعي، تحسين كفاءة الخدمة',
+        integrity: 'النزاهة أولاً',
+        integrityDesc: 'الالتزام بالأخلاق المهنية، حماية مصالح العملاء',
+      },
+    },
+    contact: {
+      title: 'اتصل بنا',
+      subtitle: 'نحن دائمًا مستعدون لمساعدتك',
+      info: {
+        title: 'معلومات الاتصال',
+        address: 'العنوان',
+        addressContent:
+          '449B BUKIT BATOK WEST AVENUE 9, #18-82, WEST VALLEY @ BUKIT BATOK, SINGAPORE (652449)',
+        email: 'البريد الإلكتروني',
+        emailContent: 'ccsuzc@gmail.com',
+        phone: 'الهاتف',
+        phoneContent: '+86 152-7318-4384',
+        hours: 'ساعات العمل',
+        hoursContent: 'الاثنين إلى الجمعة 9:00-18:00',
+      },
+      form: {
+        title: 'الاستفسار عبر الإنترنت',
+        name: 'الاسم',
+        namePlaceholder: 'يرجى إدخال اسمك',
+        email: 'البريد الإلكتروني',
+        emailPlaceholder: 'يرجى إدخال بريدك الإلكتروني',
+        subject: 'الموضوع',
+        subjectPlaceholder: 'يرجى إدخال الموضوع',
+        message: 'الرسالة',
+        messagePlaceholder: 'يرجى إدخال رسالتك',
+        submit: 'إرسال الرسالة',
+      },
+      social: {
+        title: 'تابعنا',
+      },
+    },
+    footer: {
+      description: 'منصة احترافية توفر حلولاً شاملة لحماية الملكية الفكرية',
+      product: 'المنتج',
+      company: 'الشركة',
+      legal: 'القانونية',
+      api: 'وثائق API',
+      blog: 'المدونة',
+      privacy: 'الخصوصية',
+      terms: 'الشروط',
+      copyright: 'جميع الحقوق محفوظة',
+    },
   },
 }

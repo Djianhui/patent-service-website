@@ -92,6 +92,11 @@ export default {
     professionalPlatform: 'Professionelle Plattform',
     oneStopService: 'Komplett-Patentservice',
     smartSearch: 'Intelligente Suche',
+    smartSearchDesc: 'Intelligente Suche globaler Patentliteratur',
+    threeAnalysisDesc: 'Analyse der Patentnovität, Kreativität und Nützlichkeit',
+    patentDraftDesc: 'KI-gestützte Generierung von Patentanmeldungsunterlagen',
+    techReportDesc: 'Technische Lösungspatentierbarkeitsanalysebericht',
+    defenseSupportDesc: 'Patentverteidigungsstrategien und Fallunterstützung',
     // Registrierungsseite
     userRegister: 'Registrierung',
     registerPrompt: 'Erstellen Sie Ihr Konto',
@@ -292,5 +297,203 @@ export default {
     selectDeadline: 'Frist auswählen',
     cancel: 'Abbrechen',
     confirm: 'Bestätigen',
+  },
+  landing: {
+    brand: 'PatentPro',
+    nav: { features: 'Funktionen', pricing: 'Preise', about: 'Über uns', contact: 'Kontakt' },
+    hero: {
+      title: 'Intelligente Patentdienste leicht gemacht',
+      subtitle:
+        'Professionelle KI-gestützte Patentplattform für Patentsuche, Analyse, Erstellung und Verteidigung',
+      getStarted: 'Jetzt starten',
+      viewDemo: 'Demo ansehen',
+      stats: {
+        users: 'Aktive Nutzer',
+        patents: 'Verarbeitete Patente',
+        satisfaction: 'Zufriedenheit',
+      },
+      floatingCards: {
+        techReport: 'Technischer Bericht',
+        patentSearch: 'Patentsuche',
+        patentDraft: 'Patententwurf',
+      },
+    },
+    services: {
+      title: 'Professionelle Lösungen für geistiges Eigentum',
+      subtitle: 'Umfassende Patentdienste für Unternehmen und Einzelpersonen',
+      intelligentAnalysis: {
+        title: 'Intelligente Analyseplattform',
+        description: 'KI-basierte Patentanalyse und Bewertungssystem',
+      },
+      globalSearch: {
+        title: 'Globale Patentsuche',
+        description: 'Suchdienst mit multinationalen Patentdatenbanken',
+      },
+      patentDraft: {
+        title: 'Patentverfassungstool',
+        description: 'KI-unterstütztes professionelles Dokumentengenerierungssystem',
+      },
+      threeAnalysis: {
+        title: 'Dreifachanalyse-Service',
+        description: 'Professionelle Bewertung von Neuheit, Kreativität und Praktikabilität',
+      },
+      techReport: {
+        title: 'Erstellung technischer Berichte',
+        description: 'Intelligente technische Lösungsanalyseberichte',
+      },
+      defenseSupport: {
+        title: 'Verteidigungsunterstützung',
+        description: 'Patentanmeldungsverteidigungsstrategie und Dokumentenunterstützung',
+      },
+    },
+    stats: {
+      title: 'Datengesteuerte Patentdienste',
+      subtitle: 'Präzise Patentinformationen durch fortschrittliche Datenanalyse',
+      patentDatabase: 'Patentdatenbank',
+      successCases: 'Erfolgsfälle',
+      customerSatisfaction: 'Kundenzufriedenheit',
+    },
+    features: {
+      title: 'Leistungsstarke Funktionen für alle Anforderungen',
+      subtitle:
+        'Von der Suche bis zur Erstellung, von der Analyse bis zur Verteidigung - umfassende Lösungen',
+      items: {
+        techReport: {
+          title: 'Technischer Lösungsbericht',
+          desc: 'Intelligente Analyse und professionelle Patentfähigkeitsberichte',
+        },
+        patentSearch: {
+          title: 'Intelligente Patentsuche',
+          desc: 'Umfangreiche Patentdatenbank mit intelligenten Algorithmen',
+        },
+        patentDraft: {
+          title: 'Intelligente Patentverfassung',
+          desc: 'KI-unterstützte Erstellung von Patentanmeldungen',
+        },
+        threeAnalysis: {
+          title: 'Dreifachanalyse',
+          desc: 'Professionelle Bewertung von Neuheit, Kreativität und Praktikabilität',
+        },
+        defenseSupport: {
+          title: 'Verteidigungsunterstützung',
+          desc: 'Patentverteidigungsstrategien und Fallunterstützung',
+        },
+        aiPowered: {
+          title: 'KI-Assistent',
+          desc: 'Fortschrittliche KI-Technologie für intelligente Services',
+        },
+      },
+    },
+    pricing: {
+      title: 'Wählen Sie den richtigen Plan',
+      subtitle: 'Flexible Preispläne für individuelle und unternehmerische Bedürfnisse',
+      popular: 'Beliebt',
+      perMonth: '/Monat',
+      choosePlan: 'Plan wählen',
+      plans: {
+        free: {
+          name: 'Kostenlos',
+          features: {
+            searches: '5 Suchen/Monat',
+            reports: '2 Berichte/Monat',
+            support: 'Community-Support',
+          },
+        },
+        pro: {
+          name: 'Professional',
+          features: {
+            searches: 'Unbegrenzte Suchen',
+            reports: '20 Berichte/Monat',
+            drafts: '10 Entwürfe/Monat',
+            support: 'Prioritäts-Support',
+            api: 'API-Zugang',
+          },
+        },
+        enterprise: {
+          name: 'Enterprise',
+          features: {
+            unlimited: 'Unbegrenzte Nutzung',
+            team: 'Team-Zusammenarbeit',
+            custom: 'Anpassbare Dienste',
+            priority: 'Dedizierter Support',
+            dedicated: 'Dedizierter Server',
+          },
+        },
+      },
+    },
+    cta: {
+      title: 'Bereit loszulegen?',
+      subtitle: 'Jetzt registrieren und intelligente Patentdienste erleben',
+      startNow: 'Jetzt starten',
+    },
+    about: {
+      title: 'Über uns',
+      subtitle: 'Professionelle geistige Eigentumsdienstleistungen für globale Innovatoren',
+      mission: {
+        title: 'Unsere Mission',
+        content:
+          'Durch KI und Big-Data-Technologie Patentdienste intelligenter, effizienter und bequemer zu machen und Innovatoren zu helfen, ihren kreativen Wert zu schützen und zu realisieren.',
+      },
+      vision: {
+        title: 'Unsere Vision',
+        content:
+          'Die weltweit führende intelligente Patentdienstleistungsplattform zu werden und starke Unterstützung für den Schutz des geistigen Eigentums für Innovation zu bieten.',
+      },
+      values: {
+        title: 'Kernwerte',
+        innovation: 'Innovationsgetrieben',
+        innovationDesc:
+          'Kontinuierliche technologische Innovation, Bereitstellung modernster Lösungen',
+        professional: 'Professioneller Service',
+        professionalDesc: 'Erfahrenes Expertenteam, professionell und zuverlässig',
+        efficiency: 'Effizient & Bequem',
+        efficiencyDesc: 'KI-unterstützt, Verbesserung der Serviceeffizienz',
+        integrity: 'Integrität zuerst',
+        integrityDesc: 'Berufsethik wahren, Kundeninteressen schützen',
+      },
+    },
+    contact: {
+      title: 'Kontaktieren Sie uns',
+      subtitle: 'Wir sind immer bereit, Ihnen zu helfen',
+      info: {
+        title: 'Kontaktinformationen',
+        address: 'Adresse',
+        addressContent:
+          '449B BUKIT BATOK WEST AVENUE 9, #18-82, WEST VALLEY @ BUKIT BATOK, SINGAPORE (652449)',
+        email: 'E-Mail',
+        emailContent: 'ccsuzc@gmail.com',
+        phone: 'Telefon',
+        phoneContent: '+86 152-7318-4384',
+        hours: 'Geschäftszeiten',
+        hoursContent: 'Montag bis Freitag 9:00-18:00',
+      },
+      form: {
+        title: 'Online-Anfrage',
+        name: 'Name',
+        namePlaceholder: 'Bitte geben Sie Ihren Namen ein',
+        email: 'E-Mail',
+        emailPlaceholder: 'Bitte geben Sie Ihre E-Mail ein',
+        subject: 'Betreff',
+        subjectPlaceholder: 'Bitte geben Sie den Betreff ein',
+        message: 'Nachricht',
+        messagePlaceholder: 'Bitte geben Sie Ihre Nachricht ein',
+        submit: 'Nachricht senden',
+      },
+      social: {
+        title: 'Folgen Sie uns',
+      },
+    },
+    footer: {
+      description:
+        'Professionelle Plattform für umfassende Lösungen zum Schutz des geistigen Eigentums',
+      product: 'Produkt',
+      company: 'Unternehmen',
+      legal: 'Rechtliches',
+      api: 'API-Dokumentation',
+      blog: 'Blog',
+      privacy: 'Datenschutz',
+      terms: 'Nutzungsbedingungen',
+      copyright: 'Alle Rechte vorbehalten',
+    },
   },
 }

@@ -93,6 +93,11 @@ export default {
     professionalPlatform: 'Plateforme professionnelle',
     oneStopService: 'Service complet de brevets',
     smartSearch: 'Recherche intelligente',
+    smartSearchDesc: 'Recherche intelligente de la littérature des brevets mondiaux',
+    threeAnalysisDesc: 'Analyse de la nouveauté, créativité et utilité des brevets',
+    patentDraftDesc: 'Génération assistée par IA de documents de demande de brevet',
+    techReportDesc: "Rapport d'analyse de brevetabilité de solution technique",
+    defenseSupportDesc: 'Stratégies de défense de brevets et support de cas',
     // Page d'inscription
     userRegister: 'Inscription',
     registerPrompt: 'Créez votre compte',
@@ -293,5 +298,206 @@ export default {
     selectDeadline: 'Sélectionner la date limite',
     cancel: 'Annuler',
     confirm: 'Confirmer',
+  },
+  landing: {
+    brand: 'PatentPro',
+    nav: {
+      features: 'Fonctionnalités',
+      pricing: 'Tarification',
+      about: 'À propos',
+      contact: 'Contact',
+    },
+    hero: {
+      title: 'Services de brevets intelligents simplifiés',
+      subtitle:
+        'Plateforme professionnelle alimentée par IA pour la recherche, analyse, rédaction et défense de brevets',
+      getStarted: 'Commencer',
+      viewDemo: 'Voir la démo',
+      stats: {
+        users: 'Utilisateurs actifs',
+        patents: 'Brevets traités',
+        satisfaction: 'Satisfaction',
+      },
+      floatingCards: {
+        techReport: 'Rapport technique',
+        patentSearch: 'Recherche de brevets',
+        patentDraft: 'Brouillon de brevet',
+      },
+    },
+    services: {
+      title: 'Solutions professionnelles en propriété intellectuelle',
+      subtitle: 'Services complets de brevets pour les entreprises et les particuliers',
+      intelligentAnalysis: {
+        title: "Plateforme d'analyse intelligente",
+        description: "Système d'analyse et d'évaluation de brevets basé sur l'IA",
+      },
+      globalSearch: {
+        title: 'Recherche mondiale de brevets',
+        description: 'Service de recherche couvrant des bases de données multinationales',
+      },
+      patentDraft: {
+        title: 'Outil de rédaction de brevets',
+        description: 'Système de génération de documents professionnels assisté par IA',
+      },
+      threeAnalysis: {
+        title: "Service d'analyse triple",
+        description: 'Évaluation professionnelle de la nouveauté, créativité et praticabilité',
+      },
+      techReport: {
+        title: 'Génération de rapports techniques',
+        description: "Rapports d'analyse de solutions techniques intelligents",
+      },
+      defenseSupport: {
+        title: 'Support de défense',
+        description: 'Stratégie de défense et support documentaire pour demandes de brevets',
+      },
+    },
+    stats: {
+      title: 'Services de brevets pilotés par les données',
+      subtitle: "Informations précises sur les brevets grâce à l'analyse avancée des données",
+      patentDatabase: 'Base de données de brevets',
+      successCases: 'Cas de succès',
+      customerSatisfaction: 'Satisfaction client',
+    },
+    features: {
+      title: 'Fonctionnalités puissantes pour tous vos besoins',
+      subtitle: "De la recherche à la rédaction, de l'analyse à la défense - solutions complètes",
+      items: {
+        techReport: {
+          title: 'Rapport de solution technique',
+          desc: 'Analyse intelligente et rapports professionnels de brevetabilité',
+        },
+        patentSearch: {
+          title: 'Recherche intelligente de brevets',
+          desc: 'Base de données massive avec algorithmes de recherche intelligents',
+        },
+        patentDraft: {
+          title: 'Rédaction intelligente de brevets',
+          desc: 'Rédaction assistée par IA de documents de demande de brevet',
+        },
+        threeAnalysis: {
+          title: 'Triple analyse',
+          desc: 'Évaluation professionnelle de la nouveauté, créativité et praticabilité',
+        },
+        defenseSupport: {
+          title: 'Support de défense',
+          desc: 'Stratégies de défense de brevets et support de cas',
+        },
+        aiPowered: {
+          title: 'Assistant IA',
+          desc: 'Technologie IA avancée pour services intelligents',
+        },
+      },
+    },
+    pricing: {
+      title: 'Choisissez le plan qui vous convient',
+      subtitle: "Plans tarifaires flexibles pour les besoins individuels et d'entreprise",
+      popular: 'Populaire',
+      perMonth: '/mois',
+      choosePlan: 'Choisir le plan',
+      plans: {
+        free: {
+          name: 'Gratuit',
+          features: {
+            searches: '5 recherches/mois',
+            reports: '2 rapports/mois',
+            support: 'Support communautaire',
+          },
+        },
+        pro: {
+          name: 'Professionnel',
+          features: {
+            searches: 'Recherches illimitées',
+            reports: '20 rapports/mois',
+            drafts: '10 brouillons/mois',
+            support: 'Support prioritaire',
+            api: 'Accès API',
+          },
+        },
+        enterprise: {
+          name: 'Entreprise',
+          features: {
+            unlimited: 'Utilisation illimitée',
+            team: "Collaboration d'équipe",
+            custom: 'Services personnalisés',
+            priority: 'Support dédié',
+            dedicated: 'Serveur dédié',
+          },
+        },
+      },
+    },
+    cta: {
+      title: 'Prêt à commencer?',
+      subtitle: 'Inscrivez-vous maintenant et découvrez les services de brevets intelligents',
+      startNow: 'Commencer maintenant',
+    },
+    about: {
+      title: 'À propos de nous',
+      subtitle: 'Services professionnels de propriété intellectuelle pour les innovateurs mondiaux',
+      mission: {
+        title: 'Notre mission',
+        content:
+          "Grâce à l'IA et à la technologie du big data, rendre les services de brevets plus intelligents, efficaces et pratiques, aidant les innovateurs à protéger et à réaliser leur valeur créative.",
+      },
+      vision: {
+        title: 'Notre vision',
+        content:
+          "Devenir la plateforme de services de brevets intelligents leader mondial, fournissant un soutien solide à la protection de la propriété intellectuelle pour l'innovation.",
+      },
+      values: {
+        title: 'Valeurs fondamentales',
+        innovation: 'Innovation',
+        innovationDesc: 'Innovation technologique continue, solutions de pointe',
+        professional: 'Service professionnel',
+        professionalDesc: "Équipe d'experts expérimentés, professionnel et fiable",
+        efficiency: 'Efficace et pratique',
+        efficiencyDesc: "Alimenté par l'IA, amélioration de l'efficacité du service",
+        integrity: "Intégrité d'abord",
+        integrityDesc: "Respecter l'  éthique professionnelle, protéger les intérêts des clients",
+      },
+    },
+    contact: {
+      title: 'Contactez-nous',
+      subtitle: 'Nous sommes toujours prêts à vous aider',
+      info: {
+        title: 'Informations de contact',
+        address: 'Adresse',
+        addressContent:
+          '449B BUKIT BATOK WEST AVENUE 9, #18-82, WEST VALLEY @ BUKIT BATOK, SINGAPORE (652449)',
+        email: 'Email',
+        emailContent: 'ccsuzc@gmail.com',
+        phone: 'Téléphone',
+        phoneContent: '+86 152-7318-4384',
+        hours: "Heures d'ouverture",
+        hoursContent: 'Lundi à vendredi 9:00-18:00',
+      },
+      form: {
+        title: 'Demande en ligne',
+        name: 'Nom',
+        namePlaceholder: 'Veuillez entrer votre nom',
+        email: 'Email',
+        emailPlaceholder: 'Veuillez entrer votre email',
+        subject: 'Sujet',
+        subjectPlaceholder: 'Veuillez entrer le sujet',
+        message: 'Message',
+        messagePlaceholder: 'Veuillez entrer votre message',
+        submit: 'Envoyer le message',
+      },
+      social: {
+        title: 'Suivez-nous',
+      },
+    },
+    footer: {
+      description:
+        'Plateforme professionnelle offrant des solutions complètes de protection de la propriété intellectuelle',
+      product: 'Produit',
+      company: 'Entreprise',
+      legal: 'Juridique',
+      api: 'Documentation API',
+      blog: 'Blog',
+      privacy: 'Confidentialité',
+      terms: 'Conditions',
+      copyright: 'Tous droits réservés',
+    },
   },
 }
