@@ -74,49 +74,49 @@ const menuItems = computed(() => [
       }
     ]
   },
-  // {
-  //   id: 'patent-search',
-  //   title: t('menu.patentSearch'),
-  //   icon: 'Search',
-  //   path: '/app/patent-search',
-  //   children: [
-  //     {
-  //       id: 'patent-search-quick',
-  //       title: t('menu.quickSearch'),
-  //       path: '/app/patent-search/quick'
-  //     }
-  //   ]
-  // },
-  // {
-  //   id: 'three-analysis',
-  //   title: t('menu.threeAnalysis'),
-  //   icon: 'DataAnalysis',
-  //   path: '/app/three-analysis',
-  //   children: [
-  //     {
-  //       id: 'three-analysis-new',
-  //       title: t('menu.newAnalysis'),
-  //       path: '/app/three-analysis/new'
-  //     },
-  //     {
-  //       id: 'three-analysis-history',
-  //       title: t('menu.analysisHistory'),
-  //       path: '/app/three-analysis/history'
-  //     }
-  //   ]
-  // },
-  // {
-  //   id: 'defense-support',
-  //   title: t('menu.defenseSupport'),
-  //   icon: 'ChatDotSquare',
-  //   path: '/app/defense-support/simulation'
-  // },
   {
-    id: 'profile',
-    title: t('menu.profile'),
-    icon: 'User',
-    path: '/app/profile'
-  }
+    id: 'patent-search',
+    title: t('menu.patentSearch'),
+    icon: 'Search',
+    path: '/app/patent-search',
+    children: [
+      {
+        id: 'patent-search-quick',
+        title: t('menu.quickSearch'),
+        path: '/app/patent-search/quick'
+      }
+    ]
+  },
+  {
+    id: 'three-analysis',
+    title: t('menu.threeAnalysis'),
+    icon: 'DataAnalysis',
+    path: '/app/three-analysis',
+    children: [
+      {
+        id: 'three-analysis-new',
+        title: t('menu.newAnalysis'),
+        path: '/app/three-analysis/new'
+      },
+      {
+        id: 'three-analysis-history',
+        title: t('menu.analysisHistory'),
+        path: '/app/three-analysis/history'
+      }
+    ]
+  },
+  {
+    id: 'defense-support',
+    title: t('menu.defenseSupport'),
+    icon: 'ChatDotSquare',
+    path: '/app/defense-support/simulation'
+  },
+  // {
+  //   id: 'profile',
+  //   title: t('menu.profile'),
+  //   icon: 'User',
+  //   path: '/app/profile'
+  // }
 ])
 
 // 方法
@@ -131,7 +131,7 @@ const handleMenuSelect = (path: string) => {
 
 const handleLogout = async () => {
   await authStore.logout()
-  router.push('/login')
+  router.push('/')
 }
 
 // 生命周期
