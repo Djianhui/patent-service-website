@@ -306,6 +306,8 @@ export default {
       pricing: '价格方案',
       about: '关于我们',
       contact: '联系我们',
+      dashboard: '工作台',
+      profile: '个人中心',
     },
     hero: {
       title: '智能化专利服务,让创新更简单',

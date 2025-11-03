@@ -304,6 +304,8 @@ export default {
       pricing: '料金',
       about: '会社情報',
       contact: 'お問い合わせ',
+      dashboard: 'ダッシュボード',
+      profile: 'プロフィール',
     },
     hero: {
       title: 'インテリジェント特許サービスをシンプルに',

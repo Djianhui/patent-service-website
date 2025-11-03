@@ -311,6 +311,8 @@ export default {
       pricing: 'Pricing',
       about: 'About',
       contact: 'Contact',
+      dashboard: 'Dashboard',
+      profile: 'Profile',
     },
     hero: {
       title: 'Intelligent Patent Services Made Simple',

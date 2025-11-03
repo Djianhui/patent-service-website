@@ -300,7 +300,14 @@ export default {
   },
   landing: {
     brand: 'PatentPro',
-    nav: { features: 'Функции', pricing: 'Цены', about: 'О нас', contact: 'Контакты' },
+    nav: {
+      features: 'Функции',
+      pricing: 'Цены',
+      about: 'О нас',
+      contact: 'Контакты',
+      dashboard: 'Панель управления',
+      profile: 'Профиль',
+    },
     hero: {
       title: 'Упрощенные интеллектуальные патентные услуги',
       subtitle:

@@ -303,9 +303,11 @@ export default {
     brand: 'PatentPro',
     nav: {
       features: 'Fonctionnalités',
-      pricing: 'Tarification',
+      pricing: 'Tarifs',
       about: 'À propos',
       contact: 'Contact',
+      dashboard: 'Tableau de bord',
+      profile: 'Profil',
     },
     hero: {
       title: 'Services de brevets intelligents simplifiés',

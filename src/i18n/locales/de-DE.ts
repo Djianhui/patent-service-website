@@ -300,7 +300,14 @@ export default {
   },
   landing: {
     brand: 'PatentPro',
-    nav: { features: 'Funktionen', pricing: 'Preise', about: 'Über uns', contact: 'Kontakt' },
+    nav: {
+      features: 'Funktionen',
+      pricing: 'Preise',
+      about: 'Über uns',
+      contact: 'Kontakt',
+      dashboard: 'Dashboard',
+      profile: 'Profil',
+    },
     hero: {
       title: 'Intelligente Patentdienste leicht gemacht',
       subtitle:
@@ -459,9 +466,9 @@ export default {
         title: 'Kontaktinformationen',
         address: 'Adresse',
         addressContent:
-          "449B BUKIT BATOK WEST AVENUE 9, #18-82, WEST VALLEY {'@'} BUKIT BATOK, SINGAPORE (652449)",
+          '449B BUKIT BATOK WEST AVENUE 9, #18-82, WEST VALLEY @ BUKIT BATOK, SINGAPORE (652449)',
         email: 'E-Mail',
-        emailContent: "ccsuzc{'@'}gmail.com",
+        emailContent: 'ccsuzc@gmail.com',
         phone: 'Telefon',
         phoneContent: '+86 152-7318-4384',
         hours: 'Geschäftszeiten',

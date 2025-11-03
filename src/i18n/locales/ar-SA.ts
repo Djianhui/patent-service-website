@@ -298,7 +298,14 @@ export default {
   },
   landing: {
     brand: 'PatentPro',
-    nav: { features: 'المميزات', pricing: 'الأسعار', about: 'من نحن', contact: 'اتصل بنا' },
+    nav: {
+      features: 'المميزات',
+      pricing: 'الأسعار',
+      about: 'معلومات عنا',
+      contact: 'اتصل بنا',
+      dashboard: 'لوحة التحكم',
+      profile: 'الملف الشخصي',
+    },
     hero: {
       title: 'خدمات براءات اختراع ذكية مبسطة',
       subtitle:
@@ -376,7 +383,7 @@ export default {
     },
     pricing: {
       title: 'اختر الخطة المناسبة لك',
-      subtitle: 'خطط تسعير مرنة للاحتياجات الفردية والمؤسسية',
+      subtitle: 'خطط تسعير مرنة للاحتياجات الفردية والمؤسسات',
       popular: 'الأكثر شعبية',
       perMonth: '/شهر',
       choosePlan: 'اختر الخطة',
@@ -448,9 +455,9 @@ export default {
         title: 'معلومات الاتصال',
         address: 'العنوان',
         addressContent:
-          "449B BUKIT BATOK WEST AVENUE 9, #18-82, WEST VALLEY {'@'} BUKIT BATOK, SINGAPORE (652449)",
+          '449B BUKIT BATOK WEST AVENUE 9, #18-82, WEST VALLEY @ BUKIT BATOK, SINGAPORE (652449)',
         email: 'البريد الإلكتروني',
-        emailContent: "ccsuzc{'@'}gmail.com",
+        emailContent: 'ccsuzc@gmail.com',
         phone: 'الهاتف',
         phoneContent: '+86 152-7318-4384',
         hours: 'ساعات العمل',

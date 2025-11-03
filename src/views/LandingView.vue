@@ -5,7 +5,7 @@
       <div class="container">
         <div class="header-content">
           <div class="logo">
-            <img src="/favicon.ico" class="logo-icon" alt="Logo" />
+            <!-- <img src="/favicon.ico" class="logo-icon" alt="Logo" /> -->
             <span class="logo-text">{{ $t('landing.brand') }}</span>
           </div>
           <nav class="nav-menu">
@@ -53,12 +53,51 @@
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
-            <el-button text class="login-btn" @click="goToLogin">
-              {{ $t('auth.login') }}
-            </el-button>
-            <el-button type="primary" class="register-btn" @click="goToRegister">
-              {{ $t('auth.register') }}
-            </el-button>
+            <!-- 未登录时显示登录注册按钮 -->
+            <template v-if="!authStore.isLoggedIn">
+              <el-button text class="login-btn" @click="goToLogin">
+                {{ $t('auth.login') }}
+              </el-button>
+              <el-button type="primary" class="register-btn" @click="goToRegister">
+                {{ $t('auth.register') }}
+              </el-button>
+            </template>
+            <!-- 已登录时显示用户信息和进入控制台按钮 -->
+            <template v-else>
+              <el-button type="primary" class="dashboard-btn" @click="goToDashboard">
+                {{ $t('landing.nav.dashboard') }}
+              </el-button>
+              <el-dropdown trigger="click" @command="handleUserAction">
+                <el-button text class="user-btn">
+                  <el-icon>
+                    <User />
+                  </el-icon>
+                  <span>{{ authStore.userName }}</span>
+                </el-button>
+                <template #dropdown>
+                  <el-dropdown-menu>
+                    <el-dropdown-item command="dashboard">
+                      <el-icon>
+                        <House />
+                      </el-icon>
+                      {{ $t('landing.nav.dashboard') }}
+                    </el-dropdown-item>
+                    <el-dropdown-item command="profile">
+                      <el-icon>
+                        <User />
+                      </el-icon>
+                      {{ $t('landing.nav.profile') }}
+                    </el-dropdown-item>
+                    <el-dropdown-item divided command="logout">
+                      <el-icon>
+                        <SwitchButton />
+                      </el-icon>
+                      {{ $t('auth.logout') }}
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </template>
+              </el-dropdown>
+            </template>
           </div>
         </div>
       </div>
@@ -459,7 +498,7 @@
         <div class="footer-content">
           <div class="footer-section">
             <div class="footer-logo">
-              <img src="/favicon.ico" class="logo-icon" alt="Logo" />
+              <!-- <img src="/favicon.ico" class="logo-icon" alt="Logo" /> -->
               <span class="logo-text">{{ $t('landing.brand') }}</span>
             </div>
             <p class="footer-description">{{ $t('landing.footer.description') }}</p>
@@ -500,6 +539,7 @@
 import { computed, markRaw, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import { useAuthStore } from '@/stores/auth'
 import {
   ArrowRight,
   Document,
@@ -510,10 +550,14 @@ import {
   ChatDotSquare,
   Star,
   More,
+  User,
+  House,
+  SwitchButton,
 } from '@element-plus/icons-vue'
 
 const router = useRouter()
 const { locale, t } = useI18n()
+const authStore = useAuthStore()
 
 // 当前轮播索引
 const currentSlide = ref(0)
@@ -637,6 +681,25 @@ const goToLogin = () => {
 
 const goToRegister = () => {
   router.push('/register')
+}
+
+const goToDashboard = () => {
+  router.push('/app/dashboard')
+}
+
+const handleUserAction = async (command: string) => {
+  switch (command) {
+    case 'dashboard':
+      router.push('/app/dashboard')
+      break
+    case 'profile':
+      router.push('/app/profile')
+      break
+    case 'logout':
+      await authStore.logout()
+      router.push('/home')
+      break
+  }
 }
 
 const features = [
@@ -819,6 +882,40 @@ const pricingPlans = [
       padding: 8px 24px;
       border-radius: 8px;
       font-weight: 500;
+    }
+
+    .dashboard-btn {
+
+
+      color: #1a1a1a;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      transition: all 0.3s;
+      background: #fafafa;
+    }
+
+    .user-btn {
+      color: #1a1a1a;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      transition: all 0.3s;
+
+      &:hover {
+        background: rgba(102, 126, 234, 0.1);
+        color: #667eea;
+      }
+
+      .el-icon {
+        font-size: 18px;
+      }
     }
   }
 }

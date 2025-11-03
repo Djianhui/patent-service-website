@@ -3,7 +3,7 @@
     <div class="login-wrapper">
       <div class="login-header">
         <div class="logo">
-          <img src="/favicon.ico" alt="Logo" class="logo-icon" />
+          <!-- <img src="/favicon.ico" alt="Logo" class="logo-icon" /> -->
           <span class="logo-text">{{ $t('auth.loginTitle') }}</span>
         </div>
         <div class="language-selector">

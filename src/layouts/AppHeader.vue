@@ -4,17 +4,20 @@
       <el-button class="menu-toggle" :icon="collapsed ? 'Expand' : 'Fold'" text @click="$emit('toggle-sidebar')" />
 
       <div class="logo">
-        <img src="/favicon.ico" alt="Logo" class="logo-icon" />
-        <span class="logo-text">{{ $t('auth.loginTitle') }}</span>
+        <!-- <img src="/favicon.ico" alt="Logo" class="logo-icon" /> -->
+        <!-- <span class="logo-text">{{ $t('auth.loginTitle') }}</span> -->
+        <router-link :to="{ name: 'Home' }" class="logo-text">
+          <span>{{ $t('auth.loginTitle') }}</span>
+        </router-link>
       </div>
     </div>
 
     <div class="header-center">
-      <el-breadcrumb separator="/">
+      <!-- <el-breadcrumb separator="/">
         <el-breadcrumb-item v-for="item in breadcrumbItems" :key="item.path" :to="item.path">
           {{ item.title }}
         </el-breadcrumb-item>
-      </el-breadcrumb>
+      </el-breadcrumb> -->
     </div>
 
     <div class="header-right">
