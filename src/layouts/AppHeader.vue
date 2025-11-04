@@ -325,6 +325,7 @@ const connectSSE = (userId: string | number) => {
     const isConnectionMessage =
       message.message.includes('连接成功') ||
       message.message.match(/连接成功[:|：]\s*\d+/) ||
+      message.message.includes('ping') ||
       (message.title === '系统通知' && message.message.includes('连接'))
 
     if (isConnectionMessage) {
