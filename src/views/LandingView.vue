@@ -418,7 +418,8 @@
                   <p>{{ $t('landing.contact.info.emailContent') }}</p>
                 </div>
               </div>
-              <div class="info-item">
+              <!-- 电话 -->
+              <!-- <div class="info-item">
                 <el-icon :size="24">
                   <More />
                 </el-icon>
@@ -426,7 +427,7 @@
                   <h4>{{ $t('landing.contact.info.phone') }}</h4>
                   <p>{{ $t('landing.contact.info.phoneContent') }}</p>
                 </div>
-              </div>
+              </div> -->
               <div class="info-item">
                 <el-icon :size="24">
                   <DataAnalysis />

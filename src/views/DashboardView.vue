@@ -126,61 +126,41 @@
       </div>
 
       <div class="right-column">
-        <!-- 待办事项 -->
-        <el-card class="todo-card">
+        <!-- 意见反馈 -->
+        <el-card class="feedback-card">
           <template #header>
             <div class="card-header">
-              <span>{{ t('dashboard.todoList') }}</span>
-              <el-button size="small" text @click="showAddTodo = true">
-                <el-icon>
-                  <Plus />
-                </el-icon>
-                {{ t('dashboard.add') }}
-              </el-button>
+              <span>{{ t('dashboard.feedback.title') }}</span>
             </div>
           </template>
 
-          <div class="todo-list">
-            <div v-for="todo in todoList" :key="todo.id" class="todo-item" :class="{ completed: todo.completed }">
-              <el-checkbox v-model="todo.completed" @change="updateTodo(todo)" />
-              <div class="todo-content">
-                <div class="todo-title">{{ todo.title }}</div>
-                <div class="todo-deadline" v-if="todo.deadline">
-                  {{ t('dashboard.due') }}: {{ formatDate(todo.deadline, 'MM-DD HH:mm') }}
-                </div>
-              </div>
-              <el-button size="small" text @click="deleteTodo(todo.id)">
-                <el-icon>
-                  <Delete />
-                </el-icon>
+          <el-form :model="feedbackForm" label-width="0">
+            <el-form-item>
+              <el-select v-model="feedbackForm.type" :placeholder="t('dashboard.feedback.selectType')"
+                style="width: 100%">
+                <el-option :label="t('dashboard.feedback.typeSuggestion')" value="suggestion" />
+                <el-option :label="t('dashboard.feedback.typeIssue')" value="issue" />
+                <el-option :label="t('dashboard.feedback.typeOther')" value="other" />
+              </el-select>
+            </el-form-item>
+            <el-form-item>
+              <el-input v-model="feedbackForm.content" type="textarea"
+                :placeholder="t('dashboard.feedback.placeholder')" :rows="5" maxlength="1000" show-word-limit />
+              <div class="char-count">{{ feedbackForm.content.length }}/1000</div>
+            </el-form-item>
+            <el-form-item>
+              <el-input v-model="feedbackForm.contact" :placeholder="t('dashboard.feedback.contact')" />
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="submitFeedback" style="width: 100%">
+                {{ t('dashboard.feedback.submit') }}
               </el-button>
-            </div>
-          </div>
-
-          <div v-if="todoList.length === 0" class="empty-state">
-            <el-empty :description="t('dashboard.noTodoItems')" />
-          </div>
+            </el-form-item>
+          </el-form>
         </el-card>
       </div>
     </div>
 
-    <!-- 添加待办事项对话框 -->
-    <el-dialog v-model="showAddTodo" :title="t('dashboard.addTodoItem')" width="400px">
-      <el-form :model="newTodo" label-width="80px">
-        <el-form-item :label="t('dashboard.title')" required>
-          <el-input v-model="newTodo.title" :placeholder="t('dashboard.enterTodoTitle')" />
-        </el-form-item>
-        <el-form-item :label="t('dashboard.deadline')">
-          <el-date-picker v-model="newTodo.deadline" type="datetime" :placeholder="t('dashboard.selectDeadline')"
-            style="width: 100%" />
-        </el-form-item>
-      </el-form>
-
-      <template #footer>
-        <el-button @click="showAddTodo = false">{{ t('dashboard.cancel') }}</el-button>
-        <el-button type="primary" @click="addTodo">{{ t('dashboard.confirm') }}</el-button>
-      </template>
-    </el-dialog>
   </div>
 </template>
 
@@ -188,22 +168,16 @@
 import { ref, reactive, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-import { formatDate, generateRandomString } from '@/utils'
+import { formatDate } from '@/utils'
 import { useI18n } from 'vue-i18n'
 import {
   Plus,
-  Search,
-  TrendCharts,
   Document,
-  DataAnalysis,
   Edit,
-  ChatDotSquare,
-  Delete,
   InfoFilled,
-  ArrowRight,
-  DocumentChecked
+  ArrowRight
 } from '@element-plus/icons-vue'
-// import * as echarts from 'echarts'
+import { ElMessage } from 'element-plus'
 
 // Composables
 const router = useRouter()
@@ -211,7 +185,11 @@ const authStore = useAuthStore()
 const { t } = useI18n()
 
 // 响应式数据
-const showAddTodo = ref(false)
+const feedbackForm = reactive({
+  type: '',
+  content: '',
+  contact: ''
+})
 
 // 系统使用引导步骤
 const guideSteps = computed(() => [
@@ -233,7 +211,7 @@ const guideSteps = computed(() => [
   }
 ])
 
-// 快捷工具
+// 最近活动
 const recentActivities = ref<Array<{
   id: string
   type: string
@@ -241,32 +219,7 @@ const recentActivities = ref<Array<{
   title: string
   description: string
   time: string
-}>>([
-  // {
-  //   id: '1',
-  //   type: 'report',
-  //   icon: 'Document',
-  //   title: 'Complete Technical Report',
-  //   description: 'Intelligent voice recognition system technical analysis',
-  //   time: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString()
-  // },
-  // {
-  //   id: '2',
-  //   type: 'search',
-  //   icon: 'Search',
-  //   title: 'Patent Search',
-  //   description: 'Found 25 related patent documents',
-  //   time: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString()
-  // },
-  // {
-  //   id: '3',
-  //   type: 'analysis',
-  //   icon: 'DataAnalysis',
-  //   title: 'Three Analysis Completed',
-  //   description: 'Machine learning algorithm patent novelty analysis',
-  //   time: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
-  // }
-])
+}>>([])
 
 // 快捷工具
 const quickTools = computed(() => [
@@ -288,21 +241,6 @@ const quickTools = computed(() => [
   }
 ])
 
-// 待办事项
-const todoList = ref<Array<{
-  id: string
-  title: string
-  completed: boolean
-  deadline: string | null
-}>>([
-
-])
-
-const newTodo = reactive({
-  title: '',
-  deadline: null
-})
-
 // 方法
 const viewActivity = (activity: any) => {
   // 根据活动类型跳转到相应页面
@@ -321,32 +259,24 @@ const viewActivity = (activity: any) => {
   }
 }
 
-const addTodo = () => {
-  if (!newTodo.title.trim()) return
+const submitFeedback = () => {
+  if (!feedbackForm.content.trim()) return
 
-  todoList.value.unshift({
-    id: generateRandomString(),
-    title: newTodo.title,
-    completed: false,
-    deadline: newTodo.deadline
-  })
+  if (feedbackForm.content.length > 1000) {
+    alert(t('dashboard.feedback.exceedLimit'))
+    return
+  }
+
+  // 这里可以调用 API 提交意见反馈
+  console.log('意见反馈:', feedbackForm)
 
   // 重置表单
-  newTodo.title = ''
-  newTodo.deadline = null
-  showAddTodo.value = false
-}
+  feedbackForm.type = ''
+  feedbackForm.content = ''
+  feedbackForm.contact = ''
 
-const updateTodo = (todo: any) => {
-  // 这里可以调用API更新待办事项状态
-  console.log('Update to-do item:', todo)
-}
-
-const deleteTodo = (id: string) => {
-  const index = todoList.value.findIndex(todo => todo.id === id)
-  if (index !== -1) {
-    todoList.value.splice(index, 1)
-  }
+  // 可以添加成功提示
+  ElMessage.success(t('dashboard.feedback.success'))
 }
 
 // 生命周期
@@ -776,56 +706,28 @@ onMounted(async () => {
       }
     }
 
-    .todo-card {
-      .todo-list {
-        .todo-item {
-          display: flex;
-          align-items: flex-start;
-          gap: 12px;
-          padding: 16px 0;
-          border-bottom: 1px solid #e9ecef;
+    .feedback-card {
+      :deep(.el-form-item) {
+        margin-bottom: 16px;
 
-          &:last-child {
-            border-bottom: none;
-          }
-
-          &.completed {
-            opacity: 0.7;
-
-            .todo-title {
-              text-decoration: line-through;
-            }
-          }
-
-          :deep(.el-checkbox) {
-            margin-top: 2px;
-          }
-
-          .todo-content {
-            flex: 1;
-
-            .todo-title {
-              font-weight: 500;
-              color: #1a1a1a;
-              margin-bottom: 6px;
-              font-size: 15px;
-            }
-
-            .todo-deadline {
-              color: #6c757d;
-              font-size: 13px;
-              background-color: #f1f3f4;
-              padding: 4px 8px;
-              border-radius: 4px;
-              display: inline-block;
-            }
-          }
-
-          :deep(.el-button) {
-            color: #6c757d;
-            margin-top: 2px;
-          }
+        &:last-child {
+          margin-bottom: 0;
         }
+      }
+
+      :deep(.el-input) {
+        border-radius: 6px;
+      }
+
+      :deep(.el-select) {
+        width: 100%;
+      }
+
+      .char-count {
+        font-size: 12px;
+        color: #909399;
+        text-align: right;
+        margin-top: 4px;
       }
     }
 
@@ -840,41 +742,6 @@ onMounted(async () => {
       :deep(.el-empty__description) {
         color: #6c757d;
       }
-    }
-  }
-
-  // 对话框样式
-  :deep(.el-dialog) {
-    border-radius: 12px;
-
-    .el-dialog__header {
-      padding: 20px 24px;
-      border-bottom: 1px solid #e9ecef;
-      font-weight: 600;
-      color: #2c3e50;
-    }
-
-    .el-dialog__body {
-      padding: 24px;
-    }
-
-    .el-dialog__footer {
-      padding: 20px 24px;
-      border-top: 1px solid #e9ecef;
-    }
-
-    .el-form-item {
-      margin-bottom: 20px;
-
-      .el-form-item__label {
-        font-weight: 500;
-        color: #2c3e50;
-      }
-    }
-
-    .el-button {
-      border-radius: 6px;
-      font-weight: 500;
     }
   }
 }

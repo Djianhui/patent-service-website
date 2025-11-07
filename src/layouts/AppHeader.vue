@@ -262,7 +262,16 @@ const markAllAsRead = () => {
 // 语言切换
 const handleLanguageChange = (locale: string) => {
   setLocale(locale as SupportLocale)
-  ElMessage.success(locale === 'zh-CN' ? '语言已切换为中文' : 'Language switched to English')
+  const messages: Record<string, string> = {
+    'zh-CN': '语言已切换为中文',
+    'en-US': 'Language switched to English',
+    'ja-JP': '言語が日本語に切り替わりました',
+    'de-DE': 'Sprache auf Deutsch umgeschaltet',
+    'fr-FR': 'Langue basculée vers le français',
+    'ru-RU': 'Язык изменен на русский',
+    'ar-SA': 'تم تبديل اللغة إلى العربية',
+  }
+  ElMessage.success(messages[locale] || 'Language switched')
 }
 
 // 生命周期
