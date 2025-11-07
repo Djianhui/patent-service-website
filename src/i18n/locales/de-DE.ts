@@ -286,6 +286,18 @@ export default {
     viewAll: 'Alle anzeigen',
     view: 'Anzeigen',
     noActivityRecords: 'Keine Aktivitätsaufzeichnungen',
+    feedback: {
+      title: 'Feedback',
+      selectType: 'Bitte Feedback-Typ auswählen',
+      typeSuggestion: 'Funktionsvorschlag',
+      typeIssue: 'Problemmeldung',
+      typeOther: 'Sonstiges',
+      placeholder: 'Bitte geben Sie Ihr Feedback oder Ihren Vorschlag ein (max. 1000 Zeichen)',
+      contact: 'Kontakt (Optional)',
+      submit: 'Feedback senden',
+      exceedLimit: 'Feedback darf 1000 Zeichen nicht überschreiten',
+      success: 'Vielen Dank für Ihr Feedback!',
+    },
     todoList: 'Aufgabenliste',
     add: 'Hinzufügen',
     due: 'Fällig',
@@ -300,14 +312,7 @@ export default {
   },
   landing: {
     brand: 'PatentPro',
-    nav: {
-      features: 'Funktionen',
-      pricing: 'Preise',
-      about: 'Über uns',
-      contact: 'Kontakt',
-      dashboard: 'Dashboard',
-      profile: 'Profil',
-    },
+    nav: { features: 'Funktionen', pricing: 'Preise', about: 'Über uns', contact: 'Kontakt' },
     hero: {
       title: 'Intelligente Patentdienste leicht gemacht',
       subtitle:
@@ -468,7 +473,7 @@ export default {
         addressContent:
           '449B BUKIT BATOK WEST AVENUE 9, #18-82, WEST VALLEY @ BUKIT BATOK, SINGAPORE (652449)',
         email: 'E-Mail',
-        emailContent: "ipsrvc{'@'}gmail.com",
+        emailContent: 'ccsuzc@gmail.com',
         phone: 'Telefon',
         phoneContent: '+86 152-7318-4384',
         hours: 'Geschäftszeiten',

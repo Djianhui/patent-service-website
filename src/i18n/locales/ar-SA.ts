@@ -284,6 +284,18 @@ export default {
     viewAll: 'عرض الكل',
     view: 'عرض',
     noActivityRecords: 'لا توجد سجلات الأنشطة',
+    feedback: {
+      title: 'الملاحظات',
+      selectType: 'يرجى اختيار نوع الملاحظات',
+      typeSuggestion: 'اقتراح ميزة',
+      typeIssue: 'الإبلاغ عن مشكلة',
+      typeOther: 'أخرى',
+      placeholder: 'يرجى إدخال ملاحظاتك أو اقتراحك (بحد أقصى 1000 حرف)',
+      contact: 'الاتصال (اختياري)',
+      submit: 'إرسال الملاحظات',
+      exceedLimit: 'لا يمكن أن تتجاوز الملاحظات 1000 حرف',
+      success: 'شكرًا لملاحظاتك!',
+    },
     todoList: 'قائمة المهام',
     add: 'إضافة',
     due: 'مستحق',
@@ -298,14 +310,7 @@ export default {
   },
   landing: {
     brand: 'PatentPro',
-    nav: {
-      features: 'المميزات',
-      pricing: 'الأسعار',
-      about: 'معلومات عنا',
-      contact: 'اتصل بنا',
-      dashboard: 'لوحة التحكم',
-      profile: 'الملف الشخصي',
-    },
+    nav: { features: 'المميزات', pricing: 'الأسعار', about: 'من نحن', contact: 'اتصل بنا' },
     hero: {
       title: 'خدمات براءات اختراع ذكية مبسطة',
       subtitle:
@@ -383,7 +388,7 @@ export default {
     },
     pricing: {
       title: 'اختر الخطة المناسبة لك',
-      subtitle: 'خطط تسعير مرنة للاحتياجات الفردية والمؤسسات',
+      subtitle: 'خطط تسعير مرنة للاحتياجات الفردية والمؤسسية',
       popular: 'الأكثر شعبية',
       perMonth: '/شهر',
       choosePlan: 'اختر الخطة',
@@ -457,7 +462,7 @@ export default {
         addressContent:
           '449B BUKIT BATOK WEST AVENUE 9, #18-82, WEST VALLEY @ BUKIT BATOK, SINGAPORE (652449)',
         email: 'البريد الإلكتروني',
-        emailContent: "ipsrvc{'@'}gmail.com",
+        emailContent: 'ccsuzc@gmail.com',
         phone: 'الهاتف',
         phoneContent: '+86 152-7318-4384',
         hours: 'ساعات العمل',

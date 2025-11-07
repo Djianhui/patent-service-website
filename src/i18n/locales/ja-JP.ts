@@ -294,7 +294,6 @@ export default {
       placeholder: 'ご意見または提案を入力してください（最大1000文字）',
       contact: '連絡先（任意）',
       submit: 'フィードバックを送信',
-      charCount: '{count}/1000',
       exceedLimit: 'フィードバックは1000文字を超えることができません',
       success: 'フィードバックをいただきありがとうございます！',
     },

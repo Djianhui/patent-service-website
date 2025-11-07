@@ -146,7 +146,6 @@
             <el-form-item>
               <el-input v-model="feedbackForm.content" type="textarea"
                 :placeholder="t('dashboard.feedback.placeholder')" :rows="5" maxlength="1000" show-word-limit />
-              <div class="char-count">{{ feedbackForm.content.length }}/1000</div>
             </el-form-item>
             <el-form-item>
               <el-input v-model="feedbackForm.contact" :placeholder="t('dashboard.feedback.contact')" />

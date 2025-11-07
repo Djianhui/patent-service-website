@@ -296,7 +296,6 @@ export default {
       placeholder: '请输入你的意见或建议 (最多1000字)',
       contact: '联系方式（选填）',
       submit: '提交反馈',
-      charCount: '{count}/1000',
       exceedLimit: '反馈内容不能超过1000字',
       success: '感谢你的反馈！',
     },

@@ -301,7 +301,6 @@ export default {
       placeholder: 'Please enter your feedback or suggestion (max 1000 characters)',
       contact: 'Contact (Optional)',
       submit: 'Submit Feedback',
-      charCount: '{count}/1000',
       exceedLimit: 'Feedback content cannot exceed 1000 characters',
       success: 'Thank you for your feedback!',
     },
