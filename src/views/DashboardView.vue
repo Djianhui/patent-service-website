@@ -178,6 +178,7 @@ import {
   ArrowRight
 } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
+import { feedbackService } from '@/services/feedback'
 
 // Composables
 const router = useRouter()
@@ -259,24 +260,39 @@ const viewActivity = (activity: any) => {
   }
 }
 
-const submitFeedback = () => {
+const submitFeedback = async () => {
   if (!feedbackForm.content.trim()) return
 
   if (feedbackForm.content.length > 1000) {
-    alert(t('dashboard.feedback.exceedLimit'))
+    ElMessage.error(t('dashboard.feedback.exceedLimit'))
     return
   }
 
-  // 这里可以调用 API 提交意见反馈
-  console.log('意见反馈:', feedbackForm)
+  try {
+    // 调用 API 提交意见反馈
+    const typeMap: Record<string, number> = {
+      'suggestion': 1,
+      'issue': 2,
+      'other': 3
+    }
 
-  // 重置表单
-  feedbackForm.type = ''
-  feedbackForm.content = ''
-  feedbackForm.contact = ''
+    await feedbackService.submitFeedback({
+      type: typeMap[feedbackForm.type] || 1,
+      content: feedbackForm.content,
+      contactInformation: feedbackForm.contact || undefined
+    })
 
-  // 可以添加成功提示
-  ElMessage.success(t('dashboard.feedback.success'))
+    // 提交成功，重置表单
+    feedbackForm.type = ''
+    feedbackForm.content = ''
+    feedbackForm.contact = ''
+
+    // 显示成功提示
+    ElMessage.success(t('dashboard.feedback.success'))
+  } catch (error) {
+    console.error('反馈提交失败:', error)
+    ElMessage.error('反馈提交失败,请稍后重试')
+  }
 }
 
 // 生命周期
