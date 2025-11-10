@@ -24,7 +24,7 @@ export default {
     loadFailed: 'データ読み込み失敗',
     unknown: '不明',
     confirmDelete: '削除確認',
-    confirmDeleteMessage: '"{title}"の分析レポートを削除しますか？',
+    confirmDeleteMessage: '"技術レポート"の分析レポートを削除しますか？',
     noPdfFile: 'このレポートにPDFファイルがありません',
     noWordFile: 'このレポートにWordファイルがありません',
     loginExpired: 'ログイン期限切れ',
@@ -145,6 +145,7 @@ export default {
   patentSearch: {
     title: 'クイック特許検索',
     subtitle: '技術ソリューションを入力',
+    searchConditions: '検索条件',
     patentTitle: '特許タイトル',
     technicalSolution: '技術ソリューション',
     pleaseEnterTitle: 'タイトルを入力',
@@ -166,6 +167,8 @@ export default {
     imageLoadFailed: '読み込み失敗',
     clickToEnlarge: '拡大',
     tryExample: '例:',
+    searchFailed: '検索失敗',
+    loadHistoryFailed: '履歴の読み込み失敗',
   },
   techReport: {
     title: '技術レポート',

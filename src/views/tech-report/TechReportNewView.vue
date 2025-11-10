@@ -89,7 +89,7 @@ import { techReportService } from '@/services/techReport'
 
 // Composables
 const router = useRouter()
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const techReportStore = useTechReportStore()
 
 // 响应式数据
@@ -204,7 +204,8 @@ const generateReport = async () => {
     // 调用API生成报告
     const result = await techReportService.generateReport({
       prompt: formData.technicalField,
-      type: 1
+      type: 1,
+      language: locale.value
     })
 
     // 停止进度条

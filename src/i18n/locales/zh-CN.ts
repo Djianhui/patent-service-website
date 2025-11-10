@@ -147,6 +147,7 @@ export default {
   patentSearch: {
     title: '专利快速检索',
     subtitle: '输入技术方案快速检索相关专利文献',
+    searchConditions: '检索条件',
     patentTitle: '专利标题',
     technicalSolution: '技术方案',
     pleaseEnterTitle: '请输入专利标题',
@@ -168,6 +169,8 @@ export default {
     imageLoadFailed: '图片加载失败',
     clickToEnlarge: '点击放大',
     tryExample: '试试以下案例：',
+    searchFailed: '检索失败',
+    loadHistoryFailed: '加载历史记录失败',
   },
   techReport: {
     title: '技术方案报告',

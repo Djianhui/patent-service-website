@@ -24,7 +24,8 @@ export default {
     loadFailed: 'Échec du chargement des données',
     unknown: 'Inconnu',
     confirmDelete: 'Confirmer la suppression',
-    confirmDeleteMessage: 'Êtes-vous sûr de vouloir supprimer le rapport d\'analyse de "{title}"?',
+    confirmDeleteMessage:
+      'Êtes-vous sûr de vouloir supprimer le rapport d\'analyse de "Rapport technique"?',
     noPdfFile: 'Aucun fichier PDF disponible pour ce rapport',
     noWordFile: 'Aucun fichier Word disponible pour ce rapport',
     loginExpired: 'Connexion expirée',
@@ -147,6 +148,7 @@ export default {
   patentSearch: {
     title: 'Recherche rapide de brevets',
     subtitle: 'Entrez la solution technique',
+    searchConditions: 'Critères de recherche',
     patentTitle: 'Titre du brevet',
     technicalSolution: 'Solution technique',
     pleaseEnterTitle: 'Entrez le titre',
@@ -168,6 +170,8 @@ export default {
     imageLoadFailed: 'Échec du chargement',
     clickToEnlarge: 'Agrandir',
     tryExample: 'Exemples:',
+    searchFailed: 'Échec de la recherche',
+    loadHistoryFailed: "Échec du chargement de l'historique",
   },
   techReport: {
     title: 'Rapport technique',

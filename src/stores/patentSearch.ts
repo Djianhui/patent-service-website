@@ -23,10 +23,14 @@ export const usePatentSearchStore = defineStore('patentSearch', () => {
   const isSearching = computed(() => searching.value)
 
   // Actions
-  const quickSearch = async (keyword: string, params?: {
-    page?: number
-    pageSize?: number
-  }) => {
+  const quickSearch = async (
+    keyword: string,
+    params?: {
+      page?: number
+      pageSize?: number
+      language?: string
+    },
+  ) => {
     searching.value = true
     try {
       const response = await patentSearchService.quickSearch(keyword, params)
@@ -52,10 +56,13 @@ export const usePatentSearchStore = defineStore('patentSearch', () => {
     }
   }
 
-  const advancedSearch = async (criteria: PatentSearchCriteria, params?: {
-    page?: number
-    pageSize?: number
-  }) => {
+  const advancedSearch = async (
+    criteria: PatentSearchCriteria,
+    params?: {
+      page?: number
+      pageSize?: number
+    },
+  ) => {
     searching.value = true
     try {
       const response = await patentSearchService.advancedSearch(criteria, params)
@@ -88,7 +95,7 @@ export const usePatentSearchStore = defineStore('patentSearch', () => {
       currentPatent.value = patent
 
       // 更新搜索结果中的专利信息
-      const index = searchResults.value.findIndex(p => p.id === id)
+      const index = searchResults.value.findIndex((p) => p.id === id)
       if (index !== -1) {
         searchResults.value[index] = patent
       }
@@ -107,8 +114,8 @@ export const usePatentSearchStore = defineStore('patentSearch', () => {
       await patentSearchService.favoritePatent(id)
 
       // 更新本地状态
-      const patent = searchResults.value.find(p => p.id === id) || currentPatent.value
-      if (patent && !favoritePatents.value.find(p => p.id === id)) {
+      const patent = searchResults.value.find((p) => p.id === id) || currentPatent.value
+      if (patent && !favoritePatents.value.find((p) => p.id === id)) {
         favoritePatents.value.push(patent)
       }
     } catch (error) {
@@ -122,7 +129,7 @@ export const usePatentSearchStore = defineStore('patentSearch', () => {
       await patentSearchService.unfavoritePatent(id)
 
       // 更新本地状态
-      const index = favoritePatents.value.findIndex(p => p.id === id)
+      const index = favoritePatents.value.findIndex((p) => p.id === id)
       if (index !== -1) {
         favoritePatents.value.splice(index, 1)
       }
@@ -132,10 +139,7 @@ export const usePatentSearchStore = defineStore('patentSearch', () => {
     }
   }
 
-  const getFavoritePatents = async (params?: {
-    page?: number
-    pageSize?: number
-  }) => {
+  const getFavoritePatents = async (params?: { page?: number; pageSize?: number }) => {
     loading.value = true
     try {
       const response = await patentSearchService.getFavoritePatents(params)
@@ -149,10 +153,7 @@ export const usePatentSearchStore = defineStore('patentSearch', () => {
     }
   }
 
-  const getSearchHistory = async (params?: {
-    page?: number
-    pageSize?: number
-  }) => {
+  const getSearchHistory = async (params?: { page?: number; pageSize?: number }) => {
     loading.value = true
     try {
       const response = await patentSearchService.getSearchHistory(params)
@@ -174,7 +175,7 @@ export const usePatentSearchStore = defineStore('patentSearch', () => {
       await patentSearchService.deleteSearchHistory(id)
 
       // 更新本地状态
-      const index = searchHistory.value.findIndex(h => h.id === id)
+      const index = searchHistory.value.findIndex((h) => h.id === id)
       if (index !== -1) {
         searchHistory.value.splice(index, 1)
       }
@@ -236,7 +237,7 @@ export const usePatentSearchStore = defineStore('patentSearch', () => {
   }
 
   const isFavorite = (patentId: string): boolean => {
-    return favoritePatents.value.some(p => p.id === patentId)
+    return favoritePatents.value.some((p) => p.id === patentId)
   }
 
   return {
@@ -272,6 +273,6 @@ export const usePatentSearchStore = defineStore('patentSearch', () => {
     clearResults,
     clearCurrentPatent,
     resetStore,
-    isFavorite
+    isFavorite,
   }
 })

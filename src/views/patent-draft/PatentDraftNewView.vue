@@ -59,7 +59,7 @@ import { useI18n } from 'vue-i18n'
 
 // Composables
 const router = useRouter()
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 // 响应式数据
 const formRef = ref()
@@ -108,7 +108,8 @@ const generateDraft = async () => {
     // 调用后端API生成专利草稿
     await patentDraftService.createDraft({
       title: draftData.title,
-      technicalSolution: draftData.technicalSolution
+      technicalSolution: draftData.technicalSolution,
+      language: locale.value
     })
 
     ElMessage.success(t('common.draftSubmitted'))

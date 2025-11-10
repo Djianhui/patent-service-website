@@ -24,7 +24,7 @@ export default {
     loadFailed: 'فشل تحميل البيانات',
     unknown: 'غير معروف',
     confirmDelete: 'تأكيد الحذف',
-    confirmDeleteMessage: 'هل أنت متأكد من حذف تقرير التحليل لـ "{title}"؟',
+    confirmDeleteMessage: 'هل أنت متأكد من حذف تقرير التحليل لـ "تقرير تقني"؟',
     noPdfFile: 'لا يوجد ملف PDF لهذا التقرير',
     noWordFile: 'لا يوجد ملف Word لهذا التقرير',
     loginExpired: 'انتهت صلاحية تسجيل الدخول',
@@ -145,6 +145,7 @@ export default {
   patentSearch: {
     title: 'البحث السريع عن البراءات',
     subtitle: 'أدخل الحل التقني',
+    searchConditions: 'معايير البحث',
     patentTitle: 'عنوان البراءة',
     technicalSolution: 'الحل التقني',
     pleaseEnterTitle: 'أدخل العنوان',
@@ -166,6 +167,8 @@ export default {
     imageLoadFailed: 'فشل التحميل',
     clickToEnlarge: 'تكبير',
     tryExample: 'أمثلة:',
+    searchFailed: 'فشل البحث',
+    loadHistoryFailed: 'فشل تحميل السجل',
   },
   techReport: {
     title: 'التقرير التقني',

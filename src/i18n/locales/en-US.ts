@@ -24,7 +24,8 @@ export default {
     loadFailed: 'Failed to load data',
     unknown: 'Unknown',
     confirmDelete: 'Confirm Delete',
-    confirmDeleteMessage: 'Are you sure you want to delete the analysis report of "{title}"?',
+    confirmDeleteMessage:
+      'Are you sure you want to delete the analysis report of "Technical Report"?',
     noPdfFile: 'No PDF file available for this report',
     noWordFile: 'No Word file available for this report',
     loginExpired: 'Login expired',
@@ -145,6 +146,7 @@ export default {
   patentSearch: {
     title: 'Quick Patent Search',
     subtitle: 'Enter technical solution to quickly search related patent documents',
+    searchConditions: 'Search Conditions',
     patentTitle: 'Patent Title',
     technicalSolution: 'Technical Solution',
     pleaseEnterTitle: 'Please enter patent title',
@@ -166,6 +168,8 @@ export default {
     imageLoadFailed: 'Image Load Failed',
     clickToEnlarge: 'Click to Enlarge',
     tryExample: 'Try examples:',
+    searchFailed: 'Search failed',
+    loadHistoryFailed: 'Failed to load search history',
   },
   techReport: {
     title: 'Technical Report',

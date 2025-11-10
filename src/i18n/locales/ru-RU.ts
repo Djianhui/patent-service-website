@@ -24,7 +24,7 @@ export default {
     loadFailed: 'Ошибка загрузки данных',
     unknown: 'Неизвестно',
     confirmDelete: 'Подтвердите удаление',
-    confirmDeleteMessage: 'Вы уверены, что хотите удалить отчет по анализу "{title}"?',
+    confirmDeleteMessage: 'Вы уверены, что хотите удалить отчет по анализу "Технический отчет"?',
     noPdfFile: 'PDF-файл для этого отчета недоступен',
     noWordFile: 'Word-файл для этого отчета недоступен',
     loginExpired: 'Сеанс истек',
@@ -146,6 +146,7 @@ export default {
   patentSearch: {
     title: 'Быстрый поиск патентов',
     subtitle: 'Введите техническое решение для быстрого поиска',
+    searchConditions: 'Критерии поиска',
     patentTitle: 'Название патента',
     technicalSolution: 'Техническое решение',
     pleaseEnterTitle: 'Введите название патента',
@@ -167,6 +168,8 @@ export default {
     imageLoadFailed: 'Ошибка загрузки',
     clickToEnlarge: 'Увеличить',
     tryExample: 'Примеры:',
+    searchFailed: 'Ошибка поиска',
+    loadHistoryFailed: 'Ошибка загрузки истории',
   },
   techReport: {
     title: 'Технический отчет',

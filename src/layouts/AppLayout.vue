@@ -87,30 +87,30 @@ const menuItems = computed(() => [
       }
     ]
   },
-  {
-    id: 'three-analysis',
-    title: t('menu.threeAnalysis'),
-    icon: 'DataAnalysis',
-    path: '/app/three-analysis',
-    children: [
-      {
-        id: 'three-analysis-new',
-        title: t('menu.newAnalysis'),
-        path: '/app/three-analysis/new'
-      },
-      {
-        id: 'three-analysis-history',
-        title: t('menu.analysisHistory'),
-        path: '/app/three-analysis/history'
-      }
-    ]
-  },
-  {
-    id: 'defense-support',
-    title: t('menu.defenseSupport'),
-    icon: 'ChatDotSquare',
-    path: '/app/defense-support/simulation'
-  },
+  // {
+  //   id: 'three-analysis',
+  //   title: t('menu.threeAnalysis'),
+  //   icon: 'DataAnalysis',
+  //   path: '/app/three-analysis',
+  //   children: [
+  //     {
+  //       id: 'three-analysis-new',
+  //       title: t('menu.newAnalysis'),
+  //       path: '/app/three-analysis/new'
+  //     },
+  //     {
+  //       id: 'three-analysis-history',
+  //       title: t('menu.analysisHistory'),
+  //       path: '/app/three-analysis/history'
+  //     }
+  //   ]
+  // },
+  // {
+  //   id: 'defense-support',
+  //   title: t('menu.defenseSupport'),
+  //   icon: 'ChatDotSquare',
+  //   path: '/app/defense-support/simulation'
+  // },
   // {
   //   id: 'profile',
   //   title: t('menu.profile'),

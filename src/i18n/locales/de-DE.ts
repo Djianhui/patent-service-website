@@ -24,7 +24,8 @@ export default {
     loadFailed: 'Daten konnten nicht geladen werden',
     unknown: 'Unbekannt',
     confirmDelete: 'Löschen bestätigen',
-    confirmDeleteMessage: 'Möchten Sie den Analysebericht von "{title}" wirklich löschen?',
+    confirmDeleteMessage:
+      'Möchten Sie den Analysebericht von "Technischer Bericht" wirklich löschen?',
     noPdfFile: 'Keine PDF-Datei für diesen Bericht verfügbar',
     noWordFile: 'Keine Word-Datei für diesen Bericht verfügbar',
     loginExpired: 'Anmeldung abgelaufen',
@@ -146,6 +147,7 @@ export default {
   patentSearch: {
     title: 'Schnelle Patentsuche',
     subtitle: 'Technische Lösung eingeben',
+    searchConditions: 'Suchkriterien',
     patentTitle: 'Patenttitel',
     technicalSolution: 'Technische Lösung',
     pleaseEnterTitle: 'Titel eingeben',
@@ -167,6 +169,8 @@ export default {
     imageLoadFailed: 'Ladefehler',
     clickToEnlarge: 'Vergrößern',
     tryExample: 'Beispiele:',
+    searchFailed: 'Suche fehlgeschlagen',
+    loadHistoryFailed: 'Fehler beim Laden des Verlaufs',
   },
   techReport: {
     title: 'Technischer Bericht',

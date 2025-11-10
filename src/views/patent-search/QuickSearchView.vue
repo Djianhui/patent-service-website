@@ -2,39 +2,40 @@
   <div class="quick-search-container">
     <!-- 页面头部 -->
     <div class="page-header">
-      <h1 class="page-title">专利快速检索</h1>
-      <p class="page-subtitle">输入技术方案快速检索相关专利文献</p>
+      <h1 class="page-title">{{ $t('patentSearch.title') }}</h1>
+      <p class="page-subtitle">{{ $t('patentSearch.subtitle') }}</p>
     </div>
 
     <!-- 搜索区域 -->
     <el-card class="search-card">
       <template #header>
-        <span>检索条件</span>
+        <span>{{ $t('patentSearch.searchConditions') }}</span>
       </template>
 
       <el-form :model="searchForm" @submit.prevent="handleSearch">
-        <el-form-item label="专利标题" required>
-          <el-input v-model="searchForm.title" type="text" placeholder="请输入专利标题" clearable maxlength="200"
-            show-word-limit />
+        <el-form-item :label="$t('patentSearch.patentTitle')" required>
+          <el-input v-model="searchForm.title" type="text" :placeholder="$t('patentSearch.pleaseEnterTitle')" clearable
+            maxlength="200" show-word-limit />
         </el-form-item>
 
-        <el-form-item label="技术方案" required>
-          <el-input v-model="searchForm.keyword" type="textarea" :rows="6" placeholder="请输入技术方案，建议300-1000字效果最佳"
-            clearable maxlength="10000" show-word-limit resize="vertical" />
+        <el-form-item :label="$t('patentSearch.technicalSolution')" required>
+          <el-input v-model="searchForm.keyword" type="textarea" :rows="6"
+            :placeholder="$t('patentSearch.pleaseEnterSolution')" clearable maxlength="10000" show-word-limit
+            resize="vertical" />
         </el-form-item>
 
         <el-form-item>
           <div class="search-actions">
             <el-button type="primary" size="large" :loading="searching" @click="handleSearch"
               :disabled="!searchForm.title.trim() || !searchForm.keyword.trim()">
-              {{ searching ? '检索中...' : '开始检索' }}
+              {{ searching ? $t('patentSearch.searching') : $t('patentSearch.startSearch') }}
             </el-button>
           </div>
         </el-form-item>
 
         <!-- 快捷搜索建议 -->
         <div class="search-suggestions">
-          <span class="suggestions-label">试试以下案例：</span>
+          <span class="suggestions-label">{{ $t('patentSearch.tryExample') }}</span>
           <el-tag v-for="suggestion in searchSuggestions" :key="suggestion" class="suggestion-tag"
             @click="searchForm.keyword = suggestion">
             {{ suggestion }}
@@ -47,9 +48,9 @@
     <el-card class="results-card">
       <template #header>
         <div class="results-header">
-          <span>检索历史</span>
+          <span>{{ $t('patentSearch.searchHistory') }}</span>
           <div class="results-info">
-            <span class="results-count">共 {{ total }} 条记录</span>
+            <span class="results-count">{{ $t('patentSearch.totalRecords', { count: total }) }}</span>
           </div>
         </div>
       </template>
@@ -67,7 +68,7 @@
                     <el-icon>
                       <Picture />
                     </el-icon>
-                    <span>图片加载失败</span>
+                    <span>{{ $t('patentSearch.imageLoadFailed') }}</span>
                   </div>
                 </template>
                 <template #placeholder>
@@ -82,7 +83,7 @@
                 <el-icon>
                   <ZoomIn />
                 </el-icon>
-                <span>点击放大</span>
+                <span>{{ $t('patentSearch.clickToEnlarge') }}</span>
               </div>
             </div>
 
@@ -127,14 +128,14 @@
                   <el-icon>
                     <Download />
                   </el-icon>
-                  下载PDF
+                  {{ $t('patentSearch.downloadPDF') }}
                 </el-button>
                 <el-button size="small" text @click="downloadReport(patent, 'word')"
                   :disabled="!(patent as any).wordUrl">
                   <el-icon>
                     <Download />
                   </el-icon>
-                  下载Word
+                  {{ $t('patentSearch.downloadWord') }}
                 </el-button>
               </div>
             </div>
@@ -143,9 +144,9 @@
 
         <!-- 空状态 -->
         <div v-if="!loading && patentList.length === 0" class="empty-state">
-          <el-empty description="暂无检索历史">
+          <el-empty :description="$t('patentSearch.noHistory')">
             <el-button type="primary" @click="searchForm.keyword = ''; handleSearch()">
-              开始检索
+              {{ $t('patentSearch.startSearch') }}
             </el-button>
           </el-empty>
         </div>
@@ -171,10 +172,12 @@ import { Document, User, Calendar, Collection, Star, StarFilled, View, Download,
 import { usePatentSearchStore } from '@/stores/patentSearch'
 import { formatDate } from '@/utils'
 import type { Patent } from '@/types'
+import { useI18n } from 'vue-i18n'
 
 // Composables
 const router = useRouter()
 const patentSearchStore = usePatentSearchStore()
+const { locale, t } = useI18n()
 
 // 响应式数据
 const loading = ref(false)
@@ -208,12 +211,12 @@ const handleSearch = async () => {
   const keywordText = searchForm.keyword.trim()
 
   if (!titleText) {
-    ElMessage.warning('请输入专利标题')
+    ElMessage.warning(t('patentSearch.pleaseEnterTitle'))
     return
   }
 
   if (!keywordText) {
-    ElMessage.warning('请输入技术方案')
+    ElMessage.warning(t('patentSearch.pleaseEnterSolution'))
     return
   }
 
@@ -233,12 +236,13 @@ const handleSearch = async () => {
 
     await patentSearchStore.quickSearch(combinedContent, {
       page: pagination.page,
-      pageSize: pagination.pageSize
+      pageSize: pagination.pageSize,
+      language: locale.value
     })
     // 检索成功后加载历史记录
     await loadSearchHistory()
   } catch (error: any) {
-    ElMessage.error(error.message || '检索失败')
+    ElMessage.error(error.message || t('patentSearch.searchFailed'))
   }
 }
 
@@ -252,8 +256,8 @@ const loadSearchHistory = async () => {
     })
   } catch (error: any) {
     // 如果是登录过期错误，不显示额外错误提示
-    if (error?.message !== '登录已过期') {
-      ElMessage.error(error.message || '加载历史记录失败')
+    if (error?.message !== t('common.loginExpired')) {
+      ElMessage.error(error.message || t('patentSearch.loadHistoryFailed'))
     }
   } finally {
     loading.value = false
@@ -278,13 +282,13 @@ const getStatusType = (state: number): 'success' | 'warning' | 'danger' | 'info'
 const getStatusText = (state: number): string => {
   switch (state) {
     case 1:
-      return '已完成'
+      return t('patentSearch.completed')
     case 0:
-      return '生成中'
+      return t('patentSearch.generating')
     case 2:
-      return '失败'
+      return t('patentSearch.failed')
     default:
-      return '未知'
+      return t('common.unknown')
   }
 }
 
@@ -310,7 +314,7 @@ const handlePageChange = async () => {
       pageSize: pagination.pageSize
     })
   } catch (error: any) {
-    ElMessage.error('加载数据失败')
+    ElMessage.error(t('common.loadFailed'))
   }
 }
 
@@ -329,13 +333,13 @@ const downloadReport = async (patent: Patent, format: 'pdf' | 'word' = 'pdf') =>
     // 检查是否有对应的文件URL
     const fileUrl = format === 'pdf' ? (patent as any).pdfUrl : (patent as any).wordUrl
     if (!fileUrl) {
-      ElMessage.warning(`该报告暂无${format === 'pdf' ? 'PDF' : 'Word'}文件`)
+      ElMessage.warning(format === 'pdf' ? t('common.noPdfFile') : t('common.noWordFile'))
       return
     }
 
     // 显示下载中提示
     const loadingMessage = ElMessage({
-      message: '正在准备下载...',
+      message: t('common.preparingDownload'),
       type: 'info',
       duration: 0
     })
@@ -362,14 +366,14 @@ const downloadReport = async (patent: Patent, format: 'pdf' | 'word' = 'pdf') =>
 
       // 关闭加载提示并显示成功消息
       loadingMessage.close()
-      ElMessage.success('下载已开始，请查看浏览器下载列表')
+      ElMessage.success(t('common.downloadStarted'))
     } catch (downloadError) {
       console.error('下载文件失败:', downloadError)
       loadingMessage.close()
 
       // 如果下载失败，尝试在新窗口打开
       ElMessage({
-        message: '直接下载失败，正在尝试在新窗口打开...',
+        message: t('common.downloadFailed'),
         type: 'warning',
         duration: 2000
       })
@@ -380,7 +384,7 @@ const downloadReport = async (patent: Patent, format: 'pdf' | 'word' = 'pdf') =>
     }
   } catch (error) {
     console.error('下载失败:', error)
-    ElMessage.error('下载失败，请重试')
+    ElMessage.error(t('common.downloadRetry'))
   }
 }
 
