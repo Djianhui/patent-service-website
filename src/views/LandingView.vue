@@ -251,7 +251,7 @@
                   </el-icon>
                 </div>
                 <div class="stat-info">
-                  <h3>5000万+</h3>
+                  <h3>5000K+</h3>
                   <p>{{ $t('landing.stats.patentDatabase') }}</p>
                 </div>
               </div>
@@ -262,7 +262,7 @@
                   </el-icon>
                 </div>
                 <div class="stat-info">
-                  <h3>10万+</h3>
+                  <h3>10K+</h3>
                   <p>{{ $t('landing.stats.successCases') }}</p>
                 </div>
               </div>

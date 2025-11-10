@@ -222,8 +222,8 @@ const loadData = async () => {
     total.value = result.total
   } catch (error: any) {
     // 如果是登录过期错误，不显示额外错误提示
-    if (error?.message !== '登录已过期') {
-      ElMessage.error(error.message || '加载数据失败')
+    if (error?.message !== t('common.loginExpired')) {
+      ElMessage.error(error.message || t('common.loadFailed'))
     }
   } finally {
     loading.value = false

@@ -210,8 +210,8 @@ const loadReports = async () => {
     await techReportStore.getReportList(params)
   } catch (error: any) {
     // 如果是登录过期错误，不显示额外错误提示
-    if (error?.message !== '登录已过期') {
-      ElMessage.error('加载报告列表失败')
+    if (error?.message !== t('common.loginExpired')) {
+      ElMessage.error(t('common.loadFailed'))
     }
   } finally {
     loading.value = false
@@ -245,13 +245,13 @@ const downloadReport = async (report: TechReport, format: 'pdf' | 'word' = 'pdf'
     // 检查是否有对应的文件URL
     const fileUrl = format === 'pdf' ? (report as any).pdfUrl : (report as any).wordUrl
     if (!fileUrl) {
-      ElMessage.warning(`该报告暂无${format === 'pdf' ? 'PDF' : 'Word'}文件`)
+      ElMessage.warning(format === 'pdf' ? t('common.noPdfFile') : t('common.noWordFile'))
       return
     }
 
     // 显示下载中提示
     const loadingMessage = ElMessage({
-      message: '正在准备下载...',
+      message: t('common.preparingDownload'),
       type: 'info',
       duration: 0
     })
@@ -278,14 +278,14 @@ const downloadReport = async (report: TechReport, format: 'pdf' | 'word' = 'pdf'
 
       // 关闭加载提示并显示成功消息
       loadingMessage.close()
-      ElMessage.success('下载已开始，请查看浏览器下载列表')
+      ElMessage.success(t('common.downloadStarted'))
     } catch (downloadError) {
       console.error('下载文件失败:', downloadError)
       loadingMessage.close()
 
       // 如果下载失败，尝试在新窗口打开
       ElMessage({
-        message: '直接下载失败，正在尝试在新窗口打开...',
+        message: t('common.downloadFailed'),
         type: 'warning',
         duration: 2000
       })
@@ -296,28 +296,28 @@ const downloadReport = async (report: TechReport, format: 'pdf' | 'word' = 'pdf'
     }
   } catch (error) {
     console.error('下载失败:', error)
-    ElMessage.error('下载失败，请重试')
+    ElMessage.error(t('common.downloadRetry'))
   }
 }
 
 const deleteReport = async (report: TechReport) => {
   try {
     await ElMessageBox.confirm(
-      `确定要删除报告"${report.title}"吗？此操作不可恢复。`,
-      '确认删除',
+      t('common.confirmDeleteMessage', { title: report.title }),
+      t('common.confirmDelete'),
       {
-        confirmButtonText: '删除',
-        cancelButtonText: '取消',
+        confirmButtonText: t('common.delete'),
+        cancelButtonText: t('common.cancel'),
         type: 'warning'
       }
     )
 
     await techReportStore.deleteReport(report.id)
-    ElMessage.success('删除成功')
+    ElMessage.success(t('common.deleteSuccess'))
     loadReports()
   } catch (error) {
     if (error !== 'cancel') {
-      ElMessage.error('删除失败')
+      ElMessage.error(t('common.deleteFailed'))
     }
   }
 }

@@ -81,6 +81,7 @@
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
 import { UploadFilled, Select, Loading } from '@element-plus/icons-vue'
 import { useTechReportStore } from '@/stores/techReport'
@@ -88,6 +89,7 @@ import { techReportService } from '@/services/techReport'
 
 // Composables
 const router = useRouter()
+const { t } = useI18n()
 const techReportStore = useTechReportStore()
 
 // 响应式数据
@@ -172,7 +174,7 @@ const generateReport = async () => {
   console.log('=====================')
 
   if (!token) {
-    ElMessage.error('未登录，请先登录')
+    ElMessage.error(t('common.notLoggedIn'))
     router.push('/login')
     return
   }
@@ -211,7 +213,7 @@ const generateReport = async () => {
     currentStep.value = 4
 
     console.log('报告生成结果:', result)
-    ElMessage.success(result.message || '操作成功')
+    ElMessage.success(result.message || t('common.reportGenerateSuccess'))
 
     // 设置预览数据（如果后端返回了数据）
     if (result.data) {
@@ -271,7 +273,7 @@ const generateReport = async () => {
         ]
       }
     } else {
-      ElMessage.error(error.message || '报告生成失败')
+      ElMessage.error(error.message || t('common.reportGenerateFailed'))
     }
   } finally {
     generating.value = false
@@ -280,7 +282,7 @@ const generateReport = async () => {
 
 const saveAsDraft = async () => {
   if (!formData.technicalField.trim()) {
-    ElMessage.warning('请输入技术领域描述')
+    ElMessage.warning(t('common.pleaseEnterTechField'))
     return
   }
 
@@ -288,9 +290,9 @@ const saveAsDraft = async () => {
   try {
     // 这里调用保存草稿的API
     await new Promise(resolve => setTimeout(resolve, 1000))
-    ElMessage.success('草稿保存成功')
+    ElMessage.success(t('common.draftSaveSuccess'))
   } catch (error) {
-    ElMessage.error('草稿保存失败')
+    ElMessage.error(t('common.draftSaveFailed'))
   } finally {
     savingDraft.value = false
   }
@@ -310,7 +312,7 @@ const editReport = () => {
 
 const downloadReport = () => {
   // 下载报告
-  ElMessage.success('报告下载中...')
+  ElMessage.success(t('common.reportDownloading'))
 }
 
 // 生命周期

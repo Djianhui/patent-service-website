@@ -55,9 +55,11 @@ import { Star } from '@element-plus/icons-vue'
 import { patentDraftService } from '@/services/patentDraft'
 import type { PatentDraft } from '@/types'
 import { DraftStatus } from '@/types'
+import { useI18n } from 'vue-i18n'
 
 // Composables
 const router = useRouter()
+const { t } = useI18n()
 
 // 响应式数据
 const formRef = ref()
@@ -66,12 +68,12 @@ const generating = ref(false)
 // 表单验证规则
 const formRules = {
   title: [
-    { required: true, message: '请输入发明名称', trigger: 'blur' },
-    { min: 3, max: 50, message: '发明名称长度应为3-50个字符', trigger: 'blur' }
+    { required: true, message: t('patentDraft.pleaseEnterName'), trigger: 'blur' },
+    { min: 3, max: 50, message: t('patentDraft.nameLength'), trigger: 'blur' }
   ],
   technicalSolution: [
-    { required: true, message: '请填写技术方案', trigger: 'blur' },
-    { min: 50, message: '技术方案描述至少50个字符', trigger: 'blur' }
+    { required: true, message: t('patentDraft.pleaseEnterSolution'), trigger: 'blur' },
+    { min: 50, message: t('techReport.solutionMinLength'), trigger: 'blur' }
   ]
 }
 
@@ -94,14 +96,14 @@ const generateDraft = async () => {
 
   const valid = await formRef.value.validate().catch(() => false)
   if (!valid) {
-    ElMessage.warning('请正确填写所有必填项')
+    ElMessage.warning(t('common.pleaseEnterAllRequired'))
     return
   }
 
   generating.value = true
 
   try {
-    ElMessage.info('系统正在分析您的技术方案，生成专利草稿...')
+    ElMessage.info(t('common.generatingDraft'))
 
     // 调用后端API生成专利草稿
     await patentDraftService.createDraft({
@@ -109,14 +111,14 @@ const generateDraft = async () => {
       technicalSolution: draftData.technicalSolution
     })
 
-    ElMessage.success('专利草稿任务已提交，请在草稿管理中查看结果')
+    ElMessage.success(t('common.draftSubmitted'))
 
     // 跳转到草稿管理页面
     setTimeout(() => {
       router.push('/app/patent-draft/manage')
     }, 1500)
   } catch (error: any) {
-    ElMessage.error(error.message || 'AI生成失败，请重试')
+    ElMessage.error(error.message || t('common.generateFailed'))
   } finally {
     generating.value = false
   }
@@ -136,7 +138,7 @@ const resetForm = () => {
     description: '',
     abstract: ''
   })
-  ElMessage.success('表单已重置')
+  ElMessage.success(t('common.formReset'))
 }
 </script>
 

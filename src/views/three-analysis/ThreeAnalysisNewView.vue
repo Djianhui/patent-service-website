@@ -126,6 +126,7 @@
 <script setup lang="ts">
 import { ref, reactive, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { ElMessage, type FormInstance } from 'element-plus'
 import {
   UploadFilled,
@@ -136,6 +137,7 @@ import {
 import { threeAnalysisService } from '@/services/threeAnalysis'
 
 const router = useRouter()
+const { t } = useI18n()
 const formRef = ref<FormInstance>()
 const analyzing = ref(false)
 const analysisProgress = ref(0)
@@ -172,17 +174,17 @@ const handleFileChange = async (file: any) => {
   const isValidSize = rawFile.size / 1024 / 1024 < 10
 
   if (!isValidFormat) {
-    ElMessage.error('只支持 PDF、DOC、DOCX 格式的文件！')
+    ElMessage.error(t('common.fileFormatError'))
     return
   }
   if (!isValidSize) {
-    ElMessage.error('文件大小不能超过 10MB！')
+    ElMessage.error(t('common.fileSizeError'))
     return
   }
 
   // 上传文件到服务器
   try {
-    ElMessage.info('正在上传文件...')
+    ElMessage.info(t('common.uploading'))
     const url = await threeAnalysisService.uploadFile(rawFile)
 
     uploadedFiles.value.push({
@@ -192,9 +194,9 @@ const handleFileChange = async (file: any) => {
       size: rawFile.size
     })
 
-    ElMessage.success('文件上传成功')
+    ElMessage.success(t('common.uploadSuccess'))
   } catch (error: any) {
-    ElMessage.error(error.message || '文件上传失败')
+    ElMessage.error(error.message || t('common.uploadFailed'))
   }
 }
 
@@ -218,12 +220,12 @@ const startAnalysis = async () => {
   // 根据输入模式验证
   if (inputMode.value === 'file') {
     if (uploadedFiles.value.length === 0) {
-      ElMessage.warning('请先上传专利文件')
+      ElMessage.warning(t('common.pleaseUploadFile'))
       return
     }
   } else {
     if (!formData.title.trim() || !formData.technicalSolution.trim()) {
-      ElMessage.warning('请填写完整信息')
+      ElMessage.warning(t('common.pleaseCompleteInfo'))
       return
     }
   }
@@ -261,7 +263,7 @@ const startAnalysis = async () => {
     clearInterval(progressInterval)
     analysisProgress.value = 100
 
-    ElMessage.success('分析任务已提交，请在历史记录中查看结果')
+    ElMessage.success(t('common.analysisSubmitted'))
 
     // 跳转到历史记录页面
     setTimeout(() => {
@@ -269,8 +271,8 @@ const startAnalysis = async () => {
     }, 1500)
   } catch (error: any) {
     // 如果是登录过期错误，不显示额外错误提示
-    if (error?.message !== '登录已过期') {
-      ElMessage.error(error.message || '分析失败')
+    if (error?.message !== t('common.loginExpired')) {
+      ElMessage.error(error.message || t('common.analysisFailed'))
     }
   } finally {
     analyzing.value = false

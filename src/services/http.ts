@@ -1,9 +1,13 @@
 import axios, { type AxiosInstance, type AxiosResponse, type AxiosError } from 'axios'
 import { ElMessage } from 'element-plus'
 import type { ApiResponse } from '@/types'
+import i18n from '@/i18n'
 
 // 用于防止重复提示
 let isTokenExpiredMessageShown = false
+
+// 获取翻译函数
+const t = i18n.global.t
 
 // 创建axios实例
 const api: AxiosInstance = axios.create({
@@ -87,7 +91,7 @@ api.interceptors.response.use(
         // 显示错误提示
         ElMessage({
           type: 'error',
-          message: '登录已过期，请重新登录',
+          message: t('common.loginExpired') + '，请重新登录',
           duration: 2000,
           showClose: true,
         })
@@ -108,7 +112,7 @@ api.interceptors.response.use(
       }
 
       // 返回一个被拒绝的Promise，阻止后续处理
-      return Promise.reject(new Error('登录已过期'))
+      return Promise.reject(new Error(t('common.loginExpired')))
     }
 
     // 直接返回响应，让具体的 service 层处理数据格式
@@ -162,7 +166,7 @@ api.interceptors.response.use(
             // 显示错误提示
             ElMessage({
               type: 'error',
-              message: '登录已过期，请重新登录',
+              message: t('common.loginExpired') + '，请重新登录',
               duration: 2000,
               showClose: true,
             })
@@ -182,24 +186,24 @@ api.interceptors.response.use(
             }, 100)
           }
           // 401错误直接返回，不再向下传递
-          return Promise.reject(new Error('登录已过期'))
+          return Promise.reject(new Error(t('common.loginExpired')))
         case 403:
-          ElMessage.error('没有权限访问此资源')
+          ElMessage.error(t('common.noPermission'))
           break
         case 404:
-          ElMessage.error('请求的资源不存在')
+          ElMessage.error(t('common.notFound'))
           break
         case 500:
-          ElMessage.error('服务器内部错误')
+          ElMessage.error(t('common.serverError'))
           break
         default:
-          const errorMsg = (data as any)?.message || '请求失败'
+          const errorMsg = (data as any)?.message || t('common.requestFailed')
           ElMessage.error(errorMsg)
       }
     } else if (error.request) {
-      ElMessage.error('网络错误，请检查网络连接')
+      ElMessage.error(t('common.networkError'))
     } else {
-      ElMessage.error('请求配置错误')
+      ElMessage.error(t('common.requestConfigError'))
     }
 
     console.error('==================')
