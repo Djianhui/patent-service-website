@@ -10,8 +10,8 @@ const api: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || 'https://patent.langdetech.cn/api',
   timeout: 120000, // 增加超时时间为120秒，因为AI生成报告需要较长时间
   headers: {
-    'Content-Type': 'application/json'
-  }
+    'Content-Type': 'application/json',
+  },
 })
 
 // 请求拦截器
@@ -56,7 +56,7 @@ api.interceptors.request.use(
   (error: AxiosError) => {
     console.error('请求错误:', error)
     return Promise.reject(error)
-  }
+  },
 )
 
 // 响应拦截器
@@ -89,7 +89,7 @@ api.interceptors.response.use(
           type: 'error',
           message: '登录已过期，请重新登录',
           duration: 2000,
-          showClose: true
+          showClose: true,
         })
 
         // 立即跳转，使用window.location
@@ -98,11 +98,8 @@ api.interceptors.response.use(
 
         // 延迟100ms确保消息显示
         setTimeout(() => {
-          if (currentPath !== '/login' && currentPath !== '/register') {
-            window.location.href = '/login?redirect=' + encodeURIComponent(currentPath)
-          } else {
-            window.location.href = '/login'
-          }
+          // 跳转到登录页
+          window.location.href = '/login'
           // 重置标志
           setTimeout(() => {
             isTokenExpiredMessageShown = false
@@ -167,7 +164,7 @@ api.interceptors.response.use(
               type: 'error',
               message: '登录已过期，请重新登录',
               duration: 2000,
-              showClose: true
+              showClose: true,
             })
 
             // 立即跳转，使用window.location
@@ -176,11 +173,8 @@ api.interceptors.response.use(
 
             // 延迟100ms确保消息显示
             setTimeout(() => {
-              if (currentPath !== '/login' && currentPath !== '/register') {
-                window.location.href = '/login?redirect=' + encodeURIComponent(currentPath)
-              } else {
-                window.location.href = '/login'
-              }
+              // 跳转到登录页
+              window.location.href = '/login'
               // 重置标志
               setTimeout(() => {
                 isTokenExpiredMessageShown = false
@@ -210,7 +204,7 @@ api.interceptors.response.use(
 
     console.error('==================')
     return Promise.reject(error)
-  }
+  },
 )
 
 // 通用请求方法
@@ -238,11 +232,11 @@ export const request = {
   async upload<T = any>(url: string, formData: FormData): Promise<T> {
     const res = await api.post(url, formData, {
       headers: {
-        'Content-Type': 'multipart/form-data'
-      }
+        'Content-Type': 'multipart/form-data',
+      },
     })
     return res.data
-  }
+  },
 }
 
 export default api

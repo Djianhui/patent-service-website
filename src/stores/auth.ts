@@ -222,35 +222,52 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   const checkAuth = async () => {
+    console.log('=== checkAuth: 开始检查 ===')
     if (!token.value) {
+      console.log('checkAuth: token 不存在')
       return false
     }
 
     try {
       // 检查token是否过期
       const expireTime = storage.get<number>('tokenExpireTime')
+      console.log('checkAuth: tokenExpireTime =', expireTime)
+      console.log('checkAuth: Date.now() =', Date.now())
+      console.log(
+        'checkAuth: 是否过期 =',
+        expireTime && typeof expireTime === 'number' && Date.now() > expireTime,
+      )
+
       if (expireTime && typeof expireTime === 'number' && Date.now() > expireTime) {
+        console.log('checkAuth: token 已过期，尝试刷新')
         await refreshToken()
       }
 
-      // 获取最新用户信息
-      if (!user.value || !user.value.userId) {
-        console.log('=== checkAuth: 获取用户信息 ===')
-        const userInfo = await authService.getUserInfo()
-        user.value = userInfo
-        storage.set('user', userInfo)
+      // 强制调用 getUserInfo 验证 token 有效性
+      console.log('checkAuth: 调用 getUserInfo 验证 token')
+      const userInfo = await authService.getUserInfo()
+      console.log('checkAuth: getUserInfo 成功')
+      user.value = userInfo
+      storage.set('user', userInfo)
 
-        // 如果有userId且SSE未连接，则建立连接
-        if (userInfo.userId && !notificationService.isConnected()) {
-          console.log('=== checkAuth: 建立SSE连接 ===')
-          notificationService.connect(userInfo.userId)
-        }
+      // 如果有userId且SSE未连接，则建立连接
+      if (userInfo.userId && !notificationService.isConnected()) {
+        console.log('checkAuth: 建立SSE连接')
+        notificationService.connect(userInfo.userId)
       }
 
+      console.log('checkAuth: 检查通过，返回 true')
       return true
-    } catch (error) {
-      console.error('认证检查失败:', error)
-      await logout()
+    } catch (error: any) {
+      console.error('checkAuth: 认证检查失败:', error)
+      console.error('checkAuth: 错误消息:', error.message)
+      // 如果是 401 错误，不在这里 logout，由 HTTP 拦截器处理
+      if (error.message === '登录已过期') {
+        console.log('checkAuth: 检测到登录已过期，返回 false')
+        return false
+      }
+      // 其他错误也返回 false，但不 logout
+      console.log('checkAuth: 其他错误，返回 false')
       return false
     }
   }

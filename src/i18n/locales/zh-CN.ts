@@ -483,10 +483,7 @@ export default {
       info: {
         title: '联系信息',
         address: '地址',
-        addressContent:
-          "449B BUKIT BATOK WEST AVENUE 9, #18-82, WEST VALLEY {'@'} BUKIT BATOK, SINGAPORE (652449)",
         email: '邮箱',
-        emailContent: "ipsrvc{'@'}gmail.com",
         phone: '电话',
         phoneContent: '+86 152-7318-4384',
         hours: '工作时间',

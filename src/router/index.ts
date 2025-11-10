@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { ElMessage } from 'element-plus'
+import i18n from '@/i18n'
 import AppLayout from '@/layouts/AppLayout.vue'
 
 // 路由配置
@@ -263,19 +264,56 @@ const router = createRouter({
 // 路由守卫
 router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore()
+  const { t } = i18n.global
 
   // 设置页面标题
-  const titleKey = to.meta?.title
-  if (titleKey) {
-    // 如果是字符串,可能是翻译key或直接的标题
-    if (typeof titleKey === 'string') {
-      document.title =
-        titleKey === '首页' || titleKey === 'Home'
-          ? 'PatentPro - 智能化专利服务平台'
-          : `${titleKey} - 专利服务平台`
+  const routeName = to.name as string
+  const appName = 'PatentPro'
+  const separator = ' - '
+
+  // 根据路由名称获取标题翻译键
+  const titleTranslationMap: Record<string, string> = {
+    Home: 'menu.home',
+    Login: 'auth.login',
+    Register: 'auth.register',
+    GoogleCallback: 'auth.processingGoogleLogin',
+    Dashboard: 'menu.dashboard',
+    TechReport: 'menu.techReport',
+    TechReportNew: 'menu.newReport',
+    TechReportHistory: 'menu.reportHistory',
+    TechReportDetail: 'techReport.viewReport',
+    PatentSearch: 'menu.patentSearch',
+    PatentSearchQuick: 'menu.quickSearch',
+    PatentSearchResults: 'menu.searchResults',
+    ThreeAnalysis: 'menu.threeAnalysis',
+    ThreeAnalysisNew: 'menu.newAnalysis',
+    ThreeAnalysisHistory: 'menu.analysisHistory',
+    ThreeAnalysisDetail: 'patentSearch.viewDetail',
+    PatentDraft: 'menu.patentDraft',
+    PatentDraftNew: 'menu.newDraft',
+    PatentDraftManage: 'menu.draftManage',
+    PatentDraftEdit: 'common.edit',
+    DefenseSupport: 'menu.defenseSupport',
+    DefenseSupportSimulation: 'menu.simulation',
+    Profile: 'menu.profile',
+    NotFound: 'common.error',
+  }
+
+  const translationKey = titleTranslationMap[routeName]
+  if (translationKey) {
+    const pageTitle = t(translationKey)
+    if (routeName === 'Home') {
+      // 首页：PatentPro - Intelligent Patent Service Platform
+      const suffix = t('auth.loginSubtitle')
+      document.title = `${appName}${separator}${suffix}`
+    } else {
+      // 其他页面：页面标题 - PatentPro
+      document.title = `${pageTitle}${separator}${appName}`
     }
   } else {
-    document.title = 'PatentPro - 专利服务平台'
+    // 默认标题
+    const suffix = t('auth.loginSubtitle')
+    document.title = `${appName}${separator}${suffix}`
   }
 
   // 检查是否需要认证

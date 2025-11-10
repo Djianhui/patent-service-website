@@ -46,9 +46,7 @@ const i18n = createI18n({
     'ar-SA': arSA,
   },
   globalInjection: true, // 全局注入 $t 函数
-  modifiers: {
-    // 禁用链接修饰符，避免 "Invalid linked format" 错误
-  },
+  escapeParameter: false, // 禁用参数转义，避免 Invalid linked format 错误
   missingWarn: false, // 关闭缺失警告
   fallbackWarn: false, // 关闭回退警告
 })

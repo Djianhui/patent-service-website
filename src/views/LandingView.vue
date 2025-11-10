@@ -406,7 +406,7 @@
                 </el-icon>
                 <div>
                   <h4>{{ $t('landing.contact.info.address') }}</h4>
-                  <p>{{ $t('landing.contact.info.addressContent') }}</p>
+                  <p>449B BUKIT BATOK WEST AVENUE 9, #18-82, WEST VALLEY @ BUKIT BATOK, SINGAPORE (652449)</p>
                 </div>
               </div>
               <div class="info-item">
@@ -415,7 +415,7 @@
                 </el-icon>
                 <div>
                   <h4>{{ $t('landing.contact.info.email') }}</h4>
-                  <p>{{ $t('landing.contact.info.emailContent') }}</p>
+                  <p>ipsrvc@outlook.com</p>
                 </div>
               </div>
               <!-- 电话 -->

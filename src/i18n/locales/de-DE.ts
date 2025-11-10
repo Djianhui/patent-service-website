@@ -470,10 +470,7 @@ export default {
       info: {
         title: 'Kontaktinformationen',
         address: 'Adresse',
-        addressContent:
-          '449B BUKIT BATOK WEST AVENUE 9, #18-82, WEST VALLEY @ BUKIT BATOK, SINGAPORE (652449)',
         email: 'E-Mail',
-        emailContent: 'ccsuzc@gmail.com',
         phone: 'Telefon',
         phoneContent: '+86 152-7318-4384',
         hours: 'Geschäftszeiten',
