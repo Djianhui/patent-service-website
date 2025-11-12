@@ -57,6 +57,7 @@ export default {
     draftSubmitted: 'Tâche de brouillon de brevet soumise, consultez les résultats dans la gestion',
     generateFailed: 'Échec de la génération IA, veuillez réessayer',
     formReset: 'Le formulaire a été réinitialisé',
+    patent: 'Brevet',
   },
   menu: {
     home: 'Accueil',
@@ -144,6 +145,20 @@ export default {
     registering: 'Inscription...',
     registerButton: "S'inscrire",
     hasAccountPrompt: 'Déjà un compte?',
+    // Messages de validation de formulaire
+    pleaseEnterCaptchaCode: 'Veuillez entrer le captcha',
+    pleaseEnterUsernameOrEmail: "Veuillez entrer le nom d'utilisateur ou l'email",
+    usernameMinLength: "Le nom d'utilisateur doit contenir au moins 3 caractères",
+    usernameLength: "Le nom d'utilisateur doit contenir entre 3 et 20 caractères",
+    usernamePattern:
+      "Le nom d'utilisateur ne peut contenir que des lettres, des chiffres et des underscores",
+    passwordMinLength: 'Le mot de passe doit contenir au moins 6 caractères',
+    captchaRequired: 'Veuillez entrer le captcha',
+    getCaptchaFailed: 'Échec de la récupération du captcha',
+    pleaseGetCaptcha: "Veuillez d'abord obtenir le captcha",
+    loginFailed: "Connexion échouée, veuillez vérifier le nom d'utilisateur et le mot de passe",
+    registerSuccessMsg: 'Inscription réussie! Veuillez vous connecter',
+    registerFailed: 'Inscription échouée, veuillez réessayer',
   },
   patentSearch: {
     title: 'Recherche rapide de brevets',
@@ -168,10 +183,11 @@ export default {
     generating: 'Génération',
     failed: 'Échec',
     imageLoadFailed: 'Échec du chargement',
-    clickToEnlarge: 'Agrandir',
-    tryExample: 'Exemples:',
+    clickToEnlarge: 'Cliquez pour agrandir',
+    tryExample: 'Essayez des exemples :',
     searchFailed: 'Échec de la recherche',
-    loadHistoryFailed: "Échec du chargement de l'historique",
+    loadHistoryFailed: "Échec du chargement de l'historique de recherche",
+    patentSearchReport: 'Rapport de recherche de brevet',
   },
   techReport: {
     title: 'Rapport technique',

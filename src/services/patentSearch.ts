@@ -199,6 +199,7 @@ export const patentSearchService = {
     pageSize?: number
     keyword?: string
     status?: string
+    language?: string
   }): Promise<{
     patents: Patent[]
     total: number
@@ -234,16 +235,12 @@ export const patentSearchService = {
         // 转换为 Patent 类型
         const patents: Patent[] = response.data.records.map((record) => {
           // 解析 taskJson
-          let title = '专利检索报告'
-          const abstract = ''
           let keyword = ''
 
           try {
             if (record.taskJson) {
               const taskData = JSON.parse(record.taskJson)
               keyword = taskData.prompt || ''
-              title = `${keyword.substring(0, 20)}专利检索报告`
-              // abstract = `基于"${keyword}"的专利检索结果`
             }
           } catch (e) {
             console.warn('解析 taskJson 失败:', e)
@@ -251,8 +248,8 @@ export const patentSearchService = {
 
           return {
             id: String(record.id),
-            title,
-            abstract,
+            title: keyword.substring(0, 20) || 'Patent Search Report', // 保存原始关键词前缀或默认值
+            abstract: '',
             applicant: '系统生成',
             inventor: [],
             applicationNumber: record.taskId || String(record.id),
@@ -261,7 +258,7 @@ export const patentSearchService = {
             publicationDate: record.createTime,
             ipcClass: [],
             claims: [],
-            description: abstract,
+            description: '',
             drawings: [],
             // 扩展字段
             firstImgUrl: convertImageUrl(record.firstImgUrl),

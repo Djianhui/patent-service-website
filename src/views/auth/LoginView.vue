@@ -192,7 +192,7 @@ const loginForm = reactive({
 // 自定义验证器
 const validateCode = (rule: any, value: any, callback: any) => {
   if (!value) {
-    callback(new Error('请输入验证码'))
+    callback(new Error(t('auth.pleaseEnterCaptchaCode')))
   } else {
     callback()
   }
@@ -201,15 +201,15 @@ const validateCode = (rule: any, value: any, callback: any) => {
 // 表单验证规则
 const loginRules: FormRules = {
   username: [
-    { required: true, message: '请输入用户名或邮箱', trigger: 'blur' },
-    { min: 3, message: '用户名长度不能少于3位', trigger: 'blur' }
+    { required: true, message: t('auth.pleaseEnterUsernameOrEmail'), trigger: 'blur' },
+    { min: 3, message: t('auth.usernameMinLength'), trigger: 'blur' }
   ],
   password: [
-    { required: true, message: '请输入密码', trigger: 'blur' },
-    { min: 6, message: '密码长度不能少于6位', trigger: 'blur' }
+    { required: true, message: t('auth.pleaseEnterPassword'), trigger: 'blur' },
+    { min: 6, message: t('auth.passwordMinLength'), trigger: 'blur' }
   ],
   code: [
-    { required: true, message: '请输入验证码', trigger: 'blur' },
+    { required: true, message: t('auth.captchaRequired'), trigger: 'blur' },
     { validator: validateCode, trigger: 'blur' }
   ]
 }
@@ -221,7 +221,7 @@ const getCaptcha = async () => {
     captchaImg.value = response.img
     captchaUuid.value = response.uuid
   } catch (error: any) {
-    ElMessage.error(error.message || '获取验证码失败')
+    ElMessage.error(error.message || t('auth.getCaptchaFailed'))
   }
 }
 
@@ -240,7 +240,7 @@ const handleLogin = async () => {
   }
 
   if (!captchaUuid.value) {
-    ElMessage.error('请先获取验证码')
+    ElMessage.error(t('auth.pleaseGetCaptcha'))
     return
   }
 
@@ -258,7 +258,7 @@ const handleLogin = async () => {
     })
 
     console.log('登录成功')
-    ElMessage.success('登录成功')
+    ElMessage.success(t('auth.loginSuccess'))
 
     // 获取重定向路径
     const redirectPath = (route.query.redirect as string) || '/app/dashboard'
@@ -266,7 +266,7 @@ const handleLogin = async () => {
     router.push(redirectPath)
   } catch (error: any) {
     console.error('登录失败:', error)
-    const errorMessage = error.message || '登录失败，请检查用户名和密码'
+    const errorMessage = error.message || t('auth.loginFailed')
     ElMessage.error(errorMessage)
     // 登录失败后刷新验证码
     refreshCaptcha()

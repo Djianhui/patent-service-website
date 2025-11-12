@@ -56,6 +56,7 @@ export default {
     draftSubmitted: 'Patent draft task submitted, please check results in draft management',
     generateFailed: 'AI generation failed, please try again',
     formReset: 'Form has been reset',
+    patent: 'Patent',
   },
   menu: {
     home: 'Home',
@@ -142,6 +143,19 @@ export default {
     registering: 'Registering...',
     registerButton: 'Register Account',
     hasAccountPrompt: 'Already have an account?',
+    // Form validation messages
+    pleaseEnterCaptchaCode: 'Please enter captcha code',
+    pleaseEnterUsernameOrEmail: 'Please enter username or email',
+    usernameMinLength: 'Username must be at least 3 characters',
+    usernameLength: 'Username length should be 3-20 characters',
+    usernamePattern: 'Username can only contain letters, numbers and underscores',
+    passwordMinLength: 'Password must be at least 6 characters',
+    captchaRequired: 'Please enter captcha code',
+    getCaptchaFailed: 'Failed to get captcha',
+    pleaseGetCaptcha: 'Please get captcha first',
+    loginFailed: 'Login failed, please check username and password',
+    registerSuccessMsg: 'Registration successful! Please login to your account',
+    registerFailed: 'Registration failed, please try again',
   },
   patentSearch: {
     title: 'Quick Patent Search',
@@ -170,6 +184,7 @@ export default {
     tryExample: 'Try examples:',
     searchFailed: 'Search failed',
     loadHistoryFailed: 'Failed to load search history',
+    patentSearchReport: 'Patent Search Report',
   },
   techReport: {
     title: 'Technical Report',

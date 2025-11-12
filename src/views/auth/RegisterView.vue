@@ -185,7 +185,7 @@ const currentLocaleName = computed(() => {
 // 自定义验证器
 const validateCode = (rule: any, value: any, callback: any) => {
   if (!value) {
-    callback(new Error('请输入验证码'))
+    callback(new Error(t('auth.pleaseEnterCaptchaCode')))
   } else {
     callback()
   }
@@ -194,16 +194,16 @@ const validateCode = (rule: any, value: any, callback: any) => {
 // 表单验证规则
 const registerRules: FormRules = {
   username: [
-    { required: true, message: '请输入用户名', trigger: 'blur' },
-    { min: 3, max: 20, message: '用户名长度在3到20个字符', trigger: 'blur' },
-    { pattern: /^[a-zA-Z0-9_]+$/, message: '用户名只能包含字母、数字和下划线', trigger: 'blur' }
+    { required: true, message: t('auth.pleaseEnterUsername'), trigger: 'blur' },
+    { min: 3, max: 20, message: t('auth.usernameLength'), trigger: 'blur' },
+    { pattern: /^[a-zA-Z0-9_]+$/, message: t('auth.usernamePattern'), trigger: 'blur' }
   ],
   password: [
-    { required: true, message: '请设置密码', trigger: 'blur' },
-    { min: 6, message: '密码长度不能少于6位', trigger: 'blur' }
+    { required: true, message: t('auth.setPassword'), trigger: 'blur' },
+    { min: 6, message: t('auth.passwordMinLength'), trigger: 'blur' }
   ],
   code: [
-    { required: true, message: '请输入验证码', trigger: 'blur' },
+    { required: true, message: t('auth.captchaRequired'), trigger: 'blur' },
     { validator: validateCode, trigger: 'blur' }
   ]
 }
@@ -225,7 +225,7 @@ const getCaptcha = async () => {
     captchaImg.value = response.img
     captchaUuid.value = response.uuid
   } catch (error: any) {
-    ElMessage.error(error.message || '获取验证码失败')
+    ElMessage.error(error.message || t('auth.getCaptchaFailed'))
   }
 }
 
@@ -245,7 +245,7 @@ const handleRegister = async () => {
   }
 
   if (!captchaUuid.value) {
-    ElMessage.error('请先获取验证码')
+    ElMessage.error(t('auth.pleaseGetCaptcha'))
     return
   }
 
@@ -259,11 +259,11 @@ const handleRegister = async () => {
       uuid: captchaUuid.value
     })
 
-    ElMessage.success('注册成功！请登录您的账户')
+    ElMessage.success(t('auth.registerSuccessMsg'))
     router.push('/login')
   } catch (error: any) {
     console.error('注册失败:', error)
-    ElMessage.error(error.message || '注册失败，请重试')
+    ElMessage.error(error.message || t('auth.registerFailed'))
     // 注册失败后刷新验证码
     refreshCaptcha()
     registerForm.code = ''

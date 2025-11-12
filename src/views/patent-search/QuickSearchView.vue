@@ -34,13 +34,13 @@
         </el-form-item>
 
         <!-- 快捷搜索建议 -->
-        <div class="search-suggestions">
+        <!-- <div class="search-suggestions">
           <span class="suggestions-label">{{ $t('patentSearch.tryExample') }}</span>
           <el-tag v-for="suggestion in searchSuggestions" :key="suggestion" class="suggestion-tag"
             @click="searchForm.keyword = suggestion">
             {{ suggestion }}
           </el-tag>
-        </div>
+        </div> -->
       </el-form>
     </el-card>
 
@@ -90,7 +90,7 @@
             <!-- 专利内容区域 -->
             <div class="patent-info">
               <div class="patent-header">
-                <h3 class="patent-title">{{ patent.title }}</h3>
+                <h3 class="patent-title">{{ getPatentTitle(patent) }}</h3>
                 <div class="patent-status">
                   <el-tag :type="getStatusType((patent as any).state)">
                     {{ getStatusText((patent as any).state) }}
@@ -99,24 +99,14 @@
               </div>
 
               <div class="patent-meta">
-                <span class="meta-item">
-                  <el-icon>
-                    <Document />
-                  </el-icon>
-                  {{ patent.publicationNumber }}
-                </span>
+
                 <span class="meta-item">
                   <el-icon>
                     <Calendar />
                   </el-icon>
                   {{ formatDate(patent.publicationDate) }}
                 </span>
-                <span class="meta-item">
-                  <el-icon>
-                    <User />
-                  </el-icon>
-                  {{ patent.applicant }}
-                </span>
+
               </div>
 
               <div class="patent-abstract">
@@ -292,6 +282,30 @@ const getStatusText = (state: number): string => {
   }
 }
 
+// 获取专利标题（实时翻译）
+const getPatentTitle = (patent: Patent): string => {
+  const originalTitle = patent.title
+
+  // 如果标题是纯的报告文本（没有关键词），直接返回翻译
+  const reportTexts = [
+    '专利检索报告',
+    'Patent Search Report',
+    '特許検索レポート',
+    'Patentsuchbericht',
+    'Rapport de recherche de brevet',
+    'Отчет по поиску патентов',
+    'تقرير البحث عن براءات الاختراع'
+  ]
+
+  // 检查是否为纯报告文本
+  if (reportTexts.includes(originalTitle)) {
+    return t('patentSearch.patentSearchReport')
+  }
+
+  // 否则，标题应该是关键词前缀，组合为：关键词 + 报告文本
+  return `${originalTitle} ${t('patentSearch.patentSearchReport')}`
+}
+
 const handlePageChange = async () => {
   const titleText = searchForm.title.trim()
   const keywordText = searchForm.keyword.trim()
@@ -352,7 +366,7 @@ const downloadReport = async (patent: Patent, format: 'pdf' | 'word' = 'pdf') =>
 
       // 设置下载文件名
       const extension = format === 'pdf' ? 'pdf' : 'docx'
-      const fileName = `${patent.title}_专利.${extension}`
+      const fileName = `${patent.title}_${t('common.patent')}.${extension}`
       link.download = fileName
 
       // 添加到DOM并触发下载
