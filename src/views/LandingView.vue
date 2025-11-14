@@ -219,7 +219,7 @@
           <h2 class="section-title">核心功能</h2>
           <p class="section-subtitle">AI智能驱动，为您的专利申请保驾护航</p>
         </div>
-        <div class="features-grid-two">
+        <div class="features-grid-three">
           <!-- 答辩支持卡片 -->
           <div class="feature-card-large defense">
             <div class="card-header">
@@ -293,6 +293,46 @@
               </div>
             </div>
             <el-button type="primary" class="feature-button" @click="$router.push('/app/three-analysis/new')">
+              立即使用
+              <el-icon class="ml-2">
+                <ArrowRight />
+              </el-icon>
+            </el-button>
+          </div>
+
+          <!-- 专利快速检索卡片 -->
+          <div class="feature-card-large search">
+            <div class="card-header">
+              <div class="feature-icon-large">
+                <el-icon :size="48">
+                  <Search />
+                </el-icon>
+              </div>
+              <div class="feature-badge">全球检索</div>
+            </div>
+            <h3 class="feature-title-large">专利快速检索</h3>
+            <p class="feature-desc-large">快速检索全球专利数据库，精准定位相关专利，高效便捷</p>
+            <div class="feature-highlights">
+              <div class="highlight-item">
+                <el-icon class="highlight-icon">
+                  <Check />
+                </el-icon>
+                <span>全球专利库</span>
+              </div>
+              <div class="highlight-item">
+                <el-icon class="highlight-icon">
+                  <Check />
+                </el-icon>
+                <span>智能匹配</span>
+              </div>
+              <div class="highlight-item">
+                <el-icon class="highlight-icon">
+                  <Check />
+                </el-icon>
+                <span>快速结果</span>
+              </div>
+            </div>
+            <el-button type="primary" class="feature-button" @click="$router.push('/app/patent-search/quick')">
               立即使用
               <el-icon class="ml-2">
                 <ArrowRight />
@@ -555,26 +595,36 @@
               <h3>在线留言</h3>
               <p>请填写以下信息，我们将尽快与您联系</p>
             </div>
-            <el-form class="contact-form" label-position="top">
+            <el-form ref="feedbackFormRef" :model="feedbackForm" :rules="feedbackRules" class="contact-form"
+              label-position="top">
               <div class="form-row">
-                <el-form-item :label="$t('landing.contact.form.name')">
-                  <el-input :placeholder="$t('landing.contact.form.namePlaceholder')" size="large" />
+                <el-form-item :label="$t('landing.contact.form.name')" prop="name">
+                  <el-input v-model="feedbackForm.name" :placeholder="$t('landing.contact.form.namePlaceholder')"
+                    size="large" />
                 </el-form-item>
-                <el-form-item :label="$t('landing.contact.form.email')">
-                  <el-input type="email" :placeholder="$t('landing.contact.form.emailPlaceholder')" size="large" />
+                <el-form-item :label="$t('landing.contact.form.email')" prop="email">
+                  <el-input v-model="feedbackForm.email" type="email"
+                    :placeholder="$t('landing.contact.form.emailPlaceholder')" size="large" />
                 </el-form-item>
               </div>
-              <el-form-item :label="$t('landing.contact.form.subject')">
-                <el-input :placeholder="$t('landing.contact.form.subjectPlaceholder')" size="large" />
+              <el-form-item :label="$t('landing.contact.form.subject')" prop="subject">
+                <el-select v-model="feedbackForm.subject" :placeholder="$t('landing.contact.form.subjectPlaceholder')"
+                  size="large" style="width: 100%">
+                  <el-option label="功能建议" :value="1" />
+                  <el-option label="问题反馈" :value="2" />
+                  <el-option label="其他" :value="3" />
+                </el-select>
               </el-form-item>
-              <el-form-item :label="$t('landing.contact.form.message')">
-                <el-input type="textarea" :rows="5" :placeholder="$t('landing.contact.form.messagePlaceholder')" />
+              <el-form-item :label="$t('landing.contact.form.message')" prop="message">
+                <el-input v-model="feedbackForm.message" type="textarea" :rows="5"
+                  :placeholder="$t('landing.contact.form.messagePlaceholder')" />
               </el-form-item>
-              <el-button type="primary" size="large" class="submit-button">
+              <el-button type="primary" size="large" class="submit-button" :loading="submittingFeedback"
+                @click="handleSubmitFeedback">
                 <el-icon :size="18">
                   <ArrowRight />
                 </el-icon>
-                <span>{{ $t('landing.contact.form.submit') }}</span>
+                <span>{{ submittingFeedback ? '提交中...' : $t('landing.contact.form.submit') }}</span>
               </el-button>
             </el-form>
           </div>
@@ -642,10 +692,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, markRaw, ref } from 'vue'
+import { computed, markRaw, ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import { ElMessage, ElMessageBox, type FormInstance, type FormRules } from 'element-plus'
 import { useAuthStore } from '@/stores/auth'
+import { feedbackService } from '@/services/feedback'
+import type { FeedbackData } from '@/services/feedback'
 import {
   ArrowRight,
   Document,
@@ -668,6 +721,105 @@ const authStore = useAuthStore()
 // 当前轮播索引
 const currentSlide = ref(0)
 
+// 表单ref
+const feedbackFormRef = ref<FormInstance>()
+
+// 反馈表单数据
+const feedbackForm = reactive({
+  name: '',
+  email: '',
+  subject: undefined as number | undefined,
+  message: ''
+})
+
+// 提交中状态
+const submittingFeedback = ref(false)
+
+// 表单验证规则
+const feedbackRules = reactive<FormRules>({
+  name: [
+    { required: true, message: '请输入姓名', trigger: 'blur' }
+  ],
+  email: [
+    { required: true, message: '请输入邮箱', trigger: 'blur' },
+    { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
+  ],
+  subject: [
+    { required: true, message: '请输入主题', trigger: 'blur' }
+  ],
+  message: [
+    { required: true, message: '请输入留言内容', trigger: 'blur' },
+    { min: 10, message: '留言内容至少塑10个字符', trigger: 'blur' }
+  ]
+})
+
+// 提交反馈
+const handleSubmitFeedback = async () => {
+  // 检查是否登录
+  if (!authStore.isLoggedIn) {
+    ElMessageBox.confirm(
+      '请先登录后再进行留言，是否前往登录页面？',
+      '提示',
+      {
+        confirmButtonText: '去登录',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }
+    ).then(() => {
+      router.push('/login')
+    }).catch(() => {
+      // 用户取消
+    })
+    return
+  }
+
+  // 验证表单
+  if (!feedbackFormRef.value) return
+
+  try {
+    await feedbackFormRef.value.validate()
+  } catch (error) {
+    ElMessage.warning('请正确填写表单信息')
+    return
+  }
+
+  // 提交反馈
+  submittingFeedback.value = true
+  try {
+    // 将subject数字转换为文本
+    const subjectMap: Record<number, string> = {
+      1: '功能建议',
+      2: '问题反馈',
+      3: '其他'
+    }
+    const subjectText = feedbackForm.subject ? subjectMap[feedbackForm.subject] : '其他'
+
+    const feedbackData: FeedbackData = {
+      type: feedbackForm.subject || 3, // 使用subject的值作为type
+      content: `主题：${subjectText}\n\n${feedbackForm.message}`,
+      contactInformation: `${feedbackForm.name} <${feedbackForm.email}>`
+    }
+
+    await feedbackService.submitFeedback(feedbackData)
+
+    ElMessage.success('留言提交成功，我们将尽快与您联系！')
+
+    // 清空表单
+    feedbackFormRef.value?.resetFields()
+    feedbackForm.name = ''
+    feedbackForm.email = ''
+    feedbackForm.subject = undefined
+    feedbackForm.message = ''
+  } catch (error: any) {
+    console.error('提交留言错误:', error)
+    if (error?.message !== '登录已过期') {
+      ElMessage.error(error.message || '留言提交失败，请稍后重试')
+    }
+  } finally {
+    submittingFeedback.value = false
+  }
+}
+
 // 英雄区域核心功能数据
 const heroFeatures = [
   {
@@ -681,6 +833,12 @@ const heroFeatures = [
     title: '答辩支持',
     desc: '智能生成审查意见与答辩回复',
     gradient: 'linear-gradient(135deg, #6A5ACD 0%, #8B7FE8 100%)'
+  },
+  {
+    icon: markRaw(Search),
+    title: '专利快速检索',
+    desc: '快速检索全球专利数据库，精准定位相关专利',
+    gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)'
   }
 ]
 
@@ -1372,9 +1530,9 @@ const pricingPlans = [
   // 核心功能卡片
   .hero-features {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 24px;
-    max-width: 900px;
+    max-width: 1100px;
     width: 100%;
 
     .feature-card-mini {
@@ -1850,11 +2008,11 @@ const pricingPlans = [
   }
 }
 
-.features-grid-two {
+.features-grid-three {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 40px;
-  max-width: 1100px;
+  max-width: 1400px;
   margin: 0 auto;
 }
 
@@ -2710,7 +2868,8 @@ const pricingPlans = [
   }
 
   .hero-features {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 700px;
   }
 
   .hero-stats {
@@ -2718,7 +2877,7 @@ const pricingPlans = [
   }
 
   .features-grid,
-  .features-grid-two,
+  .features-grid-three,
   .pricing-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -2779,7 +2938,7 @@ const pricingPlans = [
   }
 
   .features-grid,
-  .features-grid-two,
+  .features-grid-three,
   .pricing-grid,
   .services-visual,
   .values-grid {

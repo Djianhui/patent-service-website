@@ -353,7 +353,7 @@ export default {
     },
   },
   landing: {
-    brand: 'PatentPro',
+    brand: '智能化专利服务平台',
     nav: {
       features: '功能特性',
       pricing: '价格方案',

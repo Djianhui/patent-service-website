@@ -48,7 +48,23 @@
         <div class="card-content">
           <h3 class="card-title">答辩支持</h3>
           <p class="card-desc">专业的专利答辩策略生成与模拟演练</p>
+        </div>
+        <div class="card-action">
+          <el-button type="primary" size="large" :icon="Plus">
+            立即使用
+          </el-button>
+        </div>
+      </div>
 
+      <div class="feature-card" @click="$router.push('/app/patent-search/quick')">
+        <div class="card-icon patent-search">
+          <el-icon :size="48">
+            <Search />
+          </el-icon>
+        </div>
+        <div class="card-content">
+          <h3 class="card-title">专利快速检索</h3>
+          <p class="card-desc">快速检索全球专利数据库，精准定位相关专利</p>
         </div>
         <div class="card-action">
           <el-button type="primary" size="large" :icon="Plus">
@@ -170,6 +186,7 @@ import {
   Plus,
   DataAnalysis,
   ChatDotSquare,
+  Search,
   Calendar,
   ArrowRight,
   Promotion,
@@ -277,15 +294,16 @@ onMounted(async () => {
     margin: 0 auto 48px;
     padding: 0 32px;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 32px;
 
-    @media (max-width: 1100px) {
-      grid-template-columns: 1fr;
-      gap: 24px;
+    @media (max-width: 1200px) {
+      grid-template-columns: repeat(2, 1fr);
     }
 
     @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+      gap: 24px;
       padding: 0 16px;
     }
 
@@ -324,6 +342,10 @@ onMounted(async () => {
 
         &.defense-support {
           background: linear-gradient(135deg, #6A5ACD 0%, #8B7EC8 100%);
+        }
+
+        &.patent-search {
+          background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
         }
       }
 

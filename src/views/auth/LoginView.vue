@@ -41,7 +41,7 @@
             {{ loading ? $t('auth.loginLoading') : $t('auth.loginButton') }}
           </el-button>
         </el-form-item>
-
+        <!--
         <div class="divider">
           <span class="divider-text">{{ $t('auth.or') }}</span>
         </div>
@@ -60,7 +60,7 @@
             </g>
           </svg>
           {{ $t('auth.googleLogin') }}
-        </el-button>
+        </el-button> -->
 
         <div class="register-link">
           <span>{{ $t('auth.noAccountPrompt') }}</span>

@@ -268,7 +268,7 @@ router.beforeEach(async (to, from, next) => {
 
   // 设置页面标题
   const routeName = to.name as string
-  const appName = 'PatentPro'
+  const appName = '智能化专利服务平台'
   const separator = ' - '
 
   // 根据路由名称获取标题翻译键

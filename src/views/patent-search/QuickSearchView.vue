@@ -2,14 +2,26 @@
   <div class="quick-search-container">
     <!-- 页面头部 -->
     <div class="page-header">
-      <h1 class="page-title">{{ $t('patentSearch.title') }}</h1>
-      <p class="page-subtitle">{{ $t('patentSearch.subtitle') }}</p>
+      <div class="header-icon-wrapper">
+        <el-icon :size="40">
+          <Search />
+        </el-icon>
+      </div>
+      <div class="header-content">
+        <h1 class="page-title">{{ $t('patentSearch.title') }}</h1>
+        <p class="page-subtitle">{{ $t('patentSearch.subtitle') }}</p>
+      </div>
     </div>
 
     <!-- 搜索区域 -->
     <el-card class="search-card">
       <template #header>
-        <span>{{ $t('patentSearch.searchConditions') }}</span>
+        <div class="card-header-content">
+          <el-icon :size="20">
+            <Edit />
+          </el-icon>
+          <span>{{ $t('patentSearch.searchConditions') }}</span>
+        </div>
       </template>
 
       <el-form :model="searchForm" @submit.prevent="handleSearch">
@@ -27,8 +39,11 @@
         <el-form-item>
           <div class="search-actions">
             <el-button type="primary" size="large" :loading="searching" @click="handleSearch"
-              :disabled="!searchForm.title.trim() || !searchForm.keyword.trim()">
-              {{ searching ? $t('patentSearch.searching') : $t('patentSearch.startSearch') }}
+              :disabled="!searchForm.title.trim() || !searchForm.keyword.trim()" class="search-btn">
+              <el-icon :size="20">
+                <Search />
+              </el-icon>
+              <span>{{ searching ? $t('patentSearch.searching') : $t('patentSearch.startSearch') }}</span>
             </el-button>
           </div>
         </el-form-item>
@@ -48,9 +63,19 @@
     <el-card class="results-card">
       <template #header>
         <div class="results-header">
-          <span>{{ $t('patentSearch.searchHistory') }}</span>
+          <div class="header-title-group">
+            <el-icon :size="20">
+              <Document />
+            </el-icon>
+            <span>{{ $t('patentSearch.searchHistory') }}</span>
+          </div>
           <div class="results-info">
-            <span class="results-count">{{ $t('patentSearch.totalRecords', { count: total }) }}</span>
+            <div class="results-count-badge">
+              <el-icon :size="16">
+                <DataAnalysis />
+              </el-icon>
+              <span>{{ $t('patentSearch.totalRecords', { count: total }) }}</span>
+            </div>
           </div>
         </div>
       </template>
@@ -114,18 +139,19 @@
               </div>
 
               <div class="patent-actions" @click.stop>
-                <el-button size="small" text @click="downloadReport(patent, 'pdf')" :disabled="!(patent as any).pdfUrl">
-                  <el-icon>
+                <el-button size="small" class="action-btn pdf-btn" @click="downloadReport(patent, 'pdf')"
+                  :disabled="!(patent as any).pdfUrl">
+                  <el-icon :size="16">
                     <Download />
                   </el-icon>
-                  {{ $t('patentSearch.downloadPDF') }}
+                  <span>{{ $t('patentSearch.downloadPDF') }}</span>
                 </el-button>
-                <el-button size="small" text @click="downloadReport(patent, 'word')"
+                <el-button size="small" class="action-btn word-btn" @click="downloadReport(patent, 'word')"
                   :disabled="!(patent as any).wordUrl">
-                  <el-icon>
+                  <el-icon :size="16">
                     <Download />
                   </el-icon>
-                  {{ $t('patentSearch.downloadWord') }}
+                  <span>{{ $t('patentSearch.downloadWord') }}</span>
                 </el-button>
               </div>
             </div>
@@ -158,7 +184,7 @@
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { Document, User, Calendar, Collection, Star, StarFilled, View, Download, Picture, Loading, ZoomIn } from '@element-plus/icons-vue'
+import { Document, User, Calendar, Collection, Star, StarFilled, View, Download, Picture, Loading, ZoomIn, Search, Edit, DataAnalysis } from '@element-plus/icons-vue'
 import { usePatentSearchStore } from '@/stores/patentSearch'
 import { formatDate } from '@/utils'
 import type { Patent } from '@/types'
@@ -411,29 +437,186 @@ onMounted(() => {
 
 <style scoped lang="scss">
 .quick-search-container {
-  .page-header {
-    margin-bottom: var(--spacing-lg);
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 32px;
 
-    .page-title {
-      font-size: var(--font-size-2xl);
-      font-weight: var(--font-weight-semibold);
-      color: var(--color-text-primary);
-      margin-bottom: var(--spacing-sm);
+  @media (max-width: 768px) {
+    padding: 16px;
+  }
+
+  .page-header {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 32px;
+    padding: 32px;
+    background: linear-gradient(135deg, #0F4C81 0%, #6A5ACD 100%);
+    border-radius: 20px;
+    box-shadow: 0 8px 24px rgba(15, 76, 129, 0.2);
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      text-align: center;
+      padding: 24px;
     }
 
-    .page-subtitle {
-      color: var(--color-text-secondary);
-      font-size: var(--font-size-sm);
+    .header-icon-wrapper {
+      width: 80px;
+      height: 80px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      flex-shrink: 0;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+
+      @media (max-width: 768px) {
+        width: 64px;
+        height: 64px;
+      }
+    }
+
+    .header-content {
+      flex: 1;
+      color: #fff;
+
+      .page-title {
+        font-size: 32px;
+        font-weight: 700;
+        color: #fff;
+        margin: 0 0 8px 0;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+        @media (max-width: 768px) {
+          font-size: 24px;
+        }
+      }
+
+      .page-subtitle {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 16px;
+        margin: 0;
+        text-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+
+        @media (max-width: 768px) {
+          font-size: 14px;
+        }
+      }
     }
   }
 
   .search-card {
-    margin-bottom: var(--spacing-lg);
+    margin-bottom: 32px;
+    border-radius: 16px;
+    border: 2px solid rgba(15, 76, 129, 0.1);
+    box-shadow: 0 4px 16px rgba(15, 76, 129, 0.08);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:hover {
+      border-color: rgba(15, 76, 129, 0.2);
+      box-shadow: 0 8px 24px rgba(15, 76, 129, 0.12);
+    }
+
+    :deep(.el-card__header) {
+      background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
+      border-bottom: 2px solid rgba(15, 76, 129, 0.1);
+      padding: 20px 24px;
+
+      .card-header-content {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 18px;
+        font-weight: 600;
+        color: #0F4C81;
+
+        .el-icon {
+          color: #6A5ACD;
+        }
+      }
+    }
+
+    :deep(.el-card__body) {
+      padding: 32px;
+
+      @media (max-width: 768px) {
+        padding: 20px;
+      }
+    }
+
+    :deep(.el-form-item__label) {
+      font-weight: 600;
+      color: #1a1a1a;
+      font-size: 15px;
+    }
+
+    :deep(.el-input__wrapper) {
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(15, 76, 129, 0.05);
+      transition: all 0.3s;
+
+      &:hover {
+        box-shadow: 0 4px 12px rgba(15, 76, 129, 0.1);
+      }
+
+      &.is-focus {
+        box-shadow: 0 4px 16px rgba(106, 90, 205, 0.2);
+      }
+    }
+
+    :deep(.el-textarea__inner) {
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(15, 76, 129, 0.05);
+      transition: all 0.3s;
+
+      &:hover {
+        box-shadow: 0 4px 12px rgba(15, 76, 129, 0.1);
+      }
+
+      &:focus {
+        box-shadow: 0 4px 16px rgba(106, 90, 205, 0.2);
+      }
+    }
 
     .search-actions {
       display: flex;
       justify-content: center;
-      padding-top: var(--spacing-md);
+      padding-top: 24px;
+
+      .search-btn {
+        min-width: 200px;
+        height: 48px;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: 24px;
+        background: linear-gradient(135deg, #0F4C81 0%, #6A5ACD 100%);
+        border: none;
+        box-shadow: 0 4px 16px rgba(15, 76, 129, 0.3);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+
+        &:hover:not(:disabled) {
+          background: linear-gradient(135deg, #1a5f9e 0%, #7B68EE 100%);
+          transform: translateY(-2px);
+          box-shadow: 0 8px 24px rgba(15, 76, 129, 0.4);
+        }
+
+        &:active:not(:disabled) {
+          transform: translateY(0);
+        }
+
+        &:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+      }
     }
 
     .search-suggestions {
@@ -462,39 +645,86 @@ onMounted(() => {
   }
 
   .results-card {
+    border-radius: 16px;
+    border: 2px solid rgba(15, 76, 129, 0.1);
+    box-shadow: 0 4px 16px rgba(15, 76, 129, 0.08);
+
+    :deep(.el-card__header) {
+      background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
+      border-bottom: 2px solid rgba(15, 76, 129, 0.1);
+      padding: 20px 24px;
+    }
+
     .results-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
 
+      .header-title-group {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 18px;
+        font-weight: 600;
+        color: #0F4C81;
+
+        .el-icon {
+          color: #6A5ACD;
+        }
+      }
+
       .results-info {
         display: flex;
         align-items: center;
-        gap: var(--spacing-md);
+        gap: 16px;
 
-        .results-count {
-          color: var(--color-text-secondary);
-          font-size: var(--font-size-sm);
+        .results-count-badge {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 8px 16px;
+          background: linear-gradient(135deg, rgba(15, 76, 129, 0.08) 0%, rgba(106, 90, 205, 0.08) 100%);
+          border-radius: 20px;
+          color: #0F4C81;
+          font-size: 14px;
+          font-weight: 600;
+
+          .el-icon {
+            color: #6A5ACD;
+          }
         }
       }
     }
 
     .results-content {
+      :deep(.el-card__body) {
+        padding: 24px;
+
+        @media (max-width: 768px) {
+          padding: 16px;
+        }
+      }
+
       .patent-list {
         .patent-item {
           display: flex;
-          gap: var(--spacing-lg);
-          padding: var(--spacing-lg);
-          border-bottom: 1px solid var(--color-border-light);
+          gap: 24px;
+          padding: 24px;
+          background: #fff;
+          border-radius: 16px;
+          margin-bottom: 20px;
+          border: 2px solid rgba(15, 76, 129, 0.08);
           cursor: pointer;
-          transition: background-color var(--transition-fast);
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
           &:hover {
-            background-color: var(--color-bg-secondary);
+            border-color: rgba(15, 76, 129, 0.2);
+            box-shadow: 0 8px 24px rgba(15, 76, 129, 0.15);
+            transform: translateY(-4px);
           }
 
           &:last-child {
-            border-bottom: none;
+            margin-bottom: 0;
           }
 
           // 首页图片区域
@@ -503,9 +733,16 @@ onMounted(() => {
             flex-shrink: 0;
             width: 280px;
             height: 210px;
-            border-radius: var(--border-radius-base);
+            border-radius: 12px;
             overflow: hidden;
-            background-color: var(--color-bg-secondary);
+            background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
+            border: 2px solid rgba(15, 76, 129, 0.1);
+            box-shadow: 0 4px 12px rgba(15, 76, 129, 0.1);
+            transition: all 0.3s;
+
+            &:hover {
+              box-shadow: 0 8px 20px rgba(15, 76, 129, 0.2);
+            }
 
             :deep(.el-image) {
               width: 100%;
@@ -526,12 +763,18 @@ onMounted(() => {
               align-items: center;
               justify-content: center;
               height: 100%;
-              color: var(--color-text-placeholder);
-              background-color: var(--color-bg-secondary);
+              color: #999;
+              background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
 
               .el-icon {
                 font-size: 48px;
-                margin-bottom: var(--spacing-sm);
+                margin-bottom: 12px;
+                color: rgba(15, 76, 129, 0.3);
+              }
+
+              span {
+                font-size: 13px;
+                color: #999;
               }
             }
 
@@ -540,11 +783,11 @@ onMounted(() => {
               align-items: center;
               justify-content: center;
               height: 100%;
-              background-color: var(--color-bg-secondary);
+              background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
 
               .el-icon {
                 font-size: 32px;
-                color: var(--color-primary);
+                color: #6A5ACD;
               }
             }
 
@@ -559,11 +802,11 @@ onMounted(() => {
               flex-direction: column;
               align-items: center;
               justify-content: center;
-              gap: var(--spacing-xs);
-              background-color: rgba(0, 0, 0, 0.6);
+              gap: 8px;
+              background: linear-gradient(135deg, rgba(15, 76, 129, 0.9) 0%, rgba(106, 90, 205, 0.9) 100%);
               color: white;
               opacity: 0;
-              transition: opacity var(--transition-fast);
+              transition: opacity 0.3s;
               pointer-events: none;
 
               .el-icon {
@@ -571,7 +814,8 @@ onMounted(() => {
               }
 
               span {
-                font-size: var(--font-size-sm);
+                font-size: 14px;
+                font-weight: 500;
               }
             }
 
@@ -584,72 +828,147 @@ onMounted(() => {
           .patent-info {
             flex: 1;
             min-width: 0;
+            display: flex;
+            flex-direction: column;
           }
 
           .patent-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: var(--spacing-sm);
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid rgba(15, 76, 129, 0.08);
 
             .patent-title {
-              font-size: var(--font-size-lg);
-              font-weight: var(--font-weight-medium);
-              color: var(--color-text-primary);
+              font-size: 20px;
+              font-weight: 700;
+              color: #1a1a1a;
               margin: 0;
               flex: 1;
-              line-height: var(--line-height-snug);
+              line-height: 1.4;
+              background: linear-gradient(135deg, #0F4C81 0%, #6A5ACD 100%);
+              -webkit-background-clip: text;
+              -webkit-text-fill-color: transparent;
+              background-clip: text;
             }
 
             .patent-status {
-              margin-left: var(--spacing-md);
-            }
+              margin-left: 16px;
+              flex-shrink: 0;
 
-            .patent-actions {
-              margin-left: var(--spacing-md);
+              :deep(.el-tag) {
+                border-radius: 12px;
+                padding: 6px 14px;
+                font-weight: 600;
+                border: none;
+
+                &.el-tag--success {
+                  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+                  color: #fff;
+                }
+
+                &.el-tag--warning {
+                  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+                  color: #fff;
+                }
+
+                &.el-tag--danger {
+                  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+                  color: #fff;
+                }
+              }
             }
           }
 
           .patent-meta {
             display: flex;
-            gap: var(--spacing-lg);
-            margin-bottom: var(--spacing-md);
+            gap: 20px;
+            margin-bottom: 16px;
             flex-wrap: wrap;
 
             .meta-item {
               display: flex;
               align-items: center;
-              gap: var(--spacing-xs);
-              color: var(--color-text-secondary);
-              font-size: var(--font-size-sm);
+              gap: 6px;
+              color: #666;
+              font-size: 14px;
+              padding: 6px 12px;
+              background: linear-gradient(135deg, rgba(15, 76, 129, 0.05) 0%, rgba(106, 90, 205, 0.05) 100%);
+              border-radius: 8px;
 
               .el-icon {
                 font-size: 14px;
+                color: #6A5ACD;
               }
             }
           }
 
           .patent-abstract {
-            margin-bottom: var(--spacing-md);
+            margin-bottom: 16px;
+            flex: 1;
 
             p {
-              color: var(--color-text-secondary);
-              line-height: var(--line-height-relaxed);
-              font-size: var(--font-size-sm);
+              color: #666;
+              line-height: 1.8;
+              font-size: 14px;
               margin: 0;
             }
           }
 
           .patent-actions {
             display: flex;
-            gap: var(--spacing-sm);
-            padding-top: var(--spacing-sm);
+            gap: 12px;
+            padding-top: 16px;
+            border-top: 2px solid rgba(15, 76, 129, 0.08);
 
-            .el-button {
-              padding: 4px 8px;
+            .action-btn {
+              padding: 8px 16px;
+              border-radius: 10px;
+              font-weight: 600;
+              font-size: 14px;
+              border: 2px solid transparent;
+              transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+              display: flex;
+              align-items: center;
+              gap: 6px;
 
-              .el-icon {
-                margin-right: 4px;
+              &.pdf-btn {
+                background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.1) 100%);
+                color: #dc2626;
+                border-color: rgba(220, 38, 38, 0.2);
+
+                &:hover:not(:disabled) {
+                  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+                  color: #fff;
+                  border-color: #dc2626;
+                  transform: translateY(-2px);
+                  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+                }
+
+                &:disabled {
+                  opacity: 0.5;
+                  cursor: not-allowed;
+                }
+              }
+
+              &.word-btn {
+                background: linear-gradient(135deg, rgba(15, 76, 129, 0.1) 0%, rgba(106, 90, 205, 0.1) 100%);
+                color: #0F4C81;
+                border-color: rgba(15, 76, 129, 0.2);
+
+                &:hover:not(:disabled) {
+                  background: linear-gradient(135deg, #0F4C81 0%, #6A5ACD 100%);
+                  color: #fff;
+                  border-color: #0F4C81;
+                  transform: translateY(-2px);
+                  box-shadow: 0 4px 12px rgba(15, 76, 129, 0.3);
+                }
+
+                &:disabled {
+                  opacity: 0.5;
+                  cursor: not-allowed;
+                }
               }
             }
           }
@@ -663,15 +982,69 @@ onMounted(() => {
       }
 
       .empty-state {
-        padding: var(--spacing-3xl) 0;
+        padding: 80px 0;
+        text-align: center;
+
+        :deep(.el-empty) {
+          .el-empty__image {
+            svg {
+              fill: #6A5ACD;
+            }
+          }
+
+          .el-empty__description {
+            color: #666;
+            font-size: 16px;
+            margin-top: 16px;
+          }
+
+          .el-button {
+            margin-top: 24px;
+            min-width: 160px;
+            height: 44px;
+            border-radius: 22px;
+            background: linear-gradient(135deg, #0F4C81 0%, #6A5ACD 100%);
+            border: none;
+            font-weight: 600;
+            box-shadow: 0 4px 16px rgba(15, 76, 129, 0.3);
+            transition: all 0.3s;
+
+            &:hover {
+              background: linear-gradient(135deg, #1a5f9e 0%, #7B68EE 100%);
+              transform: translateY(-2px);
+              box-shadow: 0 6px 20px rgba(15, 76, 129, 0.4);
+            }
+          }
+        }
       }
 
       .pagination-wrapper {
         display: flex;
         justify-content: center;
-        padding: var(--spacing-lg) 0;
-        border-top: 1px solid var(--color-border-light);
-        margin-top: var(--spacing-lg);
+        padding: 32px 0 16px;
+        margin-top: 24px;
+        border-top: 2px solid rgba(15, 76, 129, 0.08);
+
+        :deep(.el-pagination) {
+
+          .btn-prev,
+          .btn-next,
+          .el-pager li {
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+
+            &:hover {
+              color: #6A5ACD;
+              background: linear-gradient(135deg, rgba(15, 76, 129, 0.1) 0%, rgba(106, 90, 205, 0.1) 100%);
+            }
+
+            &.is-active {
+              background: linear-gradient(135deg, #0F4C81 0%, #6A5ACD 100%);
+              color: #fff;
+            }
+          }
+        }
       }
     }
   }
@@ -681,6 +1054,7 @@ onMounted(() => {
   .quick-search-container {
     .results-card .results-content .patent-list .patent-item {
       flex-direction: column;
+      padding: 20px;
 
       // 移动端图片区域
       .patent-image {
@@ -695,13 +1069,51 @@ onMounted(() => {
 
       .patent-meta {
         flex-direction: column;
-        gap: var(--spacing-xs);
+        gap: 8px;
+
+        .meta-item {
+          width: fit-content;
+        }
       }
 
       .patent-header {
         flex-direction: column;
         align-items: flex-start;
-        gap: var(--spacing-sm);
+        gap: 12px;
+
+        .patent-status {
+          margin-left: 0;
+        }
+      }
+
+      .patent-actions {
+        flex-direction: column;
+        gap: 8px;
+
+        .action-btn {
+          width: 100%;
+          justify-content: center;
+        }
+      }
+    }
+
+    .results-header {
+      flex-direction: column;
+      gap: 12px;
+      align-items: flex-start !important;
+
+      .results-info {
+        width: 100%;
+      }
+    }
+
+    .pagination-wrapper {
+      :deep(.el-pagination) {
+
+        .el-pagination__sizes,
+        .el-pagination__jump {
+          display: none;
+        }
       }
     }
   }

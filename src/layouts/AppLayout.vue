@@ -74,19 +74,19 @@ const menuItems = computed(() => [
   //     }
   //   ]
   // },
-  // {
-  //   id: 'patent-search',
-  //   title: t('menu.patentSearch'),
-  //   icon: 'Search',
-  //   path: '/app/patent-search',
-  //   children: [
-  //     {
-  //       id: 'patent-search-quick',
-  //       title: t('menu.quickSearch'),
-  //       path: '/app/patent-search/quick'
-  //     }
-  //   ]
-  // },
+  {
+    id: 'patent-search',
+    title: t('menu.patentSearch'),
+    icon: 'Search',
+    path: '/app/patent-search',
+    children: [
+      {
+        id: 'patent-search-quick',
+        title: t('menu.quickSearch'),
+        path: '/app/patent-search/quick'
+      }
+    ]
+  },
   {
     id: 'three-analysis',
     title: t('menu.threeAnalysis'),
