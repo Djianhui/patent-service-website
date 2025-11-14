@@ -22,20 +22,20 @@ export const SUPPORT_LOCALES = [
 ] as const
 export type SupportLocale = (typeof SUPPORT_LOCALES)[number]
 
-// 从本地存储获取保存的语言设置，默认为英文
+// 从本地存储获取保存的语言设置，默认为中文
 const getDefaultLocale = (): SupportLocale => {
   const savedLocale = localStorage.getItem('locale')
   if (savedLocale && SUPPORT_LOCALES.includes(savedLocale as SupportLocale)) {
     return savedLocale as SupportLocale
   }
-  return 'en-US'
+  return 'zh-CN'
 }
 
 // 创建 i18n 实例
 const i18n = createI18n({
   legacy: false, // 使用 Composition API 模式
   locale: getDefaultLocale(), // 默认语言
-  fallbackLocale: 'en-US', // 回退语言
+  fallbackLocale: 'zh-CN', // 回退语言
   messages: {
     'zh-CN': zhCN,
     'en-US': enUS,

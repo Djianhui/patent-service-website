@@ -1,162 +1,160 @@
 <template>
   <div class="dashboard-container">
-    <!-- 页面头部 -->
-    <div class="page-header">
-      <div class="header-content">
-        <div class="welcome-info">
-          <h1 class="welcome-title">
-            {{ t('dashboard.welcomeBack', { user: authStore.userName || t('dashboard.user') }) }}
+    <!-- 顶部欢迎区域 -->
+    <div class="welcome-banner">
+      <div class="banner-content">
+        <div class="banner-left">
+          <h1 class="greeting">
+            {{ getGreeting() }}，{{ authStore.userName || '用户' }}
           </h1>
-          <p class="welcome-subtitle">
-            {{ t('dashboard.todayIs', { date: formatDate(new Date(), 'MMMM DD, YYYY') }) }}
-          </p>
+          <p class="subtitle">欢迎使用AI驱动的专利服务平台</p>
         </div>
-        <div class="quick-actions">
-          <el-button type="primary" :icon="Plus" @click="$router.push('/app/tech-report/new')">
-            {{ t('dashboard.newTechReport') }}
+        <div class="banner-right">
+          <div class="date-info">
+            <el-icon :size="20">
+              <Calendar />
+            </el-icon>
+            <span>{{ formatDate(new Date(), 'YYYY年MM月DD日') }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 核心功能卡片 -->
+    <div class="main-features">
+      <div class="feature-card" @click="$router.push('/app/three-analysis/new')">
+        <div class="card-icon three-analysis">
+          <el-icon :size="48">
+            <DataAnalysis />
+          </el-icon>
+        </div>
+        <div class="card-content">
+          <h3 class="card-title">三性分析</h3>
+          <p class="card-desc">AI智能分析专利新颖性、创造性、实用性</p>
+        </div>
+        <div class="card-action">
+          <el-button type="primary" size="large" :icon="Plus">
+            立即使用
+          </el-button>
+        </div>
+      </div>
+
+      <div class="feature-card" @click="$router.push('/app/defense-support/simulation')">
+        <div class="card-icon defense-support">
+          <el-icon :size="48">
+            <ChatDotSquare />
+          </el-icon>
+        </div>
+        <div class="card-content">
+          <h3 class="card-title">答辩支持</h3>
+          <p class="card-desc">专业的专利答辩策略生成与模拟演练</p>
+
+        </div>
+        <div class="card-action">
+          <el-button type="primary" size="large" :icon="Plus">
+            立即使用
           </el-button>
         </div>
       </div>
     </div>
 
-    <!-- 系统使用引导 -->
+    <!-- 快速入口 -->
+    <div class="quick-access-section">
+      <div class="section-header">
+        <h2 class="section-title">快速开始</h2>
+        <p class="section-subtitle">选择下方功能立即开始使用AI专利服务</p>
+      </div>
+    </div>
+
+    <!-- 使用指南 -->
     <div class="guide-section">
-      <el-card class="guide-card">
-        <template #header>
-          <div class="guide-header">
-            <el-icon class="guide-icon">
-              <InfoFilled />
-            </el-icon>
-            <span>{{ t('dashboard.systemUsageGuide') }}</span>
-          </div>
-        </template>
+      <div class="guide-header">
+        <div class="guide-icon-wrapper">
+          <el-icon :size="32">
+            <Promotion />
+          </el-icon>
+        </div>
+        <div class="guide-text">
+          <h3>如何使用?</h3>
+          <p>三步完成专利分析或答辩准备</p>
+        </div>
+      </div>
 
-        <div class="guide-content">
-          <p class="guide-description">
-            {{ t('dashboard.guideDescription') }}
-          </p>
-
-          <div class="steps-container">
-            <div v-for="(step, index) in guideSteps" :key="step.key" class="step-item" @click="router.push(step.path)">
-              <div class="step-number">{{ index + 1 }}</div>
-              <div class="step-content">
-                <div class="step-title">
-                  <el-icon class="step-icon" :style="{ color: step.color }">
-                    <component :is="step.icon" />
-                  </el-icon>
-                  {{ step.title }}
-                </div>
-                <div class="step-description">{{ step.description }}</div>
-              </div>
-              <div v-if="index < guideSteps.length - 1" class="step-arrow">
-                <el-icon>
-                  <ArrowRight />
-                </el-icon>
-              </div>
-            </div>
-          </div>
-
-          <div class="guide-tips">
-            <el-alert :title="t('dashboard.tips')" :description="t('dashboard.guideTips')" type="info" show-icon
-              :closable="false" />
+      <div class="guide-steps">
+        <div class="step-item">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h4>选择功能</h4>
+            <p>点击上方功能卡片选择三性分析或答辩支持</p>
           </div>
         </div>
-      </el-card>
-    </div>
-
-    <!-- 快捷工具 -->
-    <div class="quick-tools-section">
-      <h2 class="section-title">{{ t('dashboard.quickTools.title') }}</h2>
-      <div class="tools-grid">
-        <div v-for="tool in quickTools" :key="tool.key" class="tool-card" @click="$router.push(tool.path)">
-          <div class="tool-icon" :style="{ backgroundColor: tool.color }">
-            <el-icon>
-              <component :is="tool.icon" />
-            </el-icon>
+        <div class="step-arrow">
+          <el-icon>
+            <ArrowRight />
+          </el-icon>
+        </div>
+        <div class="step-item">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h4>填写信息</h4>
+            <p>根据引导填写专利相关信息和需求</p>
           </div>
-          <div class="tool-content">
-            <div class="tool-title">{{ tool.title }}</div>
-            <div class="tool-description">{{ tool.description }}</div>
-          </div>
-          <div class="tool-arrow">
-            <el-icon>
-              <ArrowRight />
-            </el-icon>
+        </div>
+        <div class="step-arrow">
+          <el-icon>
+            <ArrowRight />
+          </el-icon>
+        </div>
+        <div class="step-item">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h4>获取结果</h4>
+            <p>AI快速生成专业报告，支持下载导出</p>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- 主要内容区域 -->
-    <div class="dashboard-content">
-      <div class="left-column">
-        <!-- 最近活动 -->
-        <el-card class="activity-card">
-          <template #header>
-            <div class="card-header">
-              <span>{{ t('dashboard.recentActivities') }}</span>
-              <el-link type="primary" @click="$router.push('/app/tech-report/history')">
-                {{ t('dashboard.viewAll') }}
-              </el-link>
-            </div>
-          </template>
-
-          <div class="activity-list">
-            <div v-for="activity in recentActivities" :key="activity.id" class="activity-item">
-              <div class="activity-icon" :class="activity.type">
-                <el-icon>
-                  <component :is="activity.icon" />
-                </el-icon>
-              </div>
-              <div class="activity-content">
-                <div class="activity-title">{{ activity.title }}</div>
-                <div class="activity-desc">{{ activity.description }}</div>
-                <div class="activity-time">{{ formatDate(activity.time) }}</div>
-              </div>
-              <el-button size="small" text @click="viewActivity(activity)">
-                {{ t('dashboard.view') }}
-              </el-button>
-            </div>
+    <!-- 功能特色 -->
+    <div class="features-highlight">
+      <h2 class="section-title">功能特色</h2>
+      <div class="highlight-grid">
+        <div class="highlight-card">
+          <div class="highlight-icon">
+            <el-icon :size="40">
+              <MagicStick />
+            </el-icon>
           </div>
-
-          <div v-if="recentActivities.length === 0" class="empty-state">
-            <el-empty :description="t('dashboard.noActivityRecords')" />
+          <h4>AI智能分析</h4>
+          <p>基于深度学习的专利分析引擎，准确率高达95%</p>
+        </div>
+        <div class="highlight-card">
+          <div class="highlight-icon">
+            <el-icon :size="40">
+              <Timer />
+            </el-icon>
           </div>
-        </el-card>
-      </div>
-
-      <div class="right-column">
-        <!-- 意见反馈 -->
-        <el-card class="feedback-card">
-          <template #header>
-            <div class="card-header">
-              <span>{{ t('dashboard.feedback.title') }}</span>
-            </div>
-          </template>
-
-          <el-form :model="feedbackForm" label-width="0">
-            <el-form-item>
-              <el-select v-model="feedbackForm.type" :placeholder="t('dashboard.feedback.selectType')"
-                style="width: 100%">
-                <el-option :label="t('dashboard.feedback.typeSuggestion')" value="suggestion" />
-                <el-option :label="t('dashboard.feedback.typeIssue')" value="issue" />
-                <el-option :label="t('dashboard.feedback.typeOther')" value="other" />
-              </el-select>
-            </el-form-item>
-            <el-form-item>
-              <el-input v-model="feedbackForm.content" type="textarea"
-                :placeholder="t('dashboard.feedback.placeholder')" :rows="5" maxlength="1000" show-word-limit />
-            </el-form-item>
-            <el-form-item>
-              <el-input v-model="feedbackForm.contact" :placeholder="t('dashboard.feedback.contact')" />
-            </el-form-item>
-            <el-form-item>
-              <el-button type="primary" @click="submitFeedback" style="width: 100%">
-                {{ t('dashboard.feedback.submit') }}
-              </el-button>
-            </el-form-item>
-          </el-form>
-        </el-card>
+          <h4>高效快捷</h4>
+          <p>5分钟完成分析，节省90%的时间成本</p>
+        </div>
+        <div class="highlight-card">
+          <div class="highlight-icon">
+            <el-icon :size="40">
+              <DocumentChecked />
+            </el-icon>
+          </div>
+          <h4>专业报告</h4>
+          <p>符合行业标准的专业报告，支持多种格式导出</p>
+        </div>
+        <div class="highlight-card">
+          <div class="highlight-icon">
+            <el-icon :size="40">
+              <Service />
+            </el-icon>
+          </div>
+          <h4>全程支持</h4>
+          <p>专业团队在线指导，答疑解惑全程护航</p>
+        </div>
       </div>
     </div>
 
@@ -164,134 +162,38 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted, computed } from 'vue'
+import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { formatDate } from '@/utils'
-import { useI18n } from 'vue-i18n'
 import {
   Plus,
-  Document,
-  Edit,
-  InfoFilled,
-  ArrowRight
+  DataAnalysis,
+  ChatDotSquare,
+  Calendar,
+  ArrowRight,
+  Promotion,
+  MagicStick,
+  Timer,
+  DocumentChecked,
+  Service
 } from '@element-plus/icons-vue'
-import { ElMessage } from 'element-plus'
-import { feedbackService } from '@/services/feedback'
 
 // Composables
 const router = useRouter()
 const authStore = useAuthStore()
-const { t } = useI18n()
 
-// 响应式数据
-const feedbackForm = reactive({
-  type: '',
-  content: '',
-  contact: ''
-})
-
-// 系统使用引导步骤
-const guideSteps = computed(() => [
-  {
-    key: 'tech-report',
-    title: t('dashboard.guideSteps.techReport.title'),
-    description: t('dashboard.guideSteps.techReport.description'),
-    icon: 'Document',
-    color: '#1890ff',
-    path: '/app/tech-report/new'
-  },
-  {
-    key: 'patent-draft',
-    title: t('dashboard.guideSteps.patentDraft.title'),
-    description: t('dashboard.guideSteps.patentDraft.description'),
-    icon: 'Edit',
-    color: '#722ed1',
-    path: '/app/patent-draft/new'
-  }
-])
-
-// 最近活动
-const recentActivities = ref<Array<{
-  id: string
-  type: string
-  icon: string
-  title: string
-  description: string
-  time: string
-}>>([])
-
-// 快捷工具
-const quickTools = computed(() => [
-  {
-    key: 'tech-report',
-    title: t('dashboard.quickTools.techReport.title'),
-    description: t('dashboard.quickTools.techReport.description'),
-    icon: 'Document',
-    color: '#1890ff',
-    path: '/app/tech-report/new'
-  },
-  {
-    key: 'patent-draft',
-    title: t('dashboard.quickTools.patentDraft.title'),
-    description: t('dashboard.quickTools.patentDraft.description'),
-    icon: 'Edit',
-    color: '#722ed1',
-    path: '/app/patent-draft/new'
-  }
-])
-
-// 方法
-const viewActivity = (activity: any) => {
-  // 根据活动类型跳转到相应页面
-  switch (activity.type) {
-    case 'report':
-      router.push('/app/tech-report/history')
-      break
-    case 'search':
-      router.push('/app/patent-search/results')
-      break
-    case 'analysis':
-      router.push('/app/three-analysis/history')
-      break
-    default:
-      break
-  }
-}
-
-const submitFeedback = async () => {
-  if (!feedbackForm.content.trim()) return
-
-  if (feedbackForm.content.length > 1000) {
-    ElMessage.error(t('dashboard.feedback.exceedLimit'))
-    return
-  }
-
-  try {
-    // 调用 API 提交意见反馈
-    const typeMap: Record<string, number> = {
-      'suggestion': 1,
-      'issue': 2,
-      'other': 3
-    }
-
-    await feedbackService.submitFeedback({
-      type: typeMap[feedbackForm.type] || 1,
-      content: feedbackForm.content,
-      contactInformation: feedbackForm.contact || undefined
-    })
-
-    // 提交成功，重置表单
-    feedbackForm.type = ''
-    feedbackForm.content = ''
-    feedbackForm.contact = ''
-
-    // 显示成功提示
-    ElMessage.success(t('dashboard.feedback.success'))
-  } catch (error) {
-    console.error('反馈提交失败:', error)
-    ElMessage.error('反馈提交失败,请稍后重试')
-  }
+// 获取问候语
+const getGreeting = () => {
+  const hour = new Date().getHours()
+  if (hour < 6) return '凌晨好'
+  if (hour < 9) return '早上好'
+  if (hour < 12) return '上午好'
+  if (hour < 14) return '中午好'
+  if (hour < 17) return '下午好'
+  if (hour < 19) return '傍晚好'
+  if (hour < 22) return '晚上好'
+  return '夜深了'
 }
 
 // 生命周期
@@ -302,462 +204,433 @@ onMounted(async () => {
 
 <style scoped lang="scss">
 .dashboard-container {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  background-color: #f8f9fa;
-  padding: 24px;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #f5f7fa 0%, #e8eef5 100%);
+  padding: 0;
+  font-family: 'PingFang SC', 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
-  .page-header {
+  // 欢迎横幅
+  .welcome-banner {
+    background: linear-gradient(135deg, #0F4C81 0%, #1a5f9e 50%, #6A5ACD 100%);
+    padding: 48px 32px;
     margin-bottom: 32px;
+    box-shadow: 0 4px 20px rgba(15, 76, 129, 0.15);
 
-    .header-content {
+    .banner-content {
+      max-width: 1400px;
+      margin: 0 auto;
       display: flex;
       justify-content: space-between;
-      align-items: flex-end;
+      align-items: center;
+      color: #fff;
 
       @media (max-width: 768px) {
         flex-direction: column;
         align-items: flex-start;
-        gap: 16px;
+        gap: 20px;
       }
 
-      .welcome-info {
-        .welcome-title {
-          font-size: 28px;
+      .banner-left {
+        .greeting {
+          font-size: 36px;
           font-weight: 700;
-          color: #2c3e50;
-          margin-bottom: 8px;
+          margin: 0 0 12px 0;
           line-height: 1.3;
+          text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+          @media (max-width: 768px) {
+            font-size: 28px;
+          }
         }
 
-        .welcome-subtitle {
-          color: #6c757d;
+        .subtitle {
           font-size: 16px;
+          opacity: 0.95;
+          margin: 0;
           line-height: 1.5;
         }
       }
 
-      .quick-actions {
-        display: flex;
-        gap: 12px;
-
-        @media (max-width: 768px) {
-          width: 100%;
-
-          .el-button {
-            flex: 1;
-          }
-        }
-
-        .el-button {
-          height: 44px;
-          padding: 0 20px;
-          font-weight: 600;
-          border-radius: 12px;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          border: none;
-
-          &:hover {
-            background: linear-gradient(135deg, #5568d3 0%, #6a4093 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-          }
-        }
-      }
-    }
-  }
-
-  .guide-section {
-    margin-bottom: 32px;
-
-    .guide-card {
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-      border: 1px solid #e9ecef;
-      background: #ffffff;
-
-      :deep(.el-card__header) {
-        padding: 20px 24px;
-        border-bottom: 1px solid #e9ecef;
-        font-weight: 600;
-        color: #2c3e50;
-      }
-
-      :deep(.el-card__body) {
-        padding: 24px;
-      }
-
-      .guide-header {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        font-weight: 600;
-        color: #2c3e50;
-        font-size: 18px;
-
-        .guide-icon {
-          color: #667eea;
-          font-size: 20px;
-        }
-      }
-
-      .guide-content {
-        .guide-description {
-          color: #6c757d;
-          font-size: 15px;
-          margin-bottom: 24px;
-          line-height: 1.6;
-        }
-
-        .steps-container {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 20px;
-          margin-bottom: 24px;
-
-          @media (max-width: 1200px) {
-            flex-direction: column;
-          }
-
-          .step-item {
-            flex: 1;
-            min-width: 280px;
-            display: flex;
-            align-items: center;
-            padding: 20px;
-            border: 1px solid #e9ecef;
-            border-radius: 10px;
-            background: #ffffff;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
-
-            &:hover {
-              border-color: #667eea;
-              box-shadow: 0 6px 12px rgba(102, 126, 234, 0.15);
-              transform: translateY(-3px);
-            }
-
-            .step-number {
-              width: 36px;
-              height: 36px;
-              background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-              color: white;
-              border-radius: 50%;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              font-weight: 700;
-              font-size: 16px;
-              margin-right: 16px;
-              flex-shrink: 0;
-            }
-
-            .step-content {
-              flex: 1;
-
-              .step-title {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                font-weight: 600;
-                color: #2c3e50;
-                margin-bottom: 10px;
-                font-size: 16px;
-
-                .step-icon {
-                  font-size: 18px;
-                }
-              }
-
-              .step-description {
-                color: #6c757d;
-                font-size: 14px;
-                line-height: 1.5;
-              }
-            }
-
-            .step-arrow {
-              position: absolute;
-              right: -15px;
-              color: #adb5bd;
-              font-size: 20px;
-              z-index: 1;
-
-              @media (max-width: 1200px) {
-                display: none;
-              }
-            }
-
-            @media (max-width: 1200px) {
-              &:not(:last-child)::after {
-                content: '';
-                position: absolute;
-                bottom: -12px;
-                left: 50%;
-                transform: translateX(-50%);
-                width: 0;
-                height: 0;
-                border-left: 8px solid transparent;
-                border-right: 8px solid transparent;
-                border-top: 12px solid #adb5bd;
-              }
-            }
-          }
-        }
-
-        .guide-tips {
-          margin-top: 24px;
-
-          :deep(.el-alert) {
-            border-radius: 8px;
-            background-color: #e7f4ff;
-            border: 1px solid #d0e8ff;
-          }
-
-          :deep(.el-alert__title) {
-            font-weight: 600;
-            color: #2c3e50;
-          }
-
-          :deep(.el-alert__description) {
-            color: #6c757d;
-          }
-        }
-      }
-    }
-  }
-
-  .quick-tools-section {
-    margin-bottom: 32px;
-
-    .section-title {
-      font-size: 24px;
-      font-weight: 700;
-      color: #1a1a1a;
-      margin-bottom: 24px;
-      text-align: center;
-    }
-
-    .tools-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 24px;
-
-      @media (max-width: 768px) {
-        grid-template-columns: 1fr;
-        gap: 16px;
-      }
-
-      .tool-card {
-        display: flex;
-        align-items: center;
-        padding: 24px;
-        background: #ffffff;
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        cursor: pointer;
-        transition: all 0.3s ease;
-        border: 1px solid #e9ecef;
-
-        &:hover {
-          transform: translateY(-4px);
-          box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-          border-color: #667eea;
-        }
-
-        .tool-icon {
-          width: 64px;
-          height: 64px;
-          border-radius: 12px;
+      .banner-right {
+        .date-info {
           display: flex;
           align-items: center;
-          justify-content: center;
-          color: white;
-          font-size: 28px;
-          margin-right: 20px;
-          flex-shrink: 0;
-        }
+          gap: 10px;
+          font-size: 16px;
+          padding: 12px 24px;
+          background: rgba(255, 255, 255, 0.15);
+          border-radius: 50px;
+          backdrop-filter: blur(10px);
+          border: 1px solid rgba(255, 255, 255, 0.2);
 
-        .tool-content {
-          flex: 1;
-
-          .tool-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: #1a1a1a;
-            margin-bottom: 8px;
+          .el-icon {
+            font-size: 20px;
           }
-
-          .tool-description {
-            color: #6c757d;
-            font-size: 14px;
-            line-height: 1.6;
-          }
-        }
-
-        .tool-arrow {
-          color: #adb5bd;
-          font-size: 20px;
-          margin-left: 16px;
         }
       }
     }
   }
 
-  .dashboard-content {
+  // 核心功能卡片
+  .main-features {
+    max-width: 1400px;
+    margin: 0 auto 48px;
+    padding: 0 32px;
     display: grid;
-    grid-template-columns: 1fr 420px;
-    gap: 24px;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: 32px;
 
-    @media (max-width: 1200px) {
+    @media (max-width: 1100px) {
       grid-template-columns: 1fr;
+      gap: 24px;
     }
 
-    .left-column,
-    .right-column {
+    @media (max-width: 768px) {
+      padding: 0 16px;
+    }
+
+    .feature-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 36px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 2px solid transparent;
       display: flex;
       flex-direction: column;
       gap: 24px;
-    }
 
-    .el-card {
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-      border: 1px solid #e9ecef;
-      background: #ffffff;
-
-      :deep(.el-card__header) {
-        padding: 20px 24px;
-        border-bottom: 1px solid #e9ecef;
-        font-weight: 600;
-        color: #2c3e50;
+      &:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 16px 40px rgba(15, 76, 129, 0.2);
+        border-color: #0F4C81;
       }
 
-      :deep(.el-card__body) {
-        padding: 24px;
+      .card-icon {
+        width: 88px;
+        height: 88px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 48px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+
+        &.three-analysis {
+          background: linear-gradient(135deg, #0F4C81 0%, #1a5f9e 100%);
+        }
+
+        &.defense-support {
+          background: linear-gradient(135deg, #6A5ACD 0%, #8B7EC8 100%);
+        }
       }
-    }
 
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      .card-content {
+        flex: 1;
 
-      :deep(.el-link) {
-        font-weight: 500;
-      }
+        .card-title {
+          font-size: 26px;
+          font-weight: 700;
+          color: #1a1a1a;
+          margin: 0 0 12px 0;
+        }
 
-      :deep(.el-button) {
-        font-weight: 500;
-        color: #6c757d;
-      }
-    }
+        .card-desc {
+          font-size: 15px;
+          color: #666;
+          line-height: 1.6;
+          margin: 0 0 24px 0;
+        }
 
-    .activity-card {
-      .activity-list {
-        .activity-item {
+        .card-stats {
           display: flex;
           align-items: center;
-          gap: 16px;
-          padding: 16px 0;
-          border-bottom: 1px solid #e9ecef;
+          gap: 24px;
+          padding: 20px;
+          background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
+          border-radius: 12px;
 
-          &:last-child {
-            border-bottom: none;
-          }
-
-          .activity-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
+          .stat-item {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            flex-shrink: 0;
+            flex-direction: column;
+            gap: 4px;
 
-            &.report {
-              background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            .stat-value {
+              font-size: 24px;
+              font-weight: 700;
+              color: #0F4C81;
             }
 
-            &.search {
-              background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            }
-
-            &.analysis {
-              background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            }
-          }
-
-          .activity-content {
-            flex: 1;
-
-            .activity-title {
-              font-weight: 600;
-              color: #1a1a1a;
-              margin-bottom: 6px;
-              font-size: 15px;
-            }
-
-            .activity-desc {
-              color: #666;
-              font-size: 14px;
-              margin-bottom: 6px;
-              line-height: 1.5;
-            }
-
-            .activity-time {
-              color: #adb5bd;
+            .stat-label {
               font-size: 13px;
+              color: #666;
             }
           }
 
-          :deep(.el-button) {
-            color: #6c757d;
-            font-weight: 500;
+          .stat-divider {
+            width: 1px;
+            height: 36px;
+            background: linear-gradient(180deg, transparent 0%, #d0d7de 50%, transparent 100%);
           }
         }
       }
-    }
 
-    .feedback-card {
-      :deep(.el-form-item) {
-        margin-bottom: 16px;
+      .card-action {
+        .el-button {
+          width: 100%;
+          height: 52px;
+          font-size: 16px;
+          font-weight: 600;
+          border-radius: 12px;
+          background: linear-gradient(135deg, #0F4C81 0%, #6A5ACD 100%);
+          border: none;
 
-        &:last-child {
-          margin-bottom: 0;
+          &:hover {
+            background: linear-gradient(135deg, #1a5f9e 0%, #7B68EE 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(15, 76, 129, 0.3);
+          }
         }
-      }
-
-      :deep(.el-input) {
-        border-radius: 6px;
-      }
-
-      :deep(.el-select) {
-        width: 100%;
-      }
-
-      .char-count {
-        font-size: 12px;
-        color: #909399;
-        text-align: right;
-        margin-top: 4px;
-      }
-    }
-
-    .empty-state {
-      padding: 40px 0;
-      text-align: center;
-
-      :deep(.el-empty) {
-        padding: 0;
-      }
-
-      :deep(.el-empty__description) {
-        color: #6c757d;
       }
     }
   }
+
+  // 快速入口
+  .quick-access-section {
+    max-width: 1400px;
+    margin: 0 auto 48px;
+    padding: 0 32px;
+
+    @media (max-width: 768px) {
+      padding: 0 16px;
+      margin-bottom: 32px;
+    }
+
+    .section-header {
+      text-align: center;
+
+      .section-title {
+        font-size: 32px;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin: 0 0 12px 0;
+      }
+
+      .section-subtitle {
+        font-size: 16px;
+        color: #666;
+        margin: 0;
+      }
+    }
+  }
+
+  // 使用指南
+  .guide-section {
+    max-width: 1200px;
+    margin: 0 auto 56px;
+    padding: 0 32px;
+
+    @media (max-width: 768px) {
+      padding: 0 16px;
+      margin-bottom: 40px;
+    }
+
+    .guide-header {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 40px;
+      padding: 32px;
+      background: linear-gradient(135deg, #fff5e6 0%, #ffe8cc 100%);
+      border-radius: 20px;
+      border: 2px solid #ffd699;
+
+      @media (max-width: 640px) {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .guide-icon-wrapper {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #ff9800 0%, #ff6f00 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        flex-shrink: 0;
+        box-shadow: 0 4px 16px rgba(255, 152, 0, 0.3);
+      }
+
+      .guide-text {
+        h3 {
+          font-size: 24px;
+          font-weight: 700;
+          color: #1a1a1a;
+          margin: 0 0 8px 0;
+        }
+
+        p {
+          font-size: 15px;
+          color: #666;
+          margin: 0;
+        }
+      }
+    }
+
+    .guide-steps {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+
+      @media (max-width: 900px) {
+        flex-direction: column;
+        gap: 24px;
+      }
+
+      .step-item {
+        flex: 1;
+        min-width: 220px;
+        max-width: 280px;
+        background: #fff;
+        border-radius: 16px;
+        padding: 28px 24px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+        text-align: center;
+        transition: all 0.3s ease;
+        border: 2px solid #e9ecef;
+
+        &:hover {
+          transform: translateY(-6px);
+          box-shadow: 0 8px 24px rgba(15, 76, 129, 0.15);
+          border-color: #0F4C81;
+        }
+
+        .step-number {
+          width: 48px;
+          height: 48px;
+          margin: 0 auto 20px;
+          background: linear-gradient(135deg, #0F4C81 0%, #6A5ACD 100%);
+          color: #fff;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 24px;
+          font-weight: 700;
+          box-shadow: 0 4px 12px rgba(15, 76, 129, 0.3);
+        }
+
+        .step-content {
+          h4 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin: 0 0 12px 0;
+          }
+
+          p {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+            margin: 0;
+          }
+        }
+      }
+
+      .step-arrow {
+        color: #0F4C81;
+        font-size: 28px;
+        flex-shrink: 0;
+
+        @media (max-width: 900px) {
+          transform: rotate(90deg);
+        }
+      }
+    }
+  }
+
+  // 功能特色
+  .features-highlight {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 32px 56px;
+
+    @media (max-width: 768px) {
+      padding: 0 16px 40px;
+    }
+
+    .section-title {
+      font-size: 32px;
+      font-weight: 700;
+      color: #1a1a1a;
+      text-align: center;
+      margin: 0 0 40px 0;
+    }
+
+    .highlight-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+
+      @media (max-width: 640px) {
+        grid-template-columns: 1fr;
+      }
+
+      .highlight-card {
+        background: #fff;
+        border-radius: 16px;
+        padding: 32px 24px;
+        text-align: center;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+
+        &:hover {
+          transform: translateY(-6px);
+          box-shadow: 0 12px 32px rgba(15, 76, 129, 0.15);
+          border-color: #0F4C81;
+
+          .highlight-icon {
+            transform: scale(1.1);
+          }
+        }
+
+        .highlight-icon {
+          width: 80px;
+          height: 80px;
+          margin: 0 auto 24px;
+          background: linear-gradient(135deg, #e7f0ff 0%, #d5e5ff 100%);
+          border-radius: 20px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #0F4C81;
+          transition: all 0.3s ease;
+        }
+
+        h4 {
+          font-size: 20px;
+          font-weight: 600;
+          color: #1a1a1a;
+          margin: 0 0 12px 0;
+        }
+
+        p {
+          font-size: 14px;
+          color: #666;
+          line-height: 1.6;
+          margin: 0;
+        }
+      }
+    }
+  }
+
+
 }
 </style>

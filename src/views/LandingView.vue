@@ -15,7 +15,8 @@
             <a href="#contact" class="nav-link">{{ $t('landing.nav.contact') }}</a>
           </nav>
           <div class="header-actions">
-            <el-dropdown trigger="click" @command="handleLanguageChange">
+            <!-- 语言切换 - 已注销 -->
+            <!-- <el-dropdown trigger="click" @command="handleLanguageChange">
               <el-button text class="language-btn">
                 <span :class="`fi fi-${getFlagCode(locale)}`" class="flag-icon-round"></span>
                 <span>{{ currentLanguageLabel }}</span>
@@ -52,7 +53,7 @@
                   </el-dropdown-item>
                 </el-dropdown-menu>
               </template>
-            </el-dropdown>
+</el-dropdown> -->
             <!-- 未登录时显示登录注册按钮 -->
             <template v-if="!authStore.isLoggedIn">
               <el-button text class="login-btn" @click="goToLogin">
@@ -108,8 +109,8 @@
       <div class="container">
         <div class="hero-content">
           <div class="hero-text">
-            <h1 class="hero-title">{{ $t('landing.hero.title') }}</h1>
-            <p class="hero-subtitle">{{ $t('landing.hero.subtitle') }}</p>
+            <h1 class="hero-title">AI驱动的智能专利服务，让创新保护更简单</h1>
+            <p class="hero-subtitle">一站式解决检索、撰写、分析全流程需求，为您的知识产权保驾护航</p>
             <div class="hero-actions">
               <el-button type="primary" size="large" class="cta-button" @click="goToRegister">
                 {{ $t('landing.hero.getStarted') }}
@@ -124,15 +125,15 @@
             <div class="hero-stats">
               <div class="stat-item">
                 <div class="stat-number">10K+</div>
-                <div class="stat-label">{{ $t('landing.hero.stats.users') }}</div>
+                <div class="stat-label">活跃用户 · 覆盖20+行业</div>
               </div>
               <div class="stat-item">
                 <div class="stat-number">50K+</div>
-                <div class="stat-label">{{ $t('landing.hero.stats.patents') }}</div>
+                <div class="stat-label">处理专利 · 成功率98%</div>
               </div>
               <div class="stat-item">
-                <div class="stat-number">98%</div>
-                <div class="stat-label">{{ $t('landing.hero.stats.satisfaction') }}</div>
+                <div class="stat-number">99%</div>
+                <div class="stat-label">客户满意度 · 好评如潮</div>
               </div>
             </div>
           </div>
@@ -281,7 +282,7 @@
           </div>
           <div class="stats-visual">
             <div class="visual-mockup">
-              <div class="mockup-screen" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+              <div class="mockup-screen" style="background: linear-gradient(135deg, #0F4C81 0%, #6A5ACD 100%);">
                 <div class="screen-content">
                   <img src="/0001.png" alt="Data Analysis" style="width: 530px; height: 400px; object-fit: cover;" />
                 </div>
@@ -406,7 +407,7 @@
                 </el-icon>
                 <div>
                   <h4>{{ $t('landing.contact.info.address') }}</h4>
-                  <p>449B BUKIT BATOK WEST AVENUE 9, #18-82, WEST VALLEY @ BUKIT BATOK, SINGAPORE (652449)</p>
+                  <p>50 Bukit Batok Street 23,#07-14, Midview building, Singapore 659578</p>
                 </div>
               </div>
               <div class="info-item">
@@ -569,7 +570,7 @@ const allServices = [
     icon: markRaw(DataAnalysis),
     titleKey: 'landing.services.intelligentAnalysis.title',
     descriptionKey: 'landing.services.intelligentAnalysis.description',
-    gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+    gradient: 'linear-gradient(135deg, #0F4C81 0%, #6A5ACD 100%)'
   },
   {
     icon: markRaw(Search),
@@ -708,7 +709,7 @@ const features = [
     icon: markRaw(Document),
     titleKey: 'landing.features.items.techReport.title',
     descKey: 'landing.features.items.techReport.desc',
-    color: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    color: 'linear-gradient(135deg, #0F4C81 0%, #6A5ACD 100%)',
   },
   {
     icon: markRaw(Search),
@@ -910,8 +911,8 @@ const pricingPlans = [
       transition: all 0.3s;
 
       &:hover {
-        background: rgba(102, 126, 234, 0.1);
-        color: #667eea;
+        background: rgba(15, 76, 129, 0.1);
+        color: #0F4C81;
       }
 
       .el-icon {
@@ -924,10 +925,11 @@ const pricingPlans = [
 // 英雄区域
 .hero-section {
   padding: 140px 0 100px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0F4C81 0%, #1a5f9e 50%, #6A5ACD 100%);
   position: relative;
   overflow: hidden;
 
+  // 科技感背景动效
   &::before {
     content: '';
     position: absolute;
@@ -935,8 +937,30 @@ const pricingPlans = [
     left: 0;
     right: 0;
     bottom: 0;
-    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-    opacity: 0.3;
+    background:
+      radial-gradient(circle at 20% 50%, rgba(106, 90, 205, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 50%, rgba(15, 76, 129, 0.15) 0%, transparent 50%),
+      url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    opacity: 1;
+    animation: backgroundFloat 20s ease-in-out infinite;
+  }
+
+  // 添加科技感粒子效果
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image:
+      radial-gradient(2px 2px at 20% 30%, rgba(255, 255, 255, 0.3), transparent),
+      radial-gradient(2px 2px at 60% 70%, rgba(255, 255, 255, 0.3), transparent),
+      radial-gradient(1px 1px at 50% 50%, rgba(255, 255, 255, 0.2), transparent),
+      radial-gradient(1px 1px at 80% 10%, rgba(255, 255, 255, 0.2), transparent);
+    background-size: 200% 200%, 200% 200%, 300% 300%, 250% 250%;
+    background-position: 0% 0%, 100% 100%, 50% 50%, 0% 100%;
+    animation: particleFloat 15s ease-in-out infinite;
   }
 
   .hero-content {
@@ -957,10 +981,12 @@ const pricingPlans = [
     font-weight: 800;
     line-height: 1.2;
     margin-bottom: 24px;
-    background: linear-gradient(to right, #fff, rgba(255, 255, 255, 0.8));
+    background: linear-gradient(120deg, #fff 0%, #e0f0ff 50%, #fff 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    text-shadow: 0 2px 20px rgba(255, 255, 255, 0.1);
+    animation: titleShine 3s ease-in-out infinite;
   }
 
   .hero-subtitle {
@@ -976,30 +1002,47 @@ const pricingPlans = [
     margin-bottom: 60px;
 
     .cta-button {
-      padding: 12px 32px;
+      padding: 14px 36px;
       font-size: 16px;
+      font-weight: 600;
       border-radius: 12px;
-      background: #fff;
-      color: #667eea;
+      background: linear-gradient(135deg, #0F4C81 0%, #6A5ACD 100%);
+      color: #fff;
       border: none;
+      box-shadow: 0 8px 24px rgba(15, 76, 129, 0.4);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
       &:hover {
-        background: rgba(255, 255, 255, 0.95);
-        transform: translateY(-2px);
+        background: linear-gradient(135deg, #1a5f9e 0%, #7B68EE 100%);
+        transform: translateY(-3px);
+        box-shadow: 0 12px 32px rgba(15, 76, 129, 0.5);
+      }
+
+      &:active {
+        transform: translateY(-1px) scale(0.98);
       }
     }
 
     .demo-button {
-      padding: 12px 32px;
+      padding: 14px 36px;
       font-size: 16px;
+      font-weight: 600;
       border-radius: 12px;
-      background: rgba(255, 255, 255, 0.1);
-      border: 2px solid rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 255, 255, 0.4);
       color: #fff;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
       &:hover {
-        background: rgba(255, 255, 255, 0.2);
-        border-color: rgba(255, 255, 255, 0.5);
+        background: rgba(255, 255, 255, 0.25);
+        border-color: rgba(255, 255, 255, 0.6);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(255, 255, 255, 0.2);
+      }
+
+      &:active {
+        transform: translateY(-1px) scale(0.98);
       }
     }
 
@@ -1011,18 +1054,39 @@ const pricingPlans = [
   .hero-stats {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 40px;
+    gap: 24px;
 
     .stat-item {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      padding: 24px 20px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 255, 255, 0.3);
+        transform: translateY(-5px);
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+      }
+
       .stat-number {
-        font-size: 36px;
-        font-weight: 700;
+        font-size: 42px;
+        font-weight: 800;
         margin-bottom: 8px;
+        background: linear-gradient(135deg, #fff 0%, #e0f0ff 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: countUp 2s ease-out;
       }
 
       .stat-label {
         font-size: 14px;
-        opacity: 0.8;
+        opacity: 0.9;
+        font-weight: 500;
+        letter-spacing: 0.5px;
       }
     }
   }
@@ -1044,37 +1108,49 @@ const pricingPlans = [
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        width: 150px;
-        height: 150px;
-        background: white;
+        width: 160px;
+        height: 160px;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
         border-radius: 50%;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 25px 70px rgba(15, 76, 129, 0.25);
+        border: 2px solid rgba(255, 255, 255, 0.5);
         display: flex;
         align-items: center;
         justify-content: center;
         z-index: 2;
+        animation: pulse 3s ease-in-out infinite;
 
         .circle-inner {
-          width: 100px;
-          height: 100px;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          width: 110px;
+          height: 110px;
+          background: linear-gradient(135deg, #0F4C81 0%, #6A5ACD 100%);
           border-radius: 50%;
           display: flex;
           align-items: center;
           justify-content: center;
           color: white;
+          box-shadow: 0 10px 30px rgba(15, 76, 129, 0.4);
           animation: rotate 20s linear infinite;
         }
       }
 
       .visual-card {
         position: absolute;
-        background: white;
-        border-radius: 16px;
-        padding: 24px;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 28px;
+        box-shadow: 0 15px 50px rgba(15, 76, 129, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.5);
         animation: float 4s ease-in-out infinite;
         z-index: 1;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+        &:hover {
+          transform: translateY(-10px);
+          box-shadow: 0 20px 60px rgba(15, 76, 129, 0.3);
+        }
 
         .card-content {
           display: flex;
@@ -1083,14 +1159,15 @@ const pricingPlans = [
 
           .card-icon {
             font-size: 32px;
-            color: #667eea;
-            background: rgba(102, 126, 234, 0.1);
-            width: 56px;
-            height: 56px;
-            border-radius: 12px;
+            color: #fff;
+            background: linear-gradient(135deg, #0F4C81 0%, #6A5ACD 100%);
+            width: 60px;
+            height: 60px;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
+            box-shadow: 0 8px 20px rgba(15, 76, 129, 0.3);
           }
 
           .card-text {
@@ -1149,12 +1226,12 @@ const pricingPlans = [
   0%,
   100% {
     transform: scale(1);
-    opacity: 0.5;
+    box-shadow: 0 25px 70px rgba(15, 76, 129, 0.25);
   }
 
   50% {
-    transform: scale(1.1);
-    opacity: 0.3;
+    transform: scale(1.05);
+    box-shadow: 0 30px 80px rgba(15, 76, 129, 0.35);
   }
 }
 
@@ -1165,6 +1242,58 @@ const pricingPlans = [
 
   to {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes backgroundFloat {
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  50% {
+    opacity: 0.8;
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes particleFloat {
+  0% {
+    background-position: 0% 0%, 100% 100%, 50% 50%, 0% 100%;
+  }
+
+  50% {
+    background-position: 100% 100%, 0% 0%, 25% 75%, 100% 0%;
+  }
+
+  100% {
+    background-position: 0% 0%, 100% 100%, 50% 50%, 0% 100%;
+  }
+}
+
+@keyframes titleShine {
+
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes countUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -1248,7 +1377,7 @@ const pricingPlans = [
       }
 
       &.active {
-        background: #667eea;
+        background: #0F4C81;
         width: 32px;
         border-radius: 6px;
       }
@@ -1313,7 +1442,7 @@ const pricingPlans = [
     .stat-icon {
       width: 60px;
       height: 60px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #0F4C81 0%, #6A5ACD 100%);
       border-radius: 12px;
       display: flex;
       align-items: center;
@@ -1457,13 +1586,13 @@ const pricingPlans = [
   transition: all 0.3s;
 
   &:hover {
-    border-color: #667eea;
-    box-shadow: 0 12px 40px rgba(102, 126, 234, 0.15);
+    border-color: #0F4C81;
+    box-shadow: 0 12px 40px rgba(15, 76, 129, 0.15);
   }
 
   &.popular {
-    border-color: #667eea;
-    box-shadow: 0 12px 40px rgba(102, 126, 234, 0.15);
+    border-color: #0F4C81;
+    box-shadow: 0 12px 40px rgba(15, 76, 129, 0.15);
     transform: scale(1.05);
   }
 
@@ -1472,7 +1601,7 @@ const pricingPlans = [
     top: -12px;
     left: 50%;
     transform: translateX(-50%);
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #0F4C81 0%, #6A5ACD 100%);
     color: #fff;
     padding: 4px 16px;
     border-radius: 20px;
@@ -1539,7 +1668,7 @@ const pricingPlans = [
 // CTA 区域
 .cta-section {
   padding: 100px 0;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0F4C81 0%, #1a5f9e 50%, #6A5ACD 100%);
   color: #fff;
   text-align: center;
 
@@ -1560,7 +1689,7 @@ const pricingPlans = [
     font-size: 16px;
     border-radius: 12px;
     background: #fff;
-    color: #667eea;
+    color: #0F4C81;
     border: none;
 
     &:hover {
@@ -1595,7 +1724,7 @@ const pricingPlans = [
     .about-icon {
       width: 80px;
       height: 80px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #0F4C81 0%, #6A5ACD 100%);
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -1643,13 +1772,13 @@ const pricingPlans = [
     transition: all 0.3s;
 
     &:hover {
-      border-color: #667eea;
+      border-color: #0F4C81;
       transform: translateY(-5px);
-      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.1);
+      box-shadow: 0 10px 30px rgba(15, 76, 129, 0.1);
     }
 
     .value-icon {
-      color: #667eea;
+      color: #0F4C81;
       margin-bottom: 16px;
     }
 
@@ -1704,7 +1833,7 @@ const pricingPlans = [
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 
     .el-icon {
-      color: #667eea;
+      color: #0F4C81;
       flex-shrink: 0;
     }
 
@@ -1742,8 +1871,8 @@ const pricingPlans = [
       border: 2px solid #e5e7eb;
 
       &:hover {
-        background: #667eea;
-        border-color: #667eea;
+        background: #0F4C81;
+        border-color: #0F4C81;
         color: white;
       }
     }

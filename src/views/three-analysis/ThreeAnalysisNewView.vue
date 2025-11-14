@@ -1,28 +1,56 @@
 <template>
   <div class="three-analysis-new-container">
-    <!-- 页面头部 -->
-    <div class="page-header">
-      <h1 class="page-title">新建三性分析</h1>
-      <p class="page-subtitle">上传专利文件或输入专利信息，为您分析专利的新颖性、创造性和实用性</p>
+    <!-- 页面横幅 -->
+    <div class="page-banner">
+      <div class="banner-content">
+        <div class="banner-icon">
+          <el-icon :size="48">
+            <DataAnalysis />
+          </el-icon>
+        </div>
+        <div class="banner-text">
+          <h1 class="page-title">新建三性分析</h1>
+          <p class="page-subtitle">AI智能分析专利的新颖性、创造性和实用性，助力专利申请成功</p>
+        </div>
+      </div>
     </div>
 
     <!-- 输入方式选择 -->
     <el-card class="input-mode-card">
       <template #header>
-        <span>输入方式</span>
+        <div class="card-header">
+          <el-icon class="header-icon">
+            <Operation />
+          </el-icon>
+          <span class="header-title">选择输入方式</span>
+        </div>
       </template>
       <el-radio-group v-model="inputMode" size="large" class="mode-group">
-        <el-radio-button value="file">
-          <el-icon>
-            <UploadFilled />
-          </el-icon>
-          文件上传
+        <el-radio-button value="file" class="mode-option">
+          <div class="option-content">
+            <div class="option-icon file">
+              <el-icon :size="28">
+                <UploadFilled />
+              </el-icon>
+            </div>
+            <div class="option-text">
+              <span class="option-title">文件上传</span>
+              <span class="option-desc">上传PDF/Word专利文档</span>
+            </div>
+          </div>
         </el-radio-button>
-        <el-radio-button value="text">
-          <el-icon>
-            <Edit />
-          </el-icon>
-          文本输入
+        <el-radio-button value="text" class="mode-option">
+          <div class="option-content">
+            <div class="option-icon text">
+              <el-icon :size="28">
+                <Edit />
+              </el-icon>
+            </div>
+            <div class="option-text">
+              <span class="option-title">文本输入</span>
+              <span class="option-desc">手动填写专利信息</span>
+            </div>
+          </div>
         </el-radio-button>
       </el-radio-group>
     </el-card>
@@ -30,33 +58,52 @@
     <!-- 文件上传区域 -->
     <el-card v-if="inputMode === 'file'" class="upload-card">
       <template #header>
-        <span>专利文件上传</span>
+        <div class="card-header">
+          <el-icon class="header-icon">
+            <UploadFilled />
+          </el-icon>
+          <span class="header-title">专利文件上传</span>
+          <span class="header-tip">支持 PDF、DOC、DOCX 格式，单个文件不超过 10MB</span>
+        </div>
       </template>
 
       <div class="upload-area">
         <el-upload ref="uploadRef" class="upload-dragger" drag :auto-upload="false" :show-file-list="false"
           accept=".pdf,.doc,.docx" :on-change="handleFileChange" :before-upload="beforeUpload">
-          <el-icon class="el-icon--upload">
-            <UploadFilled />
-          </el-icon>
-          <div class="el-upload__text">
-            将专利申请文件拖到此处，或<em>点击上传</em>
-          </div>
-          <template #tip>
-            <div class="el-upload__tip">
-              支持 PDF、DOC、DOCX 格式，文件大小不超过 10MB
+          <div class="upload-content">
+            <div class="upload-icon">
+              <el-icon :size="64">
+                <UploadFilled />
+              </el-icon>
             </div>
-          </template>
+            <div class="upload-text">
+              <p class="upload-title">拖拽文件到此处，或点击上传</p>
+              <p class="upload-hint">支持 PDF、DOC、DOCX 格式</p>
+            </div>
+          </div>
         </el-upload>
 
         <div v-if="uploadedFiles.length > 0" class="file-list">
+          <div class="file-list-header">
+            <span class="file-count">已上传 {{ uploadedFiles.length }} 个文件</span>
+            <el-button text size="small" @click="uploadedFiles = []">
+              <el-icon>
+                <Delete />
+              </el-icon>
+              清空全部
+            </el-button>
+          </div>
           <div v-for="(file, index) in uploadedFiles" :key="index" class="file-item">
-            <el-icon>
-              <Document />
-            </el-icon>
-            <span class="file-name">{{ file.name }}</span>
-            <span class="file-size">{{ formatFileSize(file.size) }}</span>
-            <el-button size="small" type="danger" @click="removeFile(index)">
+            <div class="file-icon">
+              <el-icon :size="24">
+                <Document />
+              </el-icon>
+            </div>
+            <div class="file-info">
+              <span class="file-name">{{ file.name }}</span>
+              <span class="file-size">{{ formatFileSize(file.size) }}</span>
+            </div>
+            <el-button class="file-remove" circle size="small" @click="removeFile(index)">
               <el-icon>
                 <Delete />
               </el-icon>
@@ -65,7 +112,10 @@
         </div>
 
         <div v-if="uploadedFiles.length > 0" class="upload-actions">
-          <el-button type="primary" size="large" :loading="analyzing" @click="startAnalysis">
+          <el-button type="primary" size="large" :loading="analyzing" @click="startAnalysis" class="submit-button">
+            <el-icon v-if="!analyzing">
+              <Promotion />
+            </el-icon>
             {{ analyzing ? '分析中...' : '开始分析' }}
           </el-button>
         </div>
@@ -75,33 +125,62 @@
     <!-- 文本输入表单 -->
     <el-card v-if="inputMode === 'text'" class="input-card">
       <template #header>
-        <span>专利信息输入</span>
+        <div class="card-header">
+          <el-icon class="header-icon">
+            <Edit />
+          </el-icon>
+          <span class="header-title">专利信息输入</span>
+        </div>
       </template>
 
 
-      <el-form ref="formRef" :model="formData" label-width="120px" :rules="formRules">
+      <el-form ref="formRef" :model="formData" label-width="120px" :rules="formRules" class="patent-form">
         <el-form-item label="专利标题" required>
-          <el-input v-model="formData.title" placeholder="请输入专利标题" />
+          <el-input v-model="formData.title" placeholder="请输入专利标题" class="form-input" />
         </el-form-item>
 
         <el-form-item label="技术方案" required>
           <el-input v-model="formData.technicalSolution" type="textarea" :rows="8"
             placeholder="请详细描述本发明的技术方案，包括结构组成、工作原理、技术特点等。建议300-1000字，内容越详细，生成的专利质量越高。" maxlength="10000" show-word-limit
-            resize="vertical" />
+            resize="vertical" class="form-textarea" />
         </el-form-item>
 
         <el-form-item label="分析类型">
-          <el-checkbox-group v-model="formData.analysisTypes">
-            <el-checkbox value="novelty">新颖性分析</el-checkbox>
-            <el-checkbox value="inventiveness">创造性分析</el-checkbox>
-            <el-checkbox value="practicality">实用性分析</el-checkbox>
+          <el-checkbox-group v-model="formData.analysisTypes" class="checkbox-group">
+            <el-checkbox value="novelty" class="analysis-checkbox">
+              <div class="checkbox-content">
+                <el-icon class="checkbox-icon">
+                  <StarFilled />
+                </el-icon>
+                <span>新颖性分析</span>
+              </div>
+            </el-checkbox>
+            <el-checkbox value="inventiveness" class="analysis-checkbox">
+              <div class="checkbox-content">
+                <el-icon class="checkbox-icon">
+                  <MagicStick />
+                </el-icon>
+                <span>创造性分析</span>
+              </div>
+            </el-checkbox>
+            <el-checkbox value="practicality" class="analysis-checkbox">
+              <div class="checkbox-content">
+                <el-icon class="checkbox-icon">
+                  <Setting />
+                </el-icon>
+                <span>实用性分析</span>
+              </div>
+            </el-checkbox>
           </el-checkbox-group>
         </el-form-item>
 
         <el-form-item>
           <div class="form-actions">
-            <el-button @click="resetForm">重置</el-button>
-            <el-button type="primary" @click="startAnalysis" :loading="analyzing">
+            <el-button @click="resetForm" class="reset-button">重置</el-button>
+            <el-button type="primary" @click="startAnalysis" :loading="analyzing" class="submit-button">
+              <el-icon v-if="!analyzing">
+                <Promotion />
+              </el-icon>
               {{ analyzing ? '分析中...' : '开始分析' }}
             </el-button>
           </div>
@@ -112,11 +191,18 @@
     <!-- 分析进度 -->
     <el-card v-if="analyzing" class="result-card">
       <template #header>
-        <span>提交中</span>
+        <div class="card-header">
+          <el-icon class="header-icon analyzing">
+            <Loading />
+          </el-icon>
+          <span class="header-title">提交中</span>
+        </div>
       </template>
 
       <div class="analyzing-status">
-        <el-progress :percentage="analysisProgress" />
+        <div class="progress-wrapper">
+          <el-progress :percentage="analysisProgress" :stroke-width="12" class="custom-progress" />
+        </div>
         <p class="progress-text">{{ progressText }}</p>
       </div>
     </el-card>
@@ -132,7 +218,14 @@ import {
   UploadFilled,
   Document,
   Delete,
-  Edit
+  Edit,
+  DataAnalysis,
+  Operation,
+  Promotion,
+  Loading,
+  StarFilled,
+  MagicStick,
+  Setting
 } from '@element-plus/icons-vue'
 import { threeAnalysisService } from '@/services/threeAnalysis'
 
@@ -289,37 +382,189 @@ const resetForm = () => {
 
 <style scoped lang="scss">
 .three-analysis-new-container {
-  .page-header {
-    margin-bottom: var(--spacing-lg);
+  font-family: 'PingFang SC', 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, sans-serif;
 
-    .page-title {
-      font-size: var(--font-size-2xl);
-      font-weight: var(--font-weight-semibold);
-      color: var(--color-text-primary);
-      margin-bottom: var(--spacing-sm);
+  // 页面横幅
+  .page-banner {
+    background: linear-gradient(135deg, #0F4C81 0%, #1a5f9e 50%, #6A5ACD 100%);
+    border-radius: 20px;
+    padding: 48px 40px;
+    margin-bottom: 32px;
+    box-shadow: 0 8px 32px rgba(15, 76, 129, 0.2);
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -10%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+      border-radius: 50%;
     }
 
-    .page-subtitle {
-      color: var(--color-text-secondary);
-      font-size: var(--font-size-sm);
+    .banner-content {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+
+      .banner-icon {
+        width: 80px;
+        height: 80px;
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        flex-shrink: 0;
+      }
+
+      .banner-text {
+        flex: 1;
+
+        .page-title {
+          font-size: 32px;
+          font-weight: 700;
+          color: #fff;
+          margin: 0 0 12px 0;
+          text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .page-subtitle {
+          font-size: 16px;
+          color: rgba(255, 255, 255, 0.95);
+          margin: 0;
+          line-height: 1.6;
+        }
+      }
     }
   }
 
   .input-mode-card {
     margin-bottom: var(--spacing-lg);
+    border-radius: 16px;
+    border: 2px solid #e7f0ff;
+    box-shadow: 0 4px 16px rgba(15, 76, 129, 0.08);
+
+    :deep(.el-card__header) {
+      background: linear-gradient(135deg, #f8f9fc 0%, #e7f0ff 100%);
+      border-bottom: 2px solid #d5e5ff;
+      padding: 20px 24px;
+
+      .card-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 16px;
+        font-weight: 600;
+        color: #0F4C81;
+
+        .header-icon {
+          font-size: 20px;
+        }
+      }
+    }
 
     .mode-group {
       display: flex;
       justify-content: center;
-      gap: var(--spacing-md);
+      gap: 24px;
+      padding: 16px;
+      flex-wrap: wrap;
 
       :deep(.el-radio-button) {
+        flex: 1;
+        max-width: 400px;
+
         .el-radio-button__inner {
-          padding: 12px 24px;
-          font-size: var(--font-size-base);
+          width: 100%;
+          padding: 0;
+          border: 2px solid #e7f0ff;
+          border-radius: 12px;
+          background: #fff;
+          transition: all 0.3s ease;
+
+          &:hover {
+            border-color: #0F4C81;
+            box-shadow: 0 4px 16px rgba(15, 76, 129, 0.12);
+            transform: translateY(-2px);
+          }
+        }
+
+        &.is-active .el-radio-button__inner {
+          background: linear-gradient(135deg, #0F4C81 0%, #6A5ACD 100%);
+          border-color: transparent;
+          box-shadow: 0 6px 20px rgba(15, 76, 129, 0.25);
+
+          .option-icon {
+            background: rgba(255, 255, 255, 0.25);
+            color: #fff;
+          }
+
+          .option-title {
+            color: #fff;
+          }
+
+          .option-desc {
+            color: rgba(255, 255, 255, 0.9);
+          }
+        }
+      }
+
+      .mode-option {
+        .option-content {
           display: flex;
           align-items: center;
-          gap: var(--spacing-xs);
+          gap: 16px;
+          padding: 20px 24px;
+
+          .option-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+
+            &.file {
+              background: linear-gradient(135deg, #e7f0ff 0%, #d5e5ff 100%);
+              color: #0F4C81;
+            }
+
+            &.text {
+              background: linear-gradient(135deg, #f0e7ff 0%, #e5d5ff 100%);
+              color: #6A5ACD;
+            }
+          }
+
+          .option-text {
+            flex: 1;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+
+            .option-title {
+              font-size: 16px;
+              font-weight: 600;
+              color: #2c3e50;
+              transition: all 0.3s ease;
+            }
+
+            .option-desc {
+              font-size: 13px;
+              color: #6c757d;
+              transition: all 0.3s ease;
+            }
+          }
         }
       }
     }
@@ -327,33 +572,183 @@ const resetForm = () => {
 
   .upload-card {
     margin-bottom: var(--spacing-lg);
+    border-radius: 16px;
+    border: 2px solid #e7f0ff;
+    box-shadow: 0 4px 16px rgba(15, 76, 129, 0.08);
+
+    :deep(.el-card__header) {
+      background: linear-gradient(135deg, #f8f9fc 0%, #e7f0ff 100%);
+      border-bottom: 2px solid #d5e5ff;
+      padding: 20px 24px;
+
+      .card-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+
+        .header-icon {
+          font-size: 20px;
+          color: #0F4C81;
+        }
+
+        .header-title {
+          font-size: 16px;
+          font-weight: 600;
+          color: #0F4C81;
+          flex: 1;
+        }
+
+        .header-tip {
+          font-size: 13px;
+          color: #6A5ACD;
+          font-weight: 500;
+          padding: 4px 12px;
+          background: rgba(106, 90, 205, 0.1);
+          border-radius: 12px;
+        }
+      }
+    }
 
     .upload-area {
       .upload-dragger {
         width: 100%;
+
+        :deep(.el-upload-dragger) {
+          padding: 48px 20px;
+          border-radius: 16px;
+          border: 2px dashed #d5e5ff;
+          background: linear-gradient(135deg, #fafbfd 0%, #f5f7fc 100%);
+          transition: all 0.3s ease;
+
+          &:hover {
+            border-color: #0F4C81;
+            background: linear-gradient(135deg, #f0f4ff 0%, #e7f0ff 100%);
+
+            .upload-icon {
+              transform: scale(1.1);
+              color: #0F4C81;
+            }
+          }
+        }
+
+        .upload-content {
+          .upload-icon {
+            color: #6A5ACD;
+            margin-bottom: 16px;
+            transition: all 0.3s ease;
+          }
+
+          .upload-text {
+            .upload-title {
+              font-size: 16px;
+              font-weight: 600;
+              color: #2c3e50;
+              margin: 0 0 8px 0;
+            }
+
+            .upload-hint {
+              font-size: 13px;
+              color: #6c757d;
+              margin: 0;
+            }
+          }
+        }
       }
 
       .file-list {
         margin-top: var(--spacing-lg);
 
+        .file-list-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 12px 16px;
+          background: linear-gradient(135deg, #f8f9fc 0%, #e7f0ff 100%);
+          border-radius: 12px 12px 0 0;
+          border: 2px solid #e7f0ff;
+          border-bottom: none;
+
+          .file-count {
+            font-size: 14px;
+            font-weight: 600;
+            color: #0F4C81;
+          }
+
+          .el-button {
+            color: #6A5ACD;
+
+            &:hover {
+              color: #0F4C81;
+            }
+          }
+        }
+
         .file-item {
           display: flex;
           align-items: center;
-          gap: var(--spacing-sm);
-          padding: var(--spacing-sm);
-          margin-bottom: var(--spacing-sm);
-          border: 1px solid var(--color-border-light);
-          border-radius: var(--border-radius-base);
-          background-color: var(--color-bg-secondary);
+          gap: 12px;
+          padding: 16px;
+          margin-bottom: 0;
+          border: 2px solid #e7f0ff;
+          border-top: none;
+          background: #fff;
+          transition: all 0.3s ease;
 
-          .file-name {
-            flex: 1;
-            font-weight: var(--font-weight-medium);
+          &:last-child {
+            border-radius: 0 0 12px 12px;
           }
 
-          .file-size {
-            color: var(--color-text-secondary);
-            font-size: var(--font-size-sm);
+          &:hover {
+            background: linear-gradient(135deg, #fafbfd 0%, #f5f7fc 100%);
+            transform: translateX(4px);
+          }
+
+          .file-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #e7f0ff 0%, #d5e5ff 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0F4C81;
+            flex-shrink: 0;
+          }
+
+          .file-info {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+
+            .file-name {
+              font-weight: 600;
+              font-size: 14px;
+              color: #2c3e50;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+            }
+
+            .file-size {
+              color: #6c757d;
+              font-size: 12px;
+            }
+          }
+
+          .file-remove {
+            flex-shrink: 0;
+            background: linear-gradient(135deg, #fee 0%, #fdd 100%);
+            border-color: #fcc;
+            color: #c33;
+
+            &:hover {
+              background: linear-gradient(135deg, #f88 0%, #f66 100%);
+              border-color: #f44;
+              color: #fff;
+            }
           }
         }
       }
@@ -361,30 +756,232 @@ const resetForm = () => {
       .upload-actions {
         text-align: center;
         margin-top: var(--spacing-lg);
+
+        .submit-button {
+          min-width: 200px;
+          height: 48px;
+          font-size: 16px;
+          font-weight: 600;
+          border-radius: 24px;
+          background: linear-gradient(135deg, #0F4C81 0%, #6A5ACD 100%);
+          border: none;
+          box-shadow: 0 6px 20px rgba(15, 76, 129, 0.3);
+          transition: all 0.3s ease;
+
+          &:hover {
+            background: linear-gradient(135deg, #1a5f9e 0%, #7B68EE 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(15, 76, 129, 0.4);
+          }
+        }
       }
     }
   }
 
   .input-card {
     margin-bottom: var(--spacing-lg);
+    border-radius: 16px;
+    border: 2px solid #e7f0ff;
+    box-shadow: 0 4px 16px rgba(15, 76, 129, 0.08);
+
+    :deep(.el-card__header) {
+      background: linear-gradient(135deg, #f8f9fc 0%, #e7f0ff 100%);
+      border-bottom: 2px solid #d5e5ff;
+      padding: 20px 24px;
+
+      .card-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 16px;
+        font-weight: 600;
+        color: #0F4C81;
+
+        .header-icon {
+          font-size: 20px;
+        }
+      }
+    }
+
+    .patent-form {
+      padding: 8px;
+
+      .form-input {
+        :deep(.el-input__wrapper) {
+          border-radius: 10px;
+          border: 2px solid #e7f0ff;
+
+          &:hover,
+          &.is-focus {
+            border-color: #0F4C81;
+          }
+        }
+      }
+
+      .form-textarea {
+        :deep(.el-textarea__inner) {
+          border-radius: 12px;
+          border: 2px solid #e7f0ff;
+          line-height: 1.8;
+
+          &:focus {
+            border-color: #0F4C81;
+          }
+        }
+      }
+
+      .checkbox-group {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+
+        .analysis-checkbox {
+          :deep(.el-checkbox__input) {
+            .el-checkbox__inner {
+              width: 20px;
+              height: 20px;
+              border-radius: 6px;
+              border: 2px solid #d5e5ff;
+            }
+
+            &.is-checked .el-checkbox__inner {
+              background: linear-gradient(135deg, #0F4C81 0%, #6A5ACD 100%);
+              border-color: transparent;
+            }
+          }
+
+          .checkbox-content {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #fafbfd 0%, #f5f7fc 100%);
+            border: 2px solid #e7f0ff;
+            transition: all 0.3s ease;
+            margin-left: 8px;
+
+            .checkbox-icon {
+              font-size: 18px;
+              color: #6A5ACD;
+            }
+
+            span {
+              font-weight: 500;
+              color: #2c3e50;
+            }
+          }
+
+          &:hover .checkbox-content {
+            border-color: #0F4C81;
+            background: linear-gradient(135deg, #f0f4ff 0%, #e7f0ff 100%);
+          }
+
+          :deep(.el-checkbox__input.is-checked)~.checkbox-content {
+            border-color: #0F4C81;
+            background: linear-gradient(135deg, #e7f0ff 0%, #d5e5ff 100%);
+          }
+        }
+      }
+    }
 
     .form-actions {
       display: flex;
       justify-content: flex-end;
-      gap: var(--spacing-md);
-      padding-top: var(--spacing-lg);
-      border-top: 1px solid var(--color-border-light);
+      gap: 12px;
+      padding-top: 24px;
+      border-top: 2px solid #e7f0ff;
+      margin-top: 8px;
+
+      .reset-button {
+        min-width: 100px;
+        height: 42px;
+        border-radius: 21px;
+        border: 2px solid #e7f0ff;
+        font-weight: 500;
+
+        &:hover {
+          border-color: #0F4C81;
+          color: #0F4C81;
+          background: #f0f4ff;
+        }
+      }
+
+      .submit-button {
+        min-width: 160px;
+        height: 42px;
+        font-size: 15px;
+        font-weight: 600;
+        border-radius: 21px;
+        background: linear-gradient(135deg, #0F4C81 0%, #6A5ACD 100%);
+        border: none;
+        box-shadow: 0 4px 16px rgba(15, 76, 129, 0.3);
+        transition: all 0.3s ease;
+
+        &:hover {
+          background: linear-gradient(135deg, #1a5f9e 0%, #7B68EE 100%);
+          transform: translateY(-2px);
+          box-shadow: 0 6px 20px rgba(15, 76, 129, 0.4);
+        }
+      }
     }
   }
 
   .result-card {
+    border-radius: 16px;
+    border: 2px solid #e7f0ff;
+    box-shadow: 0 4px 16px rgba(15, 76, 129, 0.08);
+
+    :deep(.el-card__header) {
+      background: linear-gradient(135deg, #f8f9fc 0%, #e7f0ff 100%);
+      border-bottom: 2px solid #d5e5ff;
+      padding: 20px 24px;
+
+      .card-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 16px;
+        font-weight: 600;
+        color: #0F4C81;
+
+        .header-icon {
+          font-size: 20px;
+
+          &.analyzing {
+            color: #6A5ACD;
+            animation: rotate 1.5s linear infinite;
+          }
+        }
+      }
+    }
+
     .analyzing-status {
       text-align: center;
+      padding: 24px;
+
+      .progress-wrapper {
+        max-width: 600px;
+        margin: 0 auto 24px;
+
+        .custom-progress {
+          :deep(.el-progress-bar__outer) {
+            background: #e7f0ff;
+            border-radius: 10px;
+          }
+
+          :deep(.el-progress-bar__inner) {
+            background: linear-gradient(90deg, #0F4C81 0%, #6A5ACD 100%);
+            border-radius: 10px;
+          }
+        }
+      }
 
       .progress-text {
-        color: var(--color-text-secondary);
-        font-size: var(--font-size-sm);
-        margin-top: var(--spacing-md);
+        color: #6A5ACD;
+        font-size: 15px;
+        margin: 0;
+        font-weight: 500;
       }
     }
 
@@ -427,6 +1024,50 @@ const resetForm = () => {
         border-top: 1px solid var(--color-border-light);
       }
     }
+  }
+}
+
+@media (max-width: 768px) {
+  .three-analysis-new-container {
+    .page-banner {
+      padding: 32px 24px;
+
+      .banner-content {
+        flex-direction: column;
+        text-align: center;
+
+        .banner-text {
+          .page-title {
+            font-size: 24px;
+          }
+
+          .page-subtitle {
+            font-size: 14px;
+          }
+        }
+      }
+    }
+
+    .input-mode-card,
+    .upload-card {
+      .mode-group {
+        flex-direction: column;
+
+        :deep(.el-radio-button) {
+          max-width: 100%;
+        }
+      }
+    }
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
   }
 }
 </style>

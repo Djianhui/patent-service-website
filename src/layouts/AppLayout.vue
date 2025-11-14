@@ -38,79 +38,79 @@ const menuItems = computed(() => [
     icon: 'House',
     path: '/app/dashboard'
   },
-  {
-    id: 'tech-report',
-    title: t('menu.techReport'),
-    icon: 'Document',
-    path: '/app/tech-report',
-    children: [
-      {
-        id: 'tech-report-new',
-        title: t('menu.newReport'),
-        path: '/app/tech-report/new'
-      },
-      {
-        id: 'tech-report-history',
-        title: t('menu.reportHistory'),
-        path: '/app/tech-report/history'
-      }
-    ]
-  },
-  {
-    id: 'patent-draft',
-    title: t('menu.patentDraft'),
-    icon: 'Edit',
-    path: '/app/patent-draft',
-    children: [
-      {
-        id: 'patent-draft-new',
-        title: t('menu.newDraft'),
-        path: '/app/patent-draft/new'
-      },
-      {
-        id: 'patent-draft-manage',
-        title: t('menu.draftManage'),
-        path: '/app/patent-draft/manage'
-      }
-    ]
-  },
-  {
-    id: 'patent-search',
-    title: t('menu.patentSearch'),
-    icon: 'Search',
-    path: '/app/patent-search',
-    children: [
-      {
-        id: 'patent-search-quick',
-        title: t('menu.quickSearch'),
-        path: '/app/patent-search/quick'
-      }
-    ]
-  },
   // {
-  //   id: 'three-analysis',
-  //   title: t('menu.threeAnalysis'),
-  //   icon: 'DataAnalysis',
-  //   path: '/app/three-analysis',
+  //   id: 'tech-report',
+  //   title: t('menu.techReport'),
+  //   icon: 'Document',
+  //   path: '/app/tech-report',
   //   children: [
   //     {
-  //       id: 'three-analysis-new',
-  //       title: t('menu.newAnalysis'),
-  //       path: '/app/three-analysis/new'
+  //       id: 'tech-report-new',
+  //       title: t('menu.newReport'),
+  //       path: '/app/tech-report/new'
   //     },
   //     {
-  //       id: 'three-analysis-history',
-  //       title: t('menu.analysisHistory'),
-  //       path: '/app/three-analysis/history'
+  //       id: 'tech-report-history',
+  //       title: t('menu.reportHistory'),
+  //       path: '/app/tech-report/history'
   //     }
   //   ]
   // },
   // {
-  //   id: 'defense-support',
-  //   title: t('menu.defenseSupport'),
-  //   icon: 'ChatDotSquare',
-  //   path: '/app/defense-support/simulation'
+  //   id: 'patent-draft',
+  //   title: t('menu.patentDraft'),
+  //   icon: 'Edit',
+  //   path: '/app/patent-draft',
+  //   children: [
+  //     {
+  //       id: 'patent-draft-new',
+  //       title: t('menu.newDraft'),
+  //       path: '/app/patent-draft/new'
+  //     },
+  //     {
+  //       id: 'patent-draft-manage',
+  //       title: t('menu.draftManage'),
+  //       path: '/app/patent-draft/manage'
+  //     }
+  //   ]
   // },
+  // {
+  //   id: 'patent-search',
+  //   title: t('menu.patentSearch'),
+  //   icon: 'Search',
+  //   path: '/app/patent-search',
+  //   children: [
+  //     {
+  //       id: 'patent-search-quick',
+  //       title: t('menu.quickSearch'),
+  //       path: '/app/patent-search/quick'
+  //     }
+  //   ]
+  // },
+  {
+    id: 'three-analysis',
+    title: t('menu.threeAnalysis'),
+    icon: 'DataAnalysis',
+    path: '/app/three-analysis',
+    children: [
+      {
+        id: 'three-analysis-new',
+        title: t('menu.newAnalysis'),
+        path: '/app/three-analysis/new'
+      },
+      {
+        id: 'three-analysis-history',
+        title: t('menu.analysisHistory'),
+        path: '/app/three-analysis/history'
+      }
+    ]
+  },
+  {
+    id: 'defense-support',
+    title: t('menu.defenseSupport'),
+    icon: 'ChatDotSquare',
+    path: '/app/defense-support/simulation'
+  },
   // {
   //   id: 'profile',
   //   title: t('menu.profile'),

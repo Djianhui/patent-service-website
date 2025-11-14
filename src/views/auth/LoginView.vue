@@ -1,33 +1,16 @@
 <template>
   <div class="login-container">
-    <div class="login-wrapper">
+    <div class="login-card">
       <div class="login-header">
-        <div class="logo">
-          <!-- <img src="/favicon.ico" alt="Logo" class="logo-icon" /> -->
-          <span class="logo-text">{{ $t('auth.loginTitle') }}</span>
+        <div class="logo-section">
+          <!-- <div class="logo-icon">
+            <el-icon :size="40">
+              <DataAnalysis />
+            </el-icon>
+          </div> -->
+          <h1 class="brand-name" @click="$router.push('/')" style="cursor: pointer;">{{ $t('auth.loginTitle') }}</h1>
         </div>
-        <div class="language-selector">
-          <el-dropdown @command="handleLanguageChange">
-            <el-button class="language-button" text>
-              <span :class="`fi fi-${getFlagCode(currentLocale)}`" class="flag-icon-round"></span>
-              {{ currentLocaleName }}
-              <el-icon class="el-icon--right">
-                <arrow-down />
-              </el-icon>
-            </el-button>
-            <template #dropdown>
-              <el-dropdown-menu>
-                <el-dropdown-item v-for="lang in SUPPORT_LOCALES" :key="lang" :command="lang"
-                  :disabled="currentLocale === lang">
-                  <span :class="`fi fi-${getFlagCode(lang)}`" class="flag-icon-round"></span>
-                  {{ getLocaleDisplayText(lang) }}
-                </el-dropdown-item>
-              </el-dropdown-menu>
-            </template>
-          </el-dropdown>
-        </div>
-        <h2 class="login-title">{{ $t('auth.userLogin') }}</h2>
-        <p class="login-subtitle">{{ $t('auth.loginPrompt') }}</p>
+        <p class="welcome-text">{{ $t('auth.loginPrompt') }}</p>
       </div>
 
       <el-form ref="loginFormRef" :model="loginForm" :rules="loginRules" class="login-form"
@@ -63,23 +46,21 @@
           <span class="divider-text">{{ $t('auth.or') }}</span>
         </div>
 
-        <el-form-item>
-          <el-button size="large" class="google-login-button" @click="handleGoogleLogin">
-            <svg class="google-icon" width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
-                <path fill="#4285F4"
-                  d="M -3.264 51.509 C -3.264 50.719 -3.334 49.969 -3.454 49.239 L -14.754 49.239 L -14.754 53.749 L -8.284 53.749 C -8.574 55.229 -9.424 56.479 -10.684 57.329 L -10.684 60.329 L -6.824 60.329 C -4.564 58.239 -3.264 55.159 -3.264 51.509 Z" />
-                <path fill="#34A853"
-                  d="M -14.754 63.239 C -11.514 63.239 -8.804 62.159 -6.824 60.329 L -10.684 57.329 C -11.764 58.049 -13.134 58.489 -14.754 58.489 C -17.884 58.489 -20.534 56.379 -21.484 53.529 L -25.464 53.529 L -25.464 56.619 C -23.494 60.539 -19.444 63.239 -14.754 63.239 Z" />
-                <path fill="#FBBC05"
-                  d="M -21.484 53.529 C -21.734 52.809 -21.864 52.039 -21.864 51.239 C -21.864 50.439 -21.724 49.669 -21.484 48.949 L -21.484 45.859 L -25.464 45.859 C -26.284 47.479 -26.754 49.299 -26.754 51.239 C -26.754 53.179 -26.284 54.999 -25.464 56.619 L -21.484 53.529 Z" />
-                <path fill="#EA4335"
-                  d="M -14.754 43.989 C -12.984 43.989 -11.404 44.599 -10.154 45.789 L -6.734 42.369 C -8.804 40.429 -11.514 39.239 -14.754 39.239 C -19.444 39.239 -23.494 41.939 -25.464 45.859 L -21.484 48.949 C -20.534 46.099 -17.884 43.989 -14.754 43.989 Z" />
-              </g>
-            </svg>
-            {{ $t('auth.googleLogin') }}
-          </el-button>
-        </el-form-item>
+        <el-button size="large" class="google-login-button" @click="handleGoogleLogin">
+          <svg class="google-icon" width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
+              <path fill="#4285F4"
+                d="M -3.264 51.509 C -3.264 50.719 -3.334 49.969 -3.454 49.239 L -14.754 49.239 L -14.754 53.749 L -8.284 53.749 C -8.574 55.229 -9.424 56.479 -10.684 57.329 L -10.684 60.329 L -6.824 60.329 C -4.564 58.239 -3.264 55.159 -3.264 51.509 Z" />
+              <path fill="#34A853"
+                d="M -14.754 63.239 C -11.514 63.239 -8.804 62.159 -6.824 60.329 L -10.684 57.329 C -11.764 58.049 -13.134 58.489 -14.754 58.489 C -17.884 58.489 -20.534 56.379 -21.484 53.529 L -25.464 53.529 L -25.464 56.619 C -23.494 60.539 -19.444 63.239 -14.754 63.239 Z" />
+              <path fill="#FBBC05"
+                d="M -21.484 53.529 C -21.734 52.809 -21.864 52.039 -21.864 51.239 C -21.864 50.439 -21.724 49.669 -21.484 48.949 L -21.484 45.859 L -25.464 45.859 C -26.284 47.479 -26.754 49.299 -26.754 51.239 C -26.754 53.179 -26.284 54.999 -25.464 56.619 L -21.484 53.529 Z" />
+              <path fill="#EA4335"
+                d="M -14.754 43.989 C -12.984 43.989 -11.404 44.599 -10.154 45.789 L -6.734 42.369 C -8.804 40.429 -11.514 39.239 -14.754 39.239 C -19.444 39.239 -23.494 41.939 -25.464 45.859 L -21.484 48.949 C -20.534 46.099 -17.884 43.989 -14.754 43.989 Z" />
+            </g>
+          </svg>
+          {{ $t('auth.googleLogin') }}
+        </el-button>
 
         <div class="register-link">
           <span>{{ $t('auth.noAccountPrompt') }}</span>
@@ -88,60 +69,6 @@
           </el-link>
         </div>
       </el-form>
-    </div>
-
-    <div class="login-background">
-      <div class="background-content">
-        <h3>{{ $t('auth.professionalPlatform') }}</h3>
-        <p>{{ $t('auth.oneStopService') }}</p>
-        <div class="features">
-          <div class="feature-item">
-            <div class="feature-icon">
-              <Search />
-            </div>
-            <div class="feature-text">
-              <h4>{{ $t('auth.smartSearch') }}</h4>
-              <p>{{ $t('auth.smartSearchDesc') }}</p>
-            </div>
-          </div>
-          <div class="feature-item">
-            <div class="feature-icon">
-              <DataAnalysis />
-            </div>
-            <div class="feature-text">
-              <h4>{{ $t('menu.threeAnalysis') }}</h4>
-              <p>{{ $t('auth.threeAnalysisDesc') }}</p>
-            </div>
-          </div>
-          <div class="feature-item">
-            <div class="feature-icon">
-              <Edit />
-            </div>
-            <div class="feature-text">
-              <h4>{{ $t('menu.patentDraft') }}</h4>
-              <p>{{ $t('auth.patentDraftDesc') }}</p>
-            </div>
-          </div>
-          <div class="feature-item">
-            <div class="feature-icon">
-              <Document />
-            </div>
-            <div class="feature-text">
-              <h4>{{ $t('menu.techReport') }}</h4>
-              <p>{{ $t('auth.techReportDesc') }}</p>
-            </div>
-          </div>
-          <div class="feature-item">
-            <div class="feature-icon">
-              <ChatDotSquare />
-            </div>
-            <div class="feature-text">
-              <h4>{{ $t('menu.defenseSupport') }}</h4>
-              <p>{{ $t('auth.defenseSupportDesc') }}</p>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </template>
@@ -363,107 +290,115 @@ onMounted(async () => {
 .login-container {
   min-height: 100vh;
   display: flex;
-  background-color: #f8f9fa;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0F4C81 0%, #1a5f9e 50%, #6A5ACD 100%);
+  padding: 20px;
+  position: relative;
+  font-family: 'PingFang SC', 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  // 背景装饰
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
 }
 
-.login-wrapper {
-  flex: 1;
-  max-width: 480px;
+.login-card {
+  width: 100%;
+  max-width: 460px;
+  background: #ffffff;
+  border-radius: 24px;
   padding: 48px 40px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  background-color: #ffffff;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   position: relative;
-  z-index: 2;
+  z-index: 1;
 
-  @media (max-width: 768px) {
+  @media (max-width: 640px) {
     max-width: 100%;
-    padding: 32px 24px;
-    box-shadow: none;
+    padding: 40px 24px;
+    border-radius: 16px;
   }
 }
 
 .login-header {
-  text-align: left;
+  text-align: center;
   margin-bottom: 40px;
 
-  .logo {
+  .logo-section {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 32px;
+    gap: 16px;
+    margin-bottom: 20px;
 
     .logo-icon {
-      width: 36px;
-      height: 36px;
+      width: 72px;
+      height: 72px;
+      background: linear-gradient(135deg, #0F4C81 0%, #6A5ACD 100%);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      box-shadow: 0 8px 24px rgba(15, 76, 129, 0.25);
     }
 
-    .logo-text {
-      font-size: 24px;
+    .brand-name {
+      font-size: 28px;
       font-weight: 700;
       color: #1a1a1a;
+      margin: 0;
+      letter-spacing: 0.5px;
     }
   }
 
-  .language-selector {
-    position: absolute;
-    top: 24px;
-    right: 24px;
-
-    .language-button {
-      font-size: 14px;
-      color: #666;
-      padding: 8px 12px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-
-      &:hover {
-        color: #1a1a1a;
-        background-color: #f8f9fa;
-      }
-    }
-
-    .flag-icon-round {
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      overflow: hidden;
-      display: inline-block;
-      background-size: cover;
-      background-position: center;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      flex-shrink: 0;
-    }
-
-    :deep(.el-dropdown-menu__item) {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 8px 16px;
-    }
-  }
-
-  .login-title {
-    font-size: 32px;
-    font-weight: 700;
-    color: #1a1a1a;
-    margin-bottom: 12px;
-    line-height: 1.3;
-  }
-
-  .login-subtitle {
+  .welcome-text {
+    font-size: 15px;
     color: #666;
-    font-size: 16px;
-    line-height: 1.5;
+    margin: 0;
+    line-height: 1.6;
   }
 }
 
 .login-form {
+  :deep(.el-form-item) {
+    margin-bottom: 20px;
+  }
+
+  :deep(.el-input__wrapper) {
+    height: 52px;
+    border-radius: 12px;
+    box-shadow: 0 0 0 1px #e5e7eb;
+    transition: all 0.3s ease;
+
+    &:hover {
+      box-shadow: 0 0 0 1px #0F4C81;
+    }
+
+    &.is-focus {
+      box-shadow: 0 0 0 2px #0F4C81 !important;
+    }
+  }
+
+  :deep(.el-input__prefix) {
+    font-size: 18px;
+    color: #999;
+  }
+
+  :deep(.el-input__inner) {
+    font-size: 15px;
+
+    &::placeholder {
+      color: #aaa;
+    }
+  }
+
   .captcha-container {
     display: flex;
     gap: 12px;
@@ -488,9 +423,9 @@ onMounted(async () => {
       flex-shrink: 0;
 
       &:hover {
-        border-color: #667eea;
+        border-color: #0F4C81;
         transform: translateY(-2px);
-        box-shadow: 0 4px 6px rgba(102, 126, 234, 0.1);
+        box-shadow: 0 4px 6px rgba(15, 76, 129, 0.15);
       }
 
       img {
@@ -510,18 +445,20 @@ onMounted(async () => {
 
   .login-button {
     width: 100%;
-    height: 48px;
+    height: 52px;
     font-size: 16px;
     font-weight: 600;
     border-radius: 12px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #0F4C81 0%, #6A5ACD 100%);
     border: none;
-    margin-top: 8px;
+    margin-top: 12px;
+    box-shadow: 0 4px 16px rgba(15, 76, 129, 0.25);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
     &:hover {
-      background: linear-gradient(135deg, #5568d3 0%, #6a4093 100%);
+      background: linear-gradient(135deg, #1a5f9e 0%, #7B68EE 100%);
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+      box-shadow: 0 6px 20px rgba(15, 76, 129, 0.35);
     }
 
     &:active {
@@ -531,54 +468,46 @@ onMounted(async () => {
 
   .divider {
     display: flex;
-    justify-content: center;
-    margin: 24px 0;
-    position: relative;
+    align-items: center;
+    margin: 28px 0;
 
     .divider-text {
-      font-size: 14px;
-      color: #666;
+      font-size: 13px;
+      color: #999;
       padding: 0 16px;
-      background-color: #ffffff;
-      position: relative;
-      z-index: 1;
+      background: #fff;
+      white-space: nowrap;
     }
 
-    &::before {
+    &::before,
+    &::after {
       content: '';
-      position: absolute;
-      top: 50%;
-      left: 0;
-      right: 0;
+      flex: 1;
       height: 1px;
-      background-color: #d1d5db;
-      z-index: 0;
+      background: #e5e7eb;
     }
   }
 
   .google-login-button {
     width: 100%;
-    height: 48px;
-    font-size: 16px;
-    font-weight: 600;
+    height: 52px;
+    font-size: 15px;
+    font-weight: 500;
     border-radius: 12px;
-    background-color: #ffffff;
+    background: #fff;
     border: 1px solid #e5e7eb;
     color: #1a1a1a;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 10px;
+    transition: all 0.3s ease;
 
     &:hover {
-      background-color: #f8f9fa;
-      border-color: #e5e7eb;
+      background: #f8f9fa;
+      border-color: #d1d5db;
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    }
-
-    &:active {
-      transform: translateY(0);
     }
 
     .google-icon {
@@ -589,137 +518,51 @@ onMounted(async () => {
 
   .register-link {
     text-align: center;
+    margin-top: 28px;
+    font-size: 14px;
     color: #666;
-    font-size: 15px;
-    margin-top: 24px;
 
     span {
-      margin-right: 8px;
+      margin-right: 6px;
     }
 
     :deep(.el-link) {
-      font-weight: 500;
-      font-size: 15px;
-      color: #667eea;
+      font-weight: 600;
+      font-size: 14px;
+      color: #0F4C81;
 
       &:hover {
-        color: #764ba2;
-      }
-    }
-  }
-}
-
-.login-background {
-  flex: 1;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  position: relative;
-  padding: 40px;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-    opacity: 0.3;
-  }
-
-  @media (max-width: 768px) {
-    display: none;
-  }
-
-  .background-content {
-    text-align: left;
-    z-index: 1;
-    max-width: 500px;
-
-    h3 {
-      font-size: 32px;
-      font-weight: 700;
-      margin-bottom: 16px;
-      line-height: 1.3;
-    }
-
-    p {
-      font-size: 18px;
-      margin-bottom: 40px;
-      opacity: 0.9;
-      line-height: 1.6;
-    }
-
-    .features {
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
-
-      .feature-item {
-        display: flex;
-        align-items: flex-start;
-        gap: 16px;
-        padding: 20px;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 12px;
-        backdrop-filter: blur(10px);
-        transition: all 0.3s ease;
-
-        &:hover {
-          background: rgba(255, 255, 255, 0.15);
-          transform: translateY(-3px);
-        }
-
-        .feature-icon {
-          width: 48px;
-          height: 48px;
-          border-radius: 12px;
-          background: rgba(255, 255, 255, 0.15);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-shrink: 0;
-
-          .el-icon {
-            font-size: 24px;
-          }
-        }
-
-        .feature-text {
-          flex: 1;
-
-          h4 {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 6px;
-            color: white;
-          }
-
-          p {
-            font-size: 14px;
-            margin: 0;
-            opacity: 0.85;
-            line-height: 1.5;
-          }
-        }
+        color: #6A5ACD;
       }
     }
   }
 }
 
 // 响应式设计
-@media (max-width: 768px) {
-  .login-container {
-    .login-wrapper {
-      min-height: 100vh;
-    }
+@media (max-width: 640px) {
+  .login-card {
+    .login-header {
+      .logo-section {
+        .logo-icon {
+          width: 64px;
+          height: 64px;
+        }
 
+        .brand-name {
+          font-size: 24px;
+        }
+      }
+
+      .welcome-text {
+        font-size: 14px;
+      }
+    }
+  }
+
+  .login-form {
     .captcha-container {
       .captcha-image {
-        width: 100px !important;
+        width: 100px;
       }
     }
   }

@@ -1,33 +1,16 @@
 <template>
   <div class="register-container">
-    <div class="register-wrapper">
+    <div class="register-card">
       <div class="register-header">
-        <div class="logo">
-          <!-- <img src="/favicon.ico" alt="Logo" class="logo-icon" /> -->
-          <span class="logo-text">{{ $t('auth.loginTitle') }}</span>
+        <div class="logo-section">
+          <!-- <div class="logo-icon">
+            <el-icon :size="40">
+              <DataAnalysis />
+            </el-icon>
+          </div> -->
+          <h1 class="brand-name" @click="$router.push('/')" style="cursor: pointer;">{{ $t('auth.loginTitle') }}</h1>
         </div>
-        <div class="language-selector">
-          <el-dropdown @command="handleLanguageChange">
-            <el-button class="language-button" text>
-              <span :class="`fi fi-${getFlagCode(currentLocale)}`" class="flag-icon-round"></span>
-              {{ currentLocaleName }}
-              <el-icon class="el-icon--right">
-                <arrow-down />
-              </el-icon>
-            </el-button>
-            <template #dropdown>
-              <el-dropdown-menu>
-                <el-dropdown-item v-for="lang in SUPPORT_LOCALES" :key="lang" :command="lang"
-                  :disabled="currentLocale === lang">
-                  <span :class="`fi fi-${getFlagCode(lang)}`" class="flag-icon-round"></span>
-                  {{ getLocaleDisplayText(lang) }}
-                </el-dropdown-item>
-              </el-dropdown-menu>
-            </template>
-          </el-dropdown>
-        </div>
-        <h2 class="register-title">{{ $t('auth.userRegister') }}</h2>
-        <p class="register-subtitle">{{ $t('auth.registerPrompt') }}</p>
+        <p class="welcome-text">{{ $t('auth.registerPrompt') }}</p>
       </div>
 
       <el-form ref="registerFormRef" :model="registerForm" :rules="registerRules" class="register-form"
@@ -76,60 +59,6 @@
           </el-link>
         </div>
       </el-form>
-    </div>
-
-    <div class="register-background">
-      <div class="background-content">
-        <h3>{{ $t('auth.professionalPlatform') }}</h3>
-        <p>{{ $t('auth.oneStopService') }}</p>
-        <div class="features">
-          <div class="feature-item">
-            <div class="feature-icon">
-              <Search />
-            </div>
-            <div class="feature-text">
-              <h4>{{ $t('auth.smartSearch') }}</h4>
-              <p>{{ $t('auth.smartSearchDesc') }}</p>
-            </div>
-          </div>
-          <div class="feature-item">
-            <div class="feature-icon">
-              <DataAnalysis />
-            </div>
-            <div class="feature-text">
-              <h4>{{ $t('menu.threeAnalysis') }}</h4>
-              <p>{{ $t('auth.threeAnalysisDesc') }}</p>
-            </div>
-          </div>
-          <div class="feature-item">
-            <div class="feature-icon">
-              <Edit />
-            </div>
-            <div class="feature-text">
-              <h4>{{ $t('menu.patentDraft') }}</h4>
-              <p>{{ $t('auth.patentDraftDesc') }}</p>
-            </div>
-          </div>
-          <div class="feature-item">
-            <div class="feature-icon">
-              <Document />
-            </div>
-            <div class="feature-text">
-              <h4>{{ $t('menu.techReport') }}</h4>
-              <p>{{ $t('auth.techReportDesc') }}</p>
-            </div>
-          </div>
-          <div class="feature-item">
-            <div class="feature-icon">
-              <ChatDotSquare />
-            </div>
-            <div class="feature-text">
-              <h4>{{ $t('menu.defenseSupport') }}</h4>
-              <p>{{ $t('auth.defenseSupportDesc') }}</p>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </template>
@@ -304,107 +233,115 @@ onMounted(async () => {
 .register-container {
   min-height: 100vh;
   display: flex;
-  background-color: #f8f9fa;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0F4C81 0%, #1a5f9e 50%, #6A5ACD 100%);
+  padding: 20px;
+  position: relative;
+  font-family: 'PingFang SC', 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  // 背景装饰
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
 }
 
-.register-wrapper {
-  flex: 1;
-  max-width: 480px;
+.register-card {
+  width: 100%;
+  max-width: 460px;
+  background: #ffffff;
+  border-radius: 24px;
   padding: 48px 40px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  background-color: #ffffff;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   position: relative;
-  z-index: 2;
+  z-index: 1;
 
-  @media (max-width: 768px) {
+  @media (max-width: 640px) {
     max-width: 100%;
-    padding: 32px 24px;
-    box-shadow: none;
+    padding: 40px 24px;
+    border-radius: 16px;
   }
 }
 
 .register-header {
-  text-align: left;
-  margin-bottom: 40px;
+  text-align: center;
+  margin-bottom: 32px;
 
-  .logo {
+  .logo-section {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 32px;
+    gap: 16px;
+    margin-bottom: 20px;
 
     .logo-icon {
-      width: 36px;
-      height: 36px;
+      width: 72px;
+      height: 72px;
+      background: linear-gradient(135deg, #0F4C81 0%, #6A5ACD 100%);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      box-shadow: 0 8px 24px rgba(15, 76, 129, 0.25);
     }
 
-    .logo-text {
-      font-size: 24px;
+    .brand-name {
+      font-size: 28px;
       font-weight: 700;
       color: #1a1a1a;
+      margin: 0;
+      letter-spacing: 0.5px;
     }
   }
 
-  .language-selector {
-    position: absolute;
-    top: 24px;
-    right: 24px;
-
-    .language-button {
-      font-size: 14px;
-      color: #666;
-      padding: 8px 12px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-
-      &:hover {
-        color: #1a1a1a;
-        background-color: #f8f9fa;
-      }
-    }
-
-    .flag-icon-round {
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      overflow: hidden;
-      display: inline-block;
-      background-size: cover;
-      background-position: center;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      flex-shrink: 0;
-    }
-
-    :deep(.el-dropdown-menu__item) {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 8px 16px;
-    }
-  }
-
-  .register-title {
-    font-size: 32px;
-    font-weight: 700;
-    color: #1a1a1a;
-    margin-bottom: 12px;
-    line-height: 1.3;
-  }
-
-  .register-subtitle {
+  .welcome-text {
+    font-size: 15px;
     color: #666;
-    font-size: 16px;
-    line-height: 1.5;
+    margin: 0;
+    line-height: 1.6;
   }
 }
 
 .register-form {
+  :deep(.el-form-item) {
+    margin-bottom: 20px;
+  }
+
+  :deep(.el-input__wrapper) {
+    height: 52px;
+    border-radius: 12px;
+    box-shadow: 0 0 0 1px #e5e7eb;
+    transition: all 0.3s ease;
+
+    &:hover {
+      box-shadow: 0 0 0 1px #0F4C81;
+    }
+
+    &.is-focus {
+      box-shadow: 0 0 0 2px #0F4C81 !important;
+    }
+  }
+
+  :deep(.el-input__prefix) {
+    font-size: 18px;
+    color: #999;
+  }
+
+  :deep(.el-input__inner) {
+    font-size: 15px;
+
+    &::placeholder {
+      color: #aaa;
+    }
+  }
+
   .captcha-container {
     display: flex;
     gap: 12px;
@@ -429,9 +366,9 @@ onMounted(async () => {
       flex-shrink: 0;
 
       &:hover {
-        border-color: #667eea;
+        border-color: #0F4C81;
         transform: translateY(-2px);
-        box-shadow: 0 4px 6px rgba(102, 126, 234, 0.1);
+        box-shadow: 0 4px 6px rgba(15, 76, 129, 0.15);
       }
 
       img {
@@ -453,35 +390,40 @@ onMounted(async () => {
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
     font-size: 13px;
+    padding: 12px 16px;
+    background: #f8f9fa;
+    border-radius: 12px;
 
     .strength-label {
       color: #666;
       min-width: 70px;
+      font-weight: 500;
     }
 
     .strength-bar {
       flex: 1;
-      height: 6px;
+      height: 8px;
       background-color: #e5e7eb;
-      border-radius: 3px;
+      border-radius: 4px;
       overflow: hidden;
 
       .strength-fill {
         height: 100%;
         transition: all 0.3s ease;
+        border-radius: 4px;
 
         &.strength-weak {
-          background-color: #ef4444;
+          background: linear-gradient(90deg, #ef4444 0%, #f87171 100%);
         }
 
         &.strength-medium {
-          background-color: #f59e0b;
+          background: linear-gradient(90deg, #f59e0b 0%, #fbbf24 100%);
         }
 
         &.strength-strong {
-          background-color: #10b981;
+          background: linear-gradient(90deg, #10b981 0%, #34d399 100%);
         }
       }
     }
@@ -489,24 +431,27 @@ onMounted(async () => {
     .strength-text {
       min-width: 40px;
       color: #666;
-      font-weight: 500;
+      font-weight: 600;
+      font-size: 12px;
     }
   }
 
   .register-button {
     width: 100%;
-    height: 48px;
+    height: 52px;
     font-size: 16px;
     font-weight: 600;
     border-radius: 12px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #0F4C81 0%, #6A5ACD 100%);
     border: none;
-    margin-top: 8px;
+    margin-top: 12px;
+    box-shadow: 0 4px 16px rgba(15, 76, 129, 0.25);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
     &:hover {
-      background: linear-gradient(135deg, #5568d3 0%, #6a4093 100%);
+      background: linear-gradient(135deg, #1a5f9e 0%, #7B68EE 100%);
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+      box-shadow: 0 6px 20px rgba(15, 76, 129, 0.35);
     }
 
     &:active {
@@ -516,137 +461,51 @@ onMounted(async () => {
 
   .login-link {
     text-align: center;
+    margin-top: 28px;
+    font-size: 14px;
     color: #666;
-    font-size: 15px;
-    margin-top: 24px;
 
     span {
-      margin-right: 8px;
+      margin-right: 6px;
     }
 
     :deep(.el-link) {
-      font-weight: 500;
-      font-size: 15px;
-      color: #667eea;
+      font-weight: 600;
+      font-size: 14px;
+      color: #0F4C81;
 
       &:hover {
-        color: #764ba2;
-      }
-    }
-  }
-}
-
-.register-background {
-  flex: 1;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  position: relative;
-  padding: 40px;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-    opacity: 0.3;
-  }
-
-  @media (max-width: 768px) {
-    display: none;
-  }
-
-  .background-content {
-    text-align: left;
-    z-index: 1;
-    max-width: 500px;
-
-    h3 {
-      font-size: 32px;
-      font-weight: 700;
-      margin-bottom: 16px;
-      line-height: 1.3;
-    }
-
-    p {
-      font-size: 18px;
-      margin-bottom: 40px;
-      opacity: 0.9;
-      line-height: 1.6;
-    }
-
-    .features {
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
-
-      .feature-item {
-        display: flex;
-        align-items: flex-start;
-        gap: 16px;
-        padding: 20px;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 12px;
-        backdrop-filter: blur(10px);
-        transition: all 0.3s ease;
-
-        &:hover {
-          background: rgba(255, 255, 255, 0.15);
-          transform: translateY(-3px);
-        }
-
-        .feature-icon {
-          width: 48px;
-          height: 48px;
-          border-radius: 12px;
-          background: rgba(255, 255, 255, 0.15);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-shrink: 0;
-
-          .el-icon {
-            font-size: 24px;
-          }
-        }
-
-        .feature-text {
-          flex: 1;
-
-          h4 {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 6px;
-            color: white;
-          }
-
-          p {
-            font-size: 14px;
-            margin: 0;
-            opacity: 0.85;
-            line-height: 1.5;
-          }
-        }
+        color: #6A5ACD;
       }
     }
   }
 }
 
 // 响应式设计
-@media (max-width: 768px) {
-  .register-container {
-    .register-wrapper {
-      min-height: 100vh;
-    }
+@media (max-width: 640px) {
+  .register-card {
+    .register-header {
+      .logo-section {
+        .logo-icon {
+          width: 64px;
+          height: 64px;
+        }
 
+        .brand-name {
+          font-size: 24px;
+        }
+      }
+
+      .welcome-text {
+        font-size: 14px;
+      }
+    }
+  }
+
+  .register-form {
     .captcha-container {
       .captcha-image {
-        width: 100px !important;
+        width: 100px;
       }
     }
   }
