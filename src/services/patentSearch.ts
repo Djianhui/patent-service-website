@@ -41,6 +41,26 @@ export interface PageQueryResponse {
   msg: string
 }
 
+// 支付请求参数
+export interface PayForTaskRequest {
+  payType: 'tenpay' | 'alipay' // tenpay: 微信支付, alipay: 支付宝
+  taskId: string
+}
+
+// 支付响应数据
+export interface PayForTaskResponse {
+  code: number
+  data: {
+    is_success: string
+    msg: string
+    qr_code_url: string // 微信支付二维码
+    qr_pic_url: string // 支付宝二维码
+    trade_no: string // 订单编号
+  }
+  msg: string
+  time: string
+}
+
 // 模拟专利数据
 const mockPatents: Patent[] = [
   {
@@ -407,5 +427,36 @@ export const patentSearchService = {
   async exportSearchResults(searchId: string, format: 'excel' | 'csv' = 'excel'): Promise<Blob> {
     const response = await request.get(`/patent/search/${searchId}/export?format=${format}`)
     return response
+  },
+
+  // 支付下载报告
+  async payForTask(params: PayForTaskRequest): Promise<PayForTaskResponse> {
+    try {
+      console.log('=== 提交支付请求 ===')
+      console.log('支付参数:', params)
+
+      const response = await request.post<PayForTaskResponse>('/order/payForTask', params)
+
+      console.log('支付响应:', response)
+
+      if ((response.code === 0 || response.code === 200) && response.data) {
+        return response
+      } else {
+        throw new Error(response.msg || '支付失败')
+      }
+    } catch (error: any) {
+      console.error('=== 支付请求失败 ===')
+      console.error(error)
+
+      // 处理错误
+      if (error.response && error.response.data) {
+        const backendError = error.response.data
+        throw new Error(backendError.msg || backendError.message || '支付失败')
+      } else if (error.message) {
+        throw new Error(error.message)
+      } else {
+        throw new Error('网络错误，请检查网络连接')
+      }
+    }
   },
 }
