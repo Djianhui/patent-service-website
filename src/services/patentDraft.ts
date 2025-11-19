@@ -248,12 +248,14 @@ export const patentDraftService = {
             updateTime: record.updateTime,
             userId: String(record.userId),
             // 扩展字段
+            taskId: record.taskId,
             firstImgUrl: convertImageUrl(record.firstImgUrl),
             pdfUrl: record.pdfUrl,
             wordUrl: record.wordUrl,
             mdUrl: record.mdUrl,
             state: record.state,
           } as PatentDraft & {
+            taskId?: string
             firstImgUrl?: string
             pdfUrl?: string
             wordUrl?: string
@@ -330,6 +332,37 @@ export const patentDraftService = {
     const index = mockPatentDrafts.findIndex((item) => item.id === id)
     if (index > -1) {
       mockPatentDrafts.splice(index, 1)
+    }
+  },
+
+  // 支付下载报告
+  async payForTask(params: { payType: 'tenpay' | 'alipay'; taskId: string }): Promise<any> {
+    try {
+      console.log('=== 提交支付请求 - 专利草稿 ===')
+      console.log('支付参数:', params)
+
+      const response = await request.post<any>('/order/payForTask', params)
+
+      console.log('支付响应:', response)
+
+      if ((response.code === 0 || response.code === 200) && response.data) {
+        return response
+      } else {
+        throw new Error(response.msg || '支付失败')
+      }
+    } catch (error: any) {
+      console.error('=== 支付请求失败 ===')
+      console.error(error)
+
+      // 处理错误
+      if (error.response && error.response.data) {
+        const backendError = error.response.data
+        throw new Error(backendError.msg || backendError.message || '支付失败')
+      } else if (error.message) {
+        throw new Error(error.message)
+      } else {
+        throw new Error('网络错误，请检查网络连接')
+      }
     }
   },
 }

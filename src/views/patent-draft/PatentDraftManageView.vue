@@ -80,13 +80,20 @@
                 <el-tag :type="getStatusType(draft.status)" size="small">
                   {{ getStatusText(draft.status) }}
                 </el-tag>
+                <el-tag v-if="isPaid(draft)" type="success" class="payment-tag" size="small">
+                  <el-icon :size="14">
+                    <CircleCheck />
+                  </el-icon>
+                  <span>{{ $t('patentSearch.paid') }}</span>
+                </el-tag>
                 <!-- <el-button size="small" text @click.stop="downloadPDF(draft)" :disabled="!(draft as any).pdfUrl">
                   <el-icon>
                     <Download />
                   </el-icon>
                   {{ $t('patentDraft.downloadPDF') }}
                 </el-button> -->
-                <el-button size="small" text @click.stop="downloadWord(draft)" :disabled="!(draft as any).wordUrl">
+                <el-button size="small" text @click.stop="handleDownloadClick(draft, 'word')"
+                  :disabled="(draft as any).state !== 1">
                   <el-icon>
                     <Download />
                   </el-icon>
@@ -165,6 +172,87 @@
         </div>
       </div>
     </el-card>
+
+    <!-- 支付弹窗 -->
+    <el-dialog v-model="paymentDialogVisible" :title="$t('patentSearch.downloadReport')" width="500px"
+      :close-on-click-modal="false">
+      <div class="payment-container">
+        <div class="payment-info">
+          <div class="info-item">
+            <span class="label">{{ $t('patentSearch.reportName') }}</span>
+            <span class="value">{{ currentDownload.title }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">{{ $t('patentSearch.fileFormat') }}</span>
+            <span class="value">{{ currentDownload.format === 'pdf' ? 'PDF' : 'Word' }}</span>
+          </div>
+          <div class="info-item price-item">
+            <span class="label">{{ $t('patentSearch.price') }}</span>
+            <span class="value price">{{ $t('patentSearch.priceValue') }}</span>
+          </div>
+        </div>
+
+        <div class="payment-methods">
+          <div class="method-title">{{ $t('patentSearch.paymentMethod') }}</div>
+          <el-radio-group v-model="paymentMethod" class="payment-options">
+            <el-radio value="alipay" class="payment-option">
+              <div class="option-content">
+                <img src="/zfb.webp" alt="支付宝" class="payment-icon" />
+                <!-- <span>{{ $t('patentSearch.alipay') }}</span> -->
+              </div>
+            </el-radio>
+            <el-radio value="wechat" class="payment-option">
+              <div class="option-content">
+                <img src="/wx.jpg" alt="微信支付" class="payment-icon" />
+              </div>
+            </el-radio>
+          </el-radio-group>
+        </div>
+
+        <!-- 支付宝扫码支付 -->
+        <div v-if="paymentMethod === 'alipay' && showQRCode" class="qrcode-container">
+          <div class="qrcode-wrapper">
+            <div class="qrcode-placeholder" v-if="!qrCodeUrl">
+              <el-icon :size="100" class="qrcode-icon">
+                <Loading class="is-loading" />
+              </el-icon>
+              <p>{{ $t('patentSearch.generatingQRCode') }}</p>
+            </div>
+            <img v-else :src="qrCodeUrl" alt="支付宝二维码" class="qrcode-image" @error="handleImageError" />
+          </div>
+          <div class="qrcode-tips">
+            <p v-if="tradeNo" class="trade-no">{{ $t('patentSearch.orderNumber') }}{{ tradeNo }}</p>
+            <p>{{ $t('patentSearch.scanQRCode', { method: $t('patentSearch.alipay') }) }}</p>
+          </div>
+        </div>
+
+        <!-- 微信扫码支付 -->
+        <div v-if="paymentMethod === 'wechat' && showQRCode" class="qrcode-container">
+          <div class="qrcode-wrapper">
+            <div class="qrcode-placeholder" v-if="!qrCodeUrl">
+              <el-icon :size="100" class="qrcode-icon">
+                <Loading class="is-loading" />
+              </el-icon>
+              <p>{{ $t('patentSearch.generatingQRCode') }}</p>
+            </div>
+            <img v-else :src="qrCodeUrl" alt="微信二维码" class="qrcode-image" @error="handleImageError" />
+          </div>
+          <div class="qrcode-tips">
+            <p v-if="tradeNo" class="trade-no">{{ $t('patentSearch.orderNumber') }}{{ tradeNo }}</p>
+            <p>{{ $t('patentSearch.scanQRCode', { method: $t('patentSearch.wechatPay') }) }}</p>
+          </div>
+        </div>
+      </div>
+
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button @click="paymentDialogVisible = false">{{ $t('common.cancel') }}</el-button>
+          <el-button type="primary" @click="handleConfirmPayment" :loading="paying" v-if="!showQRCode">
+            {{ $t('patentSearch.generateQRCode') }}
+          </el-button>
+        </div>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -183,7 +271,8 @@ import {
   Delete,
   Picture,
   Loading,
-  ZoomIn
+  ZoomIn,
+  CircleCheck
 } from '@element-plus/icons-vue'
 import { patentDraftService } from '@/services/patentDraft'
 import { formatDate } from '@/utils'
@@ -205,6 +294,20 @@ const total = ref(0)
 const pagination = reactive({
   page: 1,
   pageSize: 10
+})
+
+// 支付相关
+const paymentDialogVisible = ref(false)
+const paymentMethod = ref('alipay')
+const showQRCode = ref(false)
+const paying = ref(false)
+const qrCodeUrl = ref('') // 二维码图片URL
+const tradeNo = ref('') // 订单编号
+const currentDownload = ref({
+  draft: null as PatentDraft | null,
+  format: 'word' as 'pdf' | 'word',
+  title: '',
+  taskId: '' // 任务ID
 })
 
 // 方法
@@ -251,6 +354,120 @@ const handlePageChange = () => {
 const handleSizeChange = () => {
   pagination.page = 1
   loadData()
+}
+
+// 判断是否已支付（state=1 且有文件URL）
+const isPaid = (draft: PatentDraft): boolean => {
+  const state = (draft as any).state
+  const pdfUrl = (draft as any).pdfUrl
+  const wordUrl = (draft as any).wordUrl
+  return state === 1 && (!!pdfUrl || !!wordUrl)
+}
+
+// 获取草稿标题（支持多语言）
+const getDraftTitle = (draft: PatentDraft): string => {
+  const originalTitle = draft.title
+
+  // 检查是否为纯草稿文本
+  const draftTexts = [
+    '专利撰写',
+    'Patent Draft',
+    '特許草案',
+    'Patententwurf',
+    'Brouillon de brevet',
+    'Черновик патента',
+    'مسودة براءة'
+  ]
+
+  // 如果是纯草稿文本，返回翻译
+  if (draftTexts.includes(originalTitle)) {
+    return t('patentDraft.title')
+  }
+
+  // 否则，组合为：用户标题 + 草稿文本
+  return `${originalTitle} ${t('patentDraft.title')}`
+}
+
+// 点击下载按钮
+const handleDownloadClick = (draft: PatentDraft, format: 'pdf' | 'word') => {
+  const fileUrl = format === 'pdf' ? (draft as any).pdfUrl : (draft as any).wordUrl
+
+  // 如果已支付且有文件URL，直接下载
+  if ((draft as any).state === 1 && fileUrl) {
+    if (format === 'pdf') {
+      downloadPDF(draft)
+    } else {
+      downloadWord(draft)
+    }
+    return
+  }
+
+  const taskId = (draft as any).taskId
+
+  console.log('=== 准备支付 - 专利草稿 ===')
+  console.log('draft对象:', JSON.parse(JSON.stringify(draft)))
+  console.log('taskId:', taskId)
+  console.log('id:', draft.id)
+
+  if (!taskId) {
+    ElMessage.error(t('patentSearch.taskIdEmpty'))
+    return
+  }
+
+  currentDownload.value = {
+    draft,
+    format,
+    title: getDraftTitle(draft),
+    taskId: taskId
+  }
+  paymentDialogVisible.value = true
+  paymentMethod.value = 'alipay'
+  showQRCode.value = false
+  qrCodeUrl.value = ''
+  tradeNo.value = ''
+}
+
+// 确认支付
+const handleConfirmPayment = async () => {
+  if (!currentDownload.value.taskId) {
+    ElMessage.error(t('patentSearch.taskIdEmpty'))
+    return
+  }
+
+  paying.value = true
+
+  try {
+    const payType = paymentMethod.value === 'alipay' ? 'alipay' : 'tenpay'
+    const response = await patentDraftService.payForTask({
+      payType,
+      taskId: currentDownload.value.taskId
+    })
+
+    if ((response.code === 0 || response.code === 200) && response.data) {
+      qrCodeUrl.value = response.data.qr_pic_url || response.data.qr_code_url || ''
+      tradeNo.value = response.data.trade_no
+
+      showQRCode.value = true
+      paying.value = false
+
+      const method = payType === 'alipay' ? t('patentSearch.alipay') : t('patentSearch.wechatPay')
+      ElMessage.success(t('patentSearch.scanQRCode', { method }))
+    } else {
+      throw new Error(response.msg || t('patentSearch.paymentFailed'))
+    }
+  } catch (error: any) {
+    console.error('支付失败:', error)
+    paying.value = false
+    showQRCode.value = false
+    ElMessage.error(error.message || t('patentSearch.paymentFailed'))
+  }
+}
+
+// 二维码图片加载失败处理
+const handleImageError = () => {
+  ElMessage.error(t('patentSearch.qrCodeLoadFailed'))
+  showQRCode.value = false
+  paying.value = false
 }
 
 const downloadPDF = async (draft: PatentDraft) => {
@@ -636,6 +853,216 @@ onMounted(() => {
         gap: var(--spacing-xs);
       }
     }
+  }
+}
+
+// 支付成功标签
+.payment-tag {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #fff;
+  animation: fadeIn 0.3s ease-in;
+
+  .el-icon {
+    margin-right: 2px;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// 支付弹窗样式
+.payment-container {
+  padding: 20px 0;
+
+  .payment-info {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
+    border-radius: 12px;
+
+    .info-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(15, 76, 129, 0.1);
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      .label {
+        font-size: 14px;
+        color: #666;
+        font-weight: 500;
+      }
+
+      .value {
+        font-size: 14px;
+        color: #1a1a1a;
+        font-weight: 600;
+
+        &.price {
+          font-size: 20px;
+          color: #ef4444;
+          font-weight: 700;
+        }
+      }
+
+      &.price-item {
+        padding-top: 15px;
+        margin-top: 10px;
+        border-top: 2px solid rgba(15, 76, 129, 0.2);
+      }
+    }
+  }
+
+  .payment-methods {
+    margin-bottom: 30px;
+
+    .method-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .payment-options {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      width: 100%;
+
+      :deep(.el-radio) {
+        flex: 1;
+        margin: 0;
+        padding: 0;
+        max-width: 150px;
+
+        .el-radio__input {
+          margin-right: 8px;
+
+          .el-radio__inner {
+            width: 18px;
+            height: 18px;
+            border-width: 2px;
+          }
+        }
+
+        .el-radio__label {
+          padding: 0;
+          width: 100%;
+          display: flex;
+          justify-content: center;
+        }
+      }
+
+      .payment-option {
+        .option-content {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+
+          .payment-icon {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+            border-radius: 6px;
+          }
+
+          span {
+            font-size: 15px;
+            font-weight: 500;
+            color: #1a1a1a;
+          }
+        }
+      }
+    }
+  }
+
+  .qrcode-container {
+    margin-top: 30px;
+    text-align: center;
+
+    .qrcode-wrapper {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 15px;
+
+      .qrcode-placeholder {
+        width: 200px;
+        height: 200px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
+        border: 2px dashed rgba(15, 76, 129, 0.3);
+        border-radius: 12px;
+
+        .qrcode-icon {
+          color: #6A5ACD;
+          margin-bottom: 10px;
+          animation: spin 1s linear infinite;
+        }
+
+        p {
+          margin: 0;
+          font-size: 14px;
+          color: #666;
+        }
+      }
+
+      .qrcode-image {
+        width: 200px;
+        height: 200px;
+        object-fit: contain;
+        border: 2px solid rgba(15, 76, 129, 0.2);
+        border-radius: 12px;
+        background: #fff;
+      }
+    }
+
+    .qrcode-tips {
+      p {
+        margin: 0;
+        margin-top: 8px;
+        font-size: 13px;
+        color: #999;
+        text-align: center;
+
+        &.trade-no {
+          font-size: 14px;
+          font-weight: 600;
+          color: #0F4C81;
+          margin-top: 12px;
+        }
+      }
+    }
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
   }
 }
 </style>
