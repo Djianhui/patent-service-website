@@ -281,12 +281,14 @@ export const patentSearchService = {
             description: '',
             drawings: [],
             // 扩展字段
+            taskId: record.taskId, // 直接保留taskId字段
             firstImgUrl: convertImageUrl(record.firstImgUrl),
             pdfUrl: record.pdfUrl,
             wordUrl: record.wordUrl,
             mdUrl: record.mdUrl,
             state: record.state,
           } as Patent & {
+            taskId?: string
             firstImgUrl?: string
             pdfUrl?: string
             wordUrl?: string
