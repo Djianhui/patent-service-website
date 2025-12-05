@@ -251,12 +251,14 @@ export const techReportService = {
               implementationMethods: [],
             },
             // 文件链接（添加到类型外，用于下载）
+            state: record.state, // 保留原始 state 字段（数字）
             taskId: record.taskId,
             pdfUrl: record.pdfUrl,
             wordUrl: record.wordUrl,
             mdUrl: record.mdUrl,
             firstImgUrl: convertImageUrl(record.firstImgUrl),
           } as TechReport & {
+            state?: number
             taskId?: string
             pdfUrl?: string
             wordUrl?: string
