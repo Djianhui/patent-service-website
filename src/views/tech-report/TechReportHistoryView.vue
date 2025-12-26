@@ -376,23 +376,41 @@ const getReportTitle = (report: TechReport): string => {
 
 // 点击下载按钮
 const handleDownloadClick = async (report: TechReport, format: 'pdf' | 'word') => {
-  const fileUrl = format === 'pdf' ? (report as any).pdfUrl : (report as any).wordUrl
+  console.log('=== 点击下载按钮 ====')
+  console.log('report完整对象:', JSON.parse(JSON.stringify(report)))
+  console.log('format:', format)
+
+  const pdfUrl = (report as any).pdfUrl
+  const wordUrl = (report as any).wordUrl
+  const fileUrl = format === 'pdf' ? pdfUrl : wordUrl
   const state = (report as any).state
+
+  console.log('state值:', state, '类型:', typeof state)
+  console.log('pdfUrl:', pdfUrl)
+  console.log('wordUrl:', wordUrl)
+  console.log('选择的fileUrl:', fileUrl)
+  console.log('判断条件: state === 1:', state === 1, 'fileUrl存在:', !!fileUrl)
 
   // 如果已支付且有文件URL，直接下载
   if (state === 1 && fileUrl) {
+    console.log('✅ 满足下载条件，开始下载')
     downloadReport(report, format)
     return
   }
 
   // 如果state不为1，提示生成中或失败
   if (state === 0) {
+    console.log('⚠️ state=0, 生成中')
     ElMessage.warning(t('techReport.statusGenerating'))
     return
   } else if (state === 2) {
+    console.log('❌ state=2, 生成失败')
     ElMessage.error(t('techReport.statusFailed'))
     return
   }
+
+  console.log('⚠️ 未满足任何条件，准备显示支付弹窗')
+  console.log('可能的原因: state不等于1或fileUrl为空')
 
   const taskId = (report as any).taskId
 
