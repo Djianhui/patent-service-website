@@ -3,8 +3,10 @@ import { convertImageUrl } from '@/utils'
 
 // 答辩支持功能类型
 export enum DefenseFunctionType {
-  SIMULATION_REVIEW = 0,  // 模拟审查
-  DEFENSE_REPLY = 1       // 答辩意见回复
+  SIMULATION_REVIEW = 0, // 模拟审查
+  DEFENSE_REPLY = 1, // 答辩意见回复
+  ANNOTATION_ANALYSIS = 2, // 批注分析
+  ANNOTATION_REPLY = 3, // 批注回复
 }
 
 // 分页查询请求参数
@@ -17,7 +19,7 @@ export interface PageQueryRequest {
     column: string
   }>
   state?: number
-  type: number  // 5: 答辩支持
+  type: number // 5: 答辩支持
 }
 
 // 分页查询响应结果
@@ -37,7 +39,7 @@ export interface PageQueryResponse {
       taskId: string
       taskJson: string
       type: number
-      typeSub?: number  // 功能子类型：0=模拟审查，1=答辩意见回复
+      typeSub?: number // 功能子类型：0=模拟审查，1=答辩意见回复
       updateTime: string
       userId: number
       wordUrl: string
@@ -107,19 +109,27 @@ export const defenseSupportService = {
     functionType: DefenseFunctionType
     fileUrls: string[]
     prompt: string
+    type?: number
   }): Promise<any> {
     try {
       console.log('=== 开始创建答辩支持任务 ===')
       console.log('功能类型:', data.functionType)
       console.log('文件路径:', data.fileUrls)
       console.log('答辩信息描述:', data.prompt)
+      console.log('任务类型:', data.type)
 
-      const response = await request.post<any>('/manus/task', {
+      const requestData: any = {
         fileUrls: data.fileUrls,
         prompt: data.prompt,
-        type: 5,  // 5: 答辩支持
-        typeSub: data.functionType
-      })
+        type: data.type || 5, // 默认为5: 答辩支持，可选传入其他值如6: 批注回复
+      }
+
+      // 如果不是批注回复类型(type=6)，则添加typeSub
+      if (data.type !== 6) {
+        requestData.typeSub = data.functionType
+      }
+
+      const response = await request.post<any>('/manus/task', requestData)
 
       console.log('答辩支持任务创建响应:', response)
 
@@ -150,12 +160,15 @@ export const defenseSupportService = {
   },
 
   // 获取答辩支持任务列表
-  async getDefenseList(params: {
-    page?: number
-    pageSize?: number
-    keyword?: string
-    state?: number
-  } = {}) {
+  async getDefenseList(
+    params: {
+      page?: number
+      pageSize?: number
+      keyword?: string
+      state?: number
+      type?: number
+    } = {},
+  ) {
     try {
       console.log('=== 获取答辩支持任务列表 ===')
       console.log('请求参数:', params)
@@ -164,7 +177,7 @@ export const defenseSupportService = {
         keyword: params.keyword || '',
         pageIndex: params.page || 1,
         pageSize: params.pageSize || 10,
-        type: 5  // 5: 答辩支持
+        type: params.type || 5, // 5: 答辩支持, 6: 批注回复
       }
 
       if (params.state !== undefined) {
@@ -179,7 +192,7 @@ export const defenseSupportService = {
 
       if (response.code === 200 && response.data) {
         // 转换为前端数据格式
-        const defenseList = response.data.records.map(record => {
+        const defenseList = response.data.records.map((record) => {
           // 解析 taskJson
           let functionType = DefenseFunctionType.SIMULATION_REVIEW
           let description = ''
@@ -204,7 +217,10 @@ export const defenseSupportService = {
               console.log('taskData.typeSub:', taskData.typeSub)
 
               // 如果record没有typeSub，尝试从taskData获取
-              if ((record.typeSub === undefined || record.typeSub === null) && taskData.typeSub !== undefined) {
+              if (
+                (record.typeSub === undefined || record.typeSub === null) &&
+                taskData.typeSub !== undefined
+              ) {
                 functionType = taskData.typeSub
                 console.log('✅ 使用taskData.typeSub:', functionType)
               }
@@ -231,7 +247,7 @@ export const defenseSupportService = {
             mdUrl: record.mdUrl,
             state: record.state,
             createTime: record.createTime,
-            updateTime: record.updateTime
+            updateTime: record.updateTime,
           }
         })
 
@@ -241,7 +257,7 @@ export const defenseSupportService = {
           data: defenseList,
           total: response.data.total,
           page: params.page || 1,
-          pageSize: params.pageSize || 10
+          pageSize: params.pageSize || 10,
         }
       } else {
         throw new Error(response.msg || '获取任务列表失败')
@@ -265,5 +281,5 @@ export const defenseSupportService = {
         throw new Error('网络错误，请检查网络连接')
       }
     }
-  }
+  },
 }

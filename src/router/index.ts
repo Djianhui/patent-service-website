@@ -233,6 +233,14 @@ const routes: RouteRecordRaw[] = [
               title: '模拟审查',
             },
           },
+          {
+            path: 'annotation',
+            name: 'DefenseSupportAnnotation',
+            component: () => import('@/views/defense-support/DefenseAnnotationView.vue'),
+            meta: {
+              title: '批注回复',
+            },
+          },
         ],
       },
       {

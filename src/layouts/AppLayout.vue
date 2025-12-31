@@ -87,6 +87,13 @@ const menuItems = computed(() => [
       }
     ]
   },
+  {
+    id: 'defense-support-annotation',
+    title: t('menu.defenseAnnotation'),
+    icon: 'ChatDotSquare',
+    path: '/app/defense-support/annotation',
+
+  },
   // {
   //   id: 'three-analysis',
   //   title: t('menu.threeAnalysis'),
